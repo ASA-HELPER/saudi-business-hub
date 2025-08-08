@@ -1,0 +1,409 @@
+{
+  "welcome": "Welcome",
+  "start_investment_journey": "Start your investment journey",
+  "registration_misa": "Registration in MISA E-service :",
+  "apply_investment_registration": "Apply for investment registration",
+  "user_guide_link": "(User's Guide - New Investment Registration)",
+  "obtain_temp_certificate": "Obtain a temporary certificate to submit proposals for government projects",
+  "benefit_from_services": "Benefit from E services that provided by MISA and other entities",
+  "contact_investor_care": "Contact us through investor care channels",
+  "expand_investments": "Expand your investments",
+  "login": {
+    "title": "Investor Login",
+    "username": "Username",
+    "username_placeholder": "Enter Username",
+    "password": "Password",
+    "password_placeholder": "Enter Password",
+    "remember_me": "Remember me",
+    "forgot_password": "Forgot Password?",
+    "button": "Login",
+    "or": "or",
+    "nafath_button": "Login with Nafath ID",
+    "back": "Back",
+    "register": "Register",
+    "validation": {
+      "username_required": "Please enter your valid username",
+      "username_min": "Username must be at least 3 characters",
+      "password_required": "Please enter your correct password",
+      "password_min": "Password must be more than 8 characters"
+    },
+    "captcha_error": "reCAPTCHA verification failed. Please try again."
+  },
+
+
+  "footer": {
+    "trouble_login": "Trouble to Login?",
+    "facing_issue": "Facing any Issue?",
+    "contact_us": "Contact Us"
+  },
+
+
+  "register": {
+    "step1_title": "Basic Details",
+    "success_message": "Account Created Sucessfully",
+    "step2_title": "Username & Password",
+    "Register": "Register",
+    "title":"Title",
+    "first_name": "First Name",
+    "first_name_placeholder": "Enter First name",
+    "last_name": "Last Name",
+    "last_name_placeholder": "Enter Last name",
+    "national_id": "National ID / IQAMA ID",
+    "national_id_placeholder": "Enter National ID / IQAMA ID",
+    "company_name": "Company Name",
+    "company_name_placeholder": "Enter Company Name",
+    "sector": "Sector",
+    "sector_placeholder": "Select Sector",
+    "email": "Email",
+    "email_placeholder": "Enter your email",
+    "country": "Country",
+    "country_placeholder": "Select Country",
+    "mobile_number": "Mobile Number",
+    "mobile_number_placeholder": "Enter mobile number",
+    "username": "Username",
+    "username_placeholder": "Enter Username",
+    "password": "Password",
+    "password_placeholder": "Enter Password",
+    "confirm_password": "Confirm Password",
+    "confirm_password_placeholder": "Enter Confirm Password",
+    "verify_email_alert": "Please verify your email before continuing.",
+    "cancel": "Cancel",
+    "next": "Next",
+    "back": "Back",
+    "register_button": "Register",
+    "validation": {
+      "first_name_required": "First Name is required",
+      "last_name_required": "Last Name is required",
+      "company_name_required": "Company name is required",
+      "sector_required": "Sector is required",
+      "email_required": "Email is required",
+      "country_required": "Country is required",
+      "mobile_required": "Mobile is required",
+      "username_required": "Username is required",
+      "password_required": "Password is required",
+      "password_min": "Password must be at least 8 characters",
+      "confirm_password_required": "Confirm Password is required",
+      "passwords_match": "Passwords do not match",
+      "title_required": "Title is required"
+    },
+    "acknowledge_text": "I acknowledge reading and agreeing to the <1>Terms & Conditions</1> and <3>Privacy Policy</3>, the validity and accuracy of the data entered, and the Ministry's right to process it in a way that serves the public interest and facilitates the provision of investment services.",
+    "success": {
+    "title": "Account Created Successfully!",
+    "message": "Your account has been successfully registered.<br />You can log in and start using our eServices.",
+    "invest_button": "Invest Saudi Website",
+    "login_button": "Login"
+    }
+  },
+
+
+    "forgot_password": {
+    "title": "Forgot Password",
+    "instructions": "Please enter the Email address used during your account registration on E-Services to complete your reset password.",
+    "success_message": "Password reset instructions have been sent to your e-mail address. Please contact customer support if you require additional assistance.",
+    "email_label": "Email Address",
+    "email_placeholder": "Enter Email Address",
+    "submit_button": "Submit",
+    "back_button": "Back",
+    "Back_login_button": "Back to Login",
+    "login_button": "Login",
+    "validation": {
+      "email_required": "Enter your email address",
+      "email_invalid": "Enter a valid email address"
+    }
+  },
+
+
+    "hero": {
+    "title": "Start your investment journey",
+    "subtitle": "Start building your future—register your investment in just a few steps.",
+    "register_button": "Register",
+    "explore_button": "Explore"
+  },
+
+
+  "navbar": {
+    "logo_alt": "Company Logo",
+    "home": "Home",
+    "opportunities": "Opportunities",
+    "services": "Services",
+    "contacts": "Contacts",
+    "dropdown_alt": "Dropdown icon",
+    "profile_alt": "Profile icon",
+    "profile_name": "Omar Majid",
+    "english": "English",
+    "arabic": "Arabic",
+    "menu_alt": "Menu icon"
+  },
+
+  "contact_details":{
+    "heading": "Contact Details",
+    "address": "Address",
+    "company_representative": "Company Representative",
+    "email": "Email",
+    "mobile_number": "Mobile Number",
+    "phone_code": "Mobile Code"
+  },
+
+  "program_membership":{
+    "heading":"Other Program Membership",
+    "program_member":"program_member",
+    "program_member_label":"Are you a member of any of the following government programs and initiative?"
+  },
+
+  "financial_operational_info": {
+    "heading":"Financial and Operational Information",
+    "sector_of_operation": {
+      "label": "What is the sector of operation?",
+      "placeholder": "Choose"
+    },
+    "annual_revenue_past_two_years": {
+      "label": "What is your annual revenue over the past two years in KSA?",
+      "placeholders": {
+        "two_years_ago": "Two years ago",
+        "last_year": "Last year"
+      }
+    },
+    "total_employees_past_two_years": {
+      "label": "How many employees did you have over the past two years in KSA?",
+      "placeholders": {
+        "two_years_ago": "Two years ago",
+        "last_year": "Last Year"
+      }
+    },
+    "saudi_employees_past_two_years": {
+      "label": "How many saudi employees did you have over the past two years in KSA?",
+      "placeholders": {
+        "two_years_ago": "Two years ago",
+        "last_year": "Last Year"
+      }
+    },
+    "total_salaries_saudi_employees": {
+      "label": "What is the total salaries paid to saudi employee over the past two years?",
+      "placeholders": {
+        "two_years_ago": "Two years ago",
+        "last_year": "Last year"
+      }
+    }
+  },
+
+  "strategic_information": {
+    "heading":"Strategic Information",
+    "sector_operation": {
+      "label": "What is the sector do you operate in?",
+      "placeholder": "Choose"
+    },
+    "hs_codes_top_products": {
+      "label": "List the HS codes of your top three products",
+      "placeholders": {
+        "product_one": "Product one–Please enter the subheadings (full 6 digit) of the HS code",
+        "product_two": "Product two–Please enter the subheadings (full 6 digit) of the HS code",
+        "product_three": "Product three–Please enter the subheadings (full 6 digit) of the HS code"
+      }
+    },
+    "technologies_used": {
+      "label": "Which of the following technologies do you use?",
+      "placeholder": "Choose",
+      "description_placeholder": "Please describe how you use the mentioned technologies"
+    },
+    "ksa_regions": {
+      "label": "Which KSA region do you operate in?"
+    },
+    "saudi_made_program": {
+      "label": "Are you a member of saudi made program?",
+      "placeholder": "Choose"
+    },
+    "local_content_score": {
+      "label": "What is your local content score?",
+      "placeholder": "Click here to enter text",
+      "note": "Instruction: For local content score measurement, visit the Local Content and Government Procurement Authority website"
+    },
+    "esg_description": {
+      "label": "Please describe company’s ESG (Environmental, Social, and Governance) agenda or Initiatives?"
+    },
+    "non_oil_exporter": {
+      "label": "Are you a non-oil exporter?",
+      "placeholder": "Choose"
+    },
+    "average_yearly_salary": {
+      "label": "What is the average yearly salary in your company? Please add number in SAR",
+      "placeholder": "Click here to enter text"
+    },
+    "financial_metrics_description": {
+      "label": "Please describe the key financial metrics that you track instructors: For startups, total investments raised, runway months, burn rate. For non-startups, operating margin, net profit, EBITDA margin, revenue growth, debt-to-assets, debt-to-enquiry, etc.",
+      "placeholder": "Click here to enter text"
+    }
+  },
+
+  "investment_banner": {
+    "icon_alt": "Status Icon",
+    "message": "You haven't applied for investment registration yet. Complete your registration to begin your investment journey."
+  },
+
+  "apply_for": {
+    "title": "APPLY FOR",
+    "subtitle": "Discover key insights, trends, and opportunities within the sector.",
+    "apply_button": "Apply",
+    "misa": {
+      "title": "MISA Investment Registration",
+      "description": "Simplifying investment access through MISA registration.",
+      "alt": "MISA Investment icon",
+      "detail_title": "MISA Investment Registration",
+      "detail_description": "To start your investment activity in Saudi Arabia, you must obtain an investment registration. MISA is the authority responsible for providing all services to investors. Investment registration vary according to their requirements."
+    },
+    "rhq": {
+      "title": "RHQ Licenses",
+      "description": "This license offers streamlined government support.",
+      "alt": "RHQ Licenses icon",
+      "detail_title": "RHQ Licenses",
+      "detail_description": "The RHQ (Regional Headquarters) license enables mulitinational companies to establish a strategic base in Saudi Arabia for managing and supporting their operations across"
+    },
+    "strategic": {
+      "title": "Strategic Investor Program",
+      "description": "Designed for investors who think beyond the short term.",
+      "alt": "Strategic Investor icon",
+      "detail_title": "Strategic Investor Program",
+      "detail_description": "Our Strategic Investor Program is tailored for sophisticated investors seeking long-term growth opportunities. This comprehensive program provides access to exclusive investment vehicles, personalized advisory services, and strategic market insights to help you build a robust investment portfolio."
+    },
+    "bidding": {
+      "title": "Bidding Certificate",
+      "description": "Start bidding with confidence—get your official certificate",
+      "alt": "Bidding Certificate icon",
+      "detail_title": "Bidding Certificate",
+      "detail_description": "Obtain your official bidding certificate to participate in government and private sector tenders with confidence. Our certification process ensures you meet all regulatory requirements and provides you with the credentials needed to compete in the bidding marketplace effectively."
+    }
+  },
+
+  "sector_overview": {
+    "title": "About the sector",
+    "subtitle": "Discover key insights, trends, and opportunities within the sector.",
+    "explore_button": "Explore All",
+    "card_title": "Real Estate Overview",
+    "card_text": "The real estate sector is a key pillar of the Kingdom's vision for a vibrant society. With a significant young population and steady demand, Saudi Arabia has taken steps to transform the real estate sector.",
+    "know_more_button": "Know More",
+    "stats": [
+      {
+        "value": "1.5M",
+        "label": "Housing units to be built by 2030"
+      },
+      {
+        "value": "70%",
+        "label": "Home ownership target by 2030"
+      },
+      {
+        "value": "1.2BN M²",
+        "label": "Built-up area expected to be developed by 2030"
+      },
+      {
+        "value": "50%",
+        "label": "Of new units built using new technology"
+      },
+      {
+        "value": "70%",
+        "label": "Home ownership target by 2030"
+      }
+    ]
+  },
+
+    "termsModal": {
+    "download": "Download",
+    "downloadPrivacyPolicy": "Download Privacy Policy",
+    "previousPage": "Previous page",
+    "nextPage": "Next page",
+    "close": "Close",
+    "agree": "Agree",
+    "downloadFileName": "terms-and-conditions.pdf",
+    "privacyFileName": "privacy-policy.pdf"
+  },
+
+  "gccModal": {
+    "title": "Are all your shareholders of\nGCC nationality?",
+    "iconAlt": "GCC shareholder icon"
+  },
+  "common": {
+    "yes": "Yes",
+    "no": "No",
+    "close": "Close",
+    "back": "Back",
+    "currency": "SAR",
+    "loading": "Loading...",
+    "error": "Error",
+    "selected": "Selected",
+    "notSelected": "Not selected",
+    "inputPlaceholder":"Click here to enter text",
+    "choose":"Choose"
+  },
+ 
+  "investment": {
+    "registrationTitle": "MISA Investment Registration",
+    "entityInfo": "Entity Information",
+    "shareholders": "Shareholders",
+    "contactPerson": "Contact Person",
+    "preview": "Preview"
+  },
+
+  "entityInformation": {
+    "basicInfo": "Basic Information",
+    "entityInfo": "Entity Information",
+    "feeDuration": "Fee Duration",
+    "noRecords": "There is no records to display.",
+    "addActivitiesPrompt": "Add your business activities to get started.",
+    "addActivitiesButton": "+ Add Business Activities",
+    "entityNameEn": "Entity Name in English",
+    "entityNameAr": "Entity Name in Arabic",
+    "entityType": "Entity Type",
+    "choose": "Choose",
+    "crNumber": "CR Number",
+    "legalNameEn": "Legal Name in English",
+    "legalStatus": "Legal Status",
+    "capital": "Capital",
+    "country": "Country",
+    "companyLegalStructure":"Company Legal Structure",
+    "selectCountry":"Select Country",
+    "email": "Email",
+    "mobileNumber": "Mobile Number",
+    "invalidEmail": "Please enter a valid email address",
+    "invalidMobile": "Please enter a valid mobile number",
+    "region": "Region",
+    "city": "City",
+    "investmentSpending": "Investment Spending (Next 5 years)",
+    "licenseDuration": "License Duration (Years)",
+    "selectPlaceholder": "Select {field}",
+    "enterPlaceholder": "Enter {field}",
+    "requiredField": "This field is required.",
+    "validation": {
+      "minActivities": "Please add at least one business activity."
+    }
+  },
+
+  "registrationTypes": {
+    "title": "Registration type"
+  },
+
+   "attachment": {
+    "title": "Attachment",
+    "boardResolution": {
+      "label": "Board Resolution",
+      "requiredIndicator": "*"
+    },
+    "letterOfSupport": {
+      "label": "Letter of Support from Supervising Authority (Business Incubators or Saudi Universities)",
+      "requiredIndicator": "*"
+    },
+    "dropzone": {
+      "primaryText": "Drag and drop files here to upload",
+      "secondaryText": "Maximum file size allowed is 5MB, supported file formats include {formats}.",
+      "formats": ".jpg, .png, and .pdf",
+      "browseButton": "Browse Files"
+    },
+    "validation": {
+      "fileSizeExceeded": "File size exceeds 5MB.",
+      "invalidFileType": "Invalid file type. Supported formats: {formats}",
+      "required": "This file is required."
+    },
+    "registrationAttachments":{
+      "headingOne": "Company Profile",
+      "headingTwo": "Financial Statements",
+      "headingThree":"Operational Information"
+    }
+  }
+}

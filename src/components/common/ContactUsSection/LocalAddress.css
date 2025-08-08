@@ -1,0 +1,51 @@
+.local-address-container {
+  background-color: #f3ebfa;
+  border-radius: 16px;
+  padding: 60px;
+  min-width: 320px;
+  width: 100%;
+}
+
+.local-address-content {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  gap: 24px;
+}
+
+.local-address-title {
+  font-family: '29LT Bukra', sans-serif;
+  font-weight: 600;
+  font-size: 24px;
+  line-height: 146%;
+  color: #121212;
+  margin: 0;
+}
+
+.add-button {
+  width: 60px;
+  height: 60px;
+  background-color: #ffffff;
+  border-radius: 50%;
+  border: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.add-button:hover {
+  transform: scale(1.05);
+}
+
+.add-button:active {
+  transform: scale(0.95);
+}
+
+.add-icon {
+  width: 32px;
+  height: 32px;
+}
+

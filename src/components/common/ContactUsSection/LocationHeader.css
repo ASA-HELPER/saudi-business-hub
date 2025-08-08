@@ -1,0 +1,52 @@
+.location-header {
+  display: flex;
+  flex-direction: row;
+  gap: 16px;
+  width: 100%;
+  min-width: 320px;
+  padding: 16px;
+  height: 97px;
+  align-items: center;
+}
+
+.vertical-line {
+  width: 4px;
+  height: 86px;
+  background-color: #824b97;
+}
+
+.header-content {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  flex: 1;
+}
+
+.title {
+  font-family: '29LT Bukra', sans-serif;
+  font-weight: 700;
+  font-size: 36px;
+  line-height: 146%;
+  color: #121212;
+  text-transform: uppercase;
+  margin: 0;
+}
+
+.subtitle {
+  font-family: '29LT Bukra', sans-serif;
+  font-weight: 600;
+  font-size: 22px;
+  color: #555555;
+  margin: 0;
+}
+
+@media screen and (max-width: 768px) {
+  .title {
+    font-size: 28px;
+  }
+  
+  .subtitle {
+    font-size: 18px;
+  }
+}
+

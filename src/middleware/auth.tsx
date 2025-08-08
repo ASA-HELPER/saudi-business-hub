@@ -1,0 +1,1 @@
+export const authMiddleware = (token: string | null) => !!token;

@@ -1,0 +1,10 @@
+.language-selector {
+  display: flex;
+  flex-direction: row;
+  padding: 6px;
+  background-color: #d8e7ec;
+  border-radius: 6px;
+  width: fit-content;
+  gap: 6px;
+}
+

@@ -1,0 +1,91 @@
+.contact-us-container {
+  width: 100%;
+  max-width: 636px;
+  height: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 44px;
+  padding: 36px 24px;
+  background: linear-gradient(162.02deg, rgba(27,58,96,1) 4.56%, rgba(115,64,142,1) 99.08%);
+  border-radius: 16px;
+  box-sizing: border-box;
+}
+
+.contact-title {
+  font-family: '29LT Bukra', sans-serif;
+  font-weight: 600;
+  font-size: 26px;
+  line-height: 146%;
+  color: #ffffff;
+  margin: 0;
+}
+
+.contact-items {
+  display: flex;
+  flex-direction: column;
+  gap: 36px;
+}
+
+.contact-item {
+  background: rgba(255, 255, 255, 0.12);
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  padding: 24px 36px;
+  box-sizing: border-box;
+}
+
+.contact-content {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 16px;
+}
+
+.icon-container {
+  width: 70px;
+  height: 70px;
+  background: rgba(255, 255, 255, 0.12);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.icon-container img {
+  width: 36px;
+  height: 36px;
+  object-fit: contain;
+}
+
+.contact-details {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.label {
+  font-family: '29LT Bukra', sans-serif;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 146%;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.value {
+  font-family: '29LT Bukra', sans-serif;
+  font-weight: 600;
+  font-size: 18px;
+  line-height: 146%;
+  color: #ffffff;
+}
+
+.contact-item:hover {
+  background: rgba(255, 255, 255, 0.15);
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.icon-container:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transition: background-color 0.3s ease;
+}

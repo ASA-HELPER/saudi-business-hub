@@ -1,0 +1,3 @@
+import { AppDataState, AppDataActionTypes, SET_APP_DATA, CLEAR_APP_DATA } from '../types/appDataTypes';
+const initialState: AppDataState = { updates: [], loading: false };
+export const appDataReducer = (state = initialState, action: AppDataActionTypes): AppDataState => { switch (action.type) { case SET_APP_DATA: return { ...state, updates: action.payload }; case CLEAR_APP_DATA: return initialState; default: return state; } };

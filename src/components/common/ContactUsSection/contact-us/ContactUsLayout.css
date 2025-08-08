@@ -1,0 +1,31 @@
+
+
+.contact-us-layout {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  min-height: 100vh;
+  box-sizing: border-box;
+  gap: 24px;
+}
+
+.contact-us-section {
+  flex-grow: 1;
+  max-width: 636px;
+  background: linear-gradient(162.02deg, rgba(27,58,96,1) 4.56%, rgba(115,64,142,1) 99.08%);
+  border-radius: 16px;
+  padding: 36px 24px;
+  box-sizing: border-box;
+  position: relative;
+}
+
+.contact-form-section {
+  flex-grow: 2;
+  max-width: 1014px;
+  background-color: #ffffff;
+  border-radius: 16px;
+  border: 1px solid #bdd7dbff;
+  padding: 36px;
+  box-sizing: border-box;
+  position: relative;
+}
