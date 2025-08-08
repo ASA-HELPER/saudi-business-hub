@@ -4,6 +4,7 @@ import styled from "styled-components";
 const CheckboxWrapper = styled.div`
   width: 200px;
   display: inline-block;
+  background-color: #f3f4f6;
 `;
 
 const Label = styled.label`
@@ -11,7 +12,6 @@ const Label = styled.label`
   align-items: center;
   gap: 0.5rem;
   color: #47515b;
-  background-color: #f9fafb;
   padding: 2px;
   font-size: 10px;
 `;
