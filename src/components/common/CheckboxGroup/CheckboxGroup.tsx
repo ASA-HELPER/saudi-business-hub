@@ -21,11 +21,13 @@ export interface Option {
 interface CheckboxGroupProps {
   options: Option[];
   onOptionsChange: (updatedOptions: Option[]) => void;
+  checkboxInputPlaceholder?: string;
 }
 
 const CheckboxGroup: React.FC<CheckboxGroupProps> = ({
   options,
   onOptionsChange,
+  checkboxInputPlaceholder="Please Describe"
 }) => {
   const handleCheckboxChange = (index: number) => {
     const updated = [...options];
@@ -45,7 +47,7 @@ const CheckboxGroup: React.FC<CheckboxGroupProps> = ({
       {options.map((option, index) =>
         option.withInput === true ? (
           <CheckboxWithInput
-            key={option.label}
+            key={`checkboxwithinput-${option.id}`}
             label={option.label}
             checked={option.checked}
             description={option.description}
@@ -53,10 +55,11 @@ const CheckboxGroup: React.FC<CheckboxGroupProps> = ({
             onDescriptionChange={(value) =>
               handleDescriptionChange(index, value)
             }
+            placeholder={checkboxInputPlaceholder}
           />
         ) : (
           <Checkbox
-            key={option.label}
+            key={`checkboxwithoutinput-${option.id}`}
             label={option.label}
             checked={option.checked}
             onChange={() => handleCheckboxChange(index)}

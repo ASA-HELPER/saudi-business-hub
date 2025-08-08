@@ -325,11 +325,12 @@
     "selected": "Selected",
     "notSelected": "Not selected",
     "inputPlaceholder": "Click here to enter text",
-    "choose": "Choose"
+    "choose": "Choose",
+    "checkboxInputPlaceholder": "Please Describe"
   },
 
   "investment": {
-    "registrationTitle": "MISA Investment Registration",
+    "registrationTitle": "Strategic Investment Program",
     "entityInfo": "Entity Information",
     "shareholders": "Shareholders",
     "contactPerson": "Contact Person",

@@ -12,6 +12,7 @@ const Label = styled.label`
   align-items: center;
   gap: 0.5rem;
   flex: 1;
+  color: #47515b;
 `;
 
 const Input = styled.input<{ $isRTL?: boolean }>`
@@ -44,6 +45,7 @@ interface Props {
   description: string;
   onCheckboxChange: () => void;
   onDescriptionChange: (value: string) => void;
+  placeholder:string;
 }
 
 const CheckboxWithInput: React.FC<Props> = ({
@@ -52,6 +54,7 @@ const CheckboxWithInput: React.FC<Props> = ({
   description,
   onCheckboxChange,
   onDescriptionChange,
+  placeholder,
 }) => {
   return (
     <Container>
@@ -61,7 +64,7 @@ const CheckboxWithInput: React.FC<Props> = ({
       </Label>
       <Input
         type="text"
-        placeholder="Enter description"
+        placeholder={placeholder}
         value={description}
         onChange={(e) => onDescriptionChange(e.target.value)}
       />
