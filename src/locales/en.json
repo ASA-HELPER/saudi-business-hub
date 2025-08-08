@@ -30,20 +30,18 @@
     "captcha_error": "reCAPTCHA verification failed. Please try again."
   },
 
-
   "footer": {
     "trouble_login": "Trouble to Login?",
     "facing_issue": "Facing any Issue?",
     "contact_us": "Contact Us"
   },
 
-
   "register": {
     "step1_title": "Basic Details",
     "success_message": "Account Created Sucessfully",
     "step2_title": "Username & Password",
     "Register": "Register",
-    "title":"Title",
+    "title": "Title",
     "first_name": "First Name",
     "first_name_placeholder": "Enter First name",
     "last_name": "Last Name",
@@ -88,15 +86,14 @@
     },
     "acknowledge_text": "I acknowledge reading and agreeing to the <1>Terms & Conditions</1> and <3>Privacy Policy</3>, the validity and accuracy of the data entered, and the Ministry's right to process it in a way that serves the public interest and facilitates the provision of investment services.",
     "success": {
-    "title": "Account Created Successfully!",
-    "message": "Your account has been successfully registered.<br />You can log in and start using our eServices.",
-    "invest_button": "Invest Saudi Website",
-    "login_button": "Login"
+      "title": "Account Created Successfully!",
+      "message": "Your account has been successfully registered.<br />You can log in and start using our eServices.",
+      "invest_button": "Invest Saudi Website",
+      "login_button": "Login"
     }
   },
 
-
-    "forgot_password": {
+  "forgot_password": {
     "title": "Forgot Password",
     "instructions": "Please enter the Email address used during your account registration on E-Services to complete your reset password.",
     "success_message": "Password reset instructions have been sent to your e-mail address. Please contact customer support if you require additional assistance.",
@@ -112,14 +109,12 @@
     }
   },
 
-
-    "hero": {
+  "hero": {
     "title": "Start your investment journey",
     "subtitle": "Start building your future—register your investment in just a few steps.",
     "register_button": "Register",
     "explore_button": "Explore"
   },
-
 
   "navbar": {
     "logo_alt": "Company Logo",
@@ -135,7 +130,7 @@
     "menu_alt": "Menu icon"
   },
 
-  "contact_details":{
+  "contact_details": {
     "heading": "Contact Details",
     "address": "Address",
     "company_representative": "Company Representative",
@@ -144,14 +139,14 @@
     "phone_code": "Mobile Code"
   },
 
-  "program_membership":{
-    "heading":"Other Program Membership",
-    "program_member":"program_member",
-    "program_member_label":"Are you a member of any of the following government programs and initiative?"
+  "program_membership": {
+    "heading": "Other Program Membership",
+    "program_member": "program_member",
+    "program_member_label": "Are you a member of any of the following government programs and initiative?"
   },
 
   "financial_operational_info": {
-    "heading":"Financial and Operational Information",
+    "heading": "Financial and Operational Information",
     "sector_of_operation": {
       "label": "What is the sector of operation?",
       "placeholder": "Choose"
@@ -187,7 +182,7 @@
   },
 
   "strategic_information": {
-    "heading":"Strategic Information",
+    "heading": "Strategic Information",
     "sector_operation": {
       "label": "What is the sector do you operate in?",
       "placeholder": "Choose"
@@ -304,7 +299,7 @@
     ]
   },
 
-    "termsModal": {
+  "termsModal": {
     "download": "Download",
     "downloadPrivacyPolicy": "Download Privacy Policy",
     "previousPage": "Previous page",
@@ -329,10 +324,10 @@
     "error": "Error",
     "selected": "Selected",
     "notSelected": "Not selected",
-    "inputPlaceholder":"Click here to enter text",
-    "choose":"Choose"
+    "inputPlaceholder": "Click here to enter text",
+    "choose": "Choose"
   },
- 
+
   "investment": {
     "registrationTitle": "MISA Investment Registration",
     "entityInfo": "Entity Information",
@@ -357,8 +352,8 @@
     "legalStatus": "Legal Status",
     "capital": "Capital",
     "country": "Country",
-    "companyLegalStructure":"Company Legal Structure",
-    "selectCountry":"Select Country",
+    "companyLegalStructure": "Company Legal Structure",
+    "selectCountry": "Select Country",
     "email": "Email",
     "mobileNumber": "Mobile Number",
     "invalidEmail": "Please enter a valid email address",
@@ -372,14 +367,32 @@
     "requiredField": "This field is required.",
     "validation": {
       "minActivities": "Please add at least one business activity."
-    }
+    },
+    "po_box": "PO Box",
+    "postal_code": "Postal Code",
+    "government_entity": "Government Entity",
+    "mobile_number": {
+      "label": "Mobile Number",
+      "placeholder": "Enter Mobile Number"
+    },
+    "telephone_number": {
+      "placeholder": "Enter Telephone Number"
+    },
+    "capitalSr": {
+      "label": "Capital as Saudi Riyal",
+      "placeholder": "Last year"
+    },
+    "project_name_arabic": "Project Name in Arabic",
+    "project_name_english": "Project Name in English",
+    "company_name_arabic": "Company Name in Arabic",
+    "company_name_english": "Company Name in English"
   },
 
   "registrationTypes": {
     "title": "Registration type"
   },
 
-   "attachment": {
+  "attachment": {
     "title": "Attachment",
     "boardResolution": {
       "label": "Board Resolution",
@@ -400,10 +413,10 @@
       "invalidFileType": "Invalid file type. Supported formats: {formats}",
       "required": "This file is required."
     },
-    "registrationAttachments":{
+    "registrationAttachments": {
       "headingOne": "Company Profile",
       "headingTwo": "Financial Statements",
-      "headingThree":"Operational Information"
+      "headingThree": "Operational Information"
     }
   }
 }

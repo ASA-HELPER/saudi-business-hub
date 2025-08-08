@@ -18,9 +18,9 @@ const Row = styled.div`
 `;
 
 const AttachmentLabel = styled.div`
-  font-size: 14px;
+  font-size: 10px;
   font-weight: 400;
-  margin-bottom: 16px;
+  margin-bottom: 10px;
   color: #121212;
   text-align: "left";
 
@@ -31,42 +31,35 @@ const AttachmentLabel = styled.div`
 `;
 
 const DropZoneCard = styled.div`
-  border: 1.5px dashed #d1d5db;
-  border-radius: 16px;
-  background-color: #f9fafb;
+  border: 1.5px dashed #eceef1;
+  border-radius: 5px;
+  background-color: #f3f4f6;
   padding: 2rem;
   text-align: center;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  min-height: 200px;
-  cursor: pointer;
   transition: border-color 0.3s ease, box-shadow 0.3s ease;
-
-  &:hover {
-    border-color: #00778e;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-  }
+  border-color: #e0e2e7;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
 `;
-
 
 const UploadIcon = styled.img`
   width: 32px;
-  height: 32px;
+  height: 16px;
   margin-bottom: 0.75rem;
 `;
 
-
 const PrimaryText = styled.div`
-  font-size: 16px;
-  font-weight: 500;
+  font-size: 10px;
+  font-weight: 600;
   color: #1f2a37;
   margin-bottom: 0.5rem;
 `;
 
 const SecondaryText = styled.div`
-  font-size: 12px;
+  font-size: 8px;
   color: #384250;
   margin-bottom: 0.75rem;
   text-align: center;
@@ -77,10 +70,15 @@ const SecondaryText = styled.div`
 `;
 
 const BrowseText = styled.div`
-  font-size: 14px;
-  font-weight: 500;
+  font-size: 9px;
+  font-weight: 600;
   color: #161616;
   cursor: pointer;
+  padding: 4px;
+  border-radius: 2px;
+  &:hover {
+    background-color: #16161620;
+  }
 `;
 
 const FileName = styled.div`

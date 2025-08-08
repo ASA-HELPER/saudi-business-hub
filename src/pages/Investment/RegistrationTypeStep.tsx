@@ -35,8 +35,6 @@ import { addActivityRows } from "../../store/reducers/businessActivitySlice";
 import { BusinessActivityRowItem } from "../../store/types/businessActivity";
 import { store } from "../../store";
 import { selectCities } from "../../store/selectors/citySelectors";
-import Attachment from "./modal/Attachment";
-import { useDropzone } from "react-dropzone";
 import FileAttachment from "../../components/common/FileAttachment/FileAttachment";
 import CheckboxGroup, {
   Option,
@@ -50,21 +48,6 @@ const PageWrapper = styled.div<{ $isRTL?: boolean }>`
   flex-direction: column;
   align-items: flex-start;
   direction: ${(props) => (props.$isRTL ? "rtl" : "ltr")};
-`;
-
-const CheckboxIcon = styled.img<{ $isRTL?: boolean }>`
-  width: 24px;
-  height: 24px;
-  ${({ $isRTL }) =>
-    $isRTL
-      ? `
-    margin-left: 0;
-    margin-right: auto;
-  `
-      : `
-    margin-left: auto;
-    margin-right: 0;
-  `}
 `;
 
 const Card = styled.div<{ $isRTL?: boolean }>`
@@ -165,14 +148,32 @@ const CheckboxOuter = styled.div<{ checked: boolean }>`
 `;
 
 const Section = styled.div`
-  margin-bottom: 32px;
+  margin-bottom: 1px;
 `;
 
 const Row = styled.div`
   display: flex;
   flex-wrap: wrap;
   gap: 24px;
-  margin-bottom: 24px;
+  margin-bottom: 10px;
+`;
+
+const Divider = styled.hr`
+  border: none;
+  border-top: 1px solid #d1d5db;
+`;
+
+const InputsRow = styled.div`
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+`;
+
+const InputWithErrorWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 120px; /* adjust as needed */
 `;
 
 const Col = styled.div`
@@ -203,6 +204,14 @@ const Footer = styled.div`
   justify-content: flex-end;
   gap: 16px;
   margin-top: 32px;
+`;
+
+const AttachmentWrapper = styled.div`
+  flex: 1 1 100%;
+
+  @media (min-width: 768px) {
+    flex: 1 1 calc(50% - 1rem); // two per row, with spacing
+  }
 `;
 
 const CancelButton = styled.button`
@@ -277,10 +286,10 @@ const Select = styled.select<{ $isRTL?: boolean }>`
   border: none;
   border-bottom: 2px solid #cfd4dc;
   background: transparent;
-  font-size: 14px;
+  font-size: 10px;
   color: #1f2937;
   width: 100%;
-  height: 42px;
+  height: 36px;
   padding: 0 8px;
   transition: border-color 0.3s ease;
   text-align: ${(props) => (props.$isRTL ? "right" : "left")};
@@ -325,7 +334,7 @@ const Table = styled.table`
 const Label = styled.label`
   font-weight: 400;
   margin-bottom: 8px;
-  font-size: 14px;
+  font-size: 10px;
   color: #384250;
 
   span {
@@ -338,7 +347,7 @@ const Input = styled.input<{ $isRTL?: boolean }>`
   padding: 10px 0;
   border: none;
   border-bottom: 2px solid #cfd4dc;
-  font-size: 14px;
+  font-size: 10px;
   background-color: transparent;
   width: 100%;
   transition: border-color 0.3s ease;
@@ -828,7 +837,7 @@ const RegistrationTypeStep: React.FC<RegistrationTypeStepProps> = ({
       value: "innovation",
       checked: false,
       description: "",
-      withInput: false,
+      withInput: true,
     },
     {
       id: 3,
@@ -844,7 +853,7 @@ const RegistrationTypeStep: React.FC<RegistrationTypeStepProps> = ({
       value: "human_capital",
       checked: false,
       description: "",
-      withInput: false,
+      withInput: true,
     },
     {
       id: 5,
@@ -852,7 +861,7 @@ const RegistrationTypeStep: React.FC<RegistrationTypeStepProps> = ({
       value: "product_responsibility",
       checked: false,
       description: "",
-      withInput: false,
+      withInput: true,
     },
     {
       id: 6,
@@ -868,7 +877,7 @@ const RegistrationTypeStep: React.FC<RegistrationTypeStepProps> = ({
       value: "csr",
       checked: false,
       description: "",
-      withInput: false,
+      withInput: true,
     },
     {
       id: 8,
@@ -876,7 +885,7 @@ const RegistrationTypeStep: React.FC<RegistrationTypeStepProps> = ({
       value: "corporate_governance",
       checked: false,
       description: "",
-      withInput: false,
+      withInput: true,
     },
     {
       id: 9,
@@ -899,7 +908,6 @@ const RegistrationTypeStep: React.FC<RegistrationTypeStepProps> = ({
       <Card $isRTL={isRTL}>
         <>
           <BusinessActivityRow />
-          /* Entity Information */
           <Section>
             <SectionTitle>{t("entityInformation.entityInfo")}</SectionTitle>
             <Row>
@@ -1020,7 +1028,7 @@ const RegistrationTypeStep: React.FC<RegistrationTypeStepProps> = ({
               </InputWrapper>
             </Row>
           </Section>
-          /* Contact Details */
+          <Divider />
           <Section>
             <SectionTitle>{t("contact_details.heading")}</SectionTitle>
             <Row>
@@ -1068,56 +1076,84 @@ const RegistrationTypeStep: React.FC<RegistrationTypeStepProps> = ({
                   name="email"
                   value={formData.email}
                   onChange={handleChange}
-                  placeholder={t("contact_details.enterPlaceholder", {
+                  placeholder={t("common.inputPlaceholder", {
                     field: t("contact_details.email"),
                   })}
                   $isRTL={isRTL}
                 />
                 {errors.email && <ErrorText>{errors.email}</ErrorText>}
               </InputWrapper>
-
-              <div style={{ display: "flex", flexDirection: "column" }}>
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  flex: 1,
+                }}
+              >
                 <Label>
                   <span>*</span> {t("contact_details.mobile_number")}
                 </Label>
-                <InputWrapper style={{ flexDirection: "row", width: "100%" }}>
-                  <Select
-                    name="phone_code"
-                    value={formData.phone_code}
-                    onChange={handleChange}
-                    $isRTL={isRTL}
+                <div
+                  style={{
+                    display: "flex",
+                    gap: "12px",
+                    alignItems: "flex-end",
+                  }}
+                >
+                  <div
+                    style={{
+                      flex: 1,
+                      display: "flex",
+                      flexDirection: "column",
+                    }}
                   >
-                    <option value="" disabled hidden>
-                      {t("common.choose", {
-                        field: t("contact_details.phone_code"),
-                      })}
-                    </option>
-                    {cities.map((city) => (
-                      <option key={city.id} value={city.id}>
-                        {city.name}
+                    <Select
+                      name="phone_code"
+                      value={formData.phone_code}
+                      onChange={handleChange}
+                      $isRTL={isRTL}
+                    >
+                      <option value="" disabled hidden>
+                        {t("common.choose", {
+                          field: t("contact_details.phone_code"),
+                        })}
                       </option>
-                    ))}
-                  </Select>
-                  {errors.phone_code && (
-                    <ErrorText>{errors.phone_code}</ErrorText>
-                  )}
-                  <Input
-                    name="mobile_number"
-                    value={formData.mobile_number}
-                    onChange={handleChange}
-                    placeholder={t("common.inputPlaceholder", {
-                      field: t("contact_details.mobile_number"),
-                    })}
-                    $isRTL={isRTL}
-                  />
-                  {errors.mobile_number && (
-                    <ErrorText>{errors.mobile_number}</ErrorText>
-                  )}
-                </InputWrapper>
+                      {cities.map((city) => (
+                        <option key={city.id} value={city.id}>
+                          {city.name}
+                        </option>
+                      ))}
+                    </Select>
+                    {errors.phone_code && (
+                      <ErrorText>{errors.phone_code}</ErrorText>
+                    )}
+                  </div>
+
+                  <div
+                    style={{
+                      flex: 1,
+                      display: "flex",
+                      flexDirection: "column",
+                    }}
+                  >
+                    <Input
+                      name="mobile_number"
+                      value={formData.mobile_number}
+                      onChange={handleChange}
+                      placeholder={t("common.inputPlaceholder", {
+                        field: t("contact_details.mobile_number"),
+                      })}
+                      $isRTL={isRTL}
+                    />
+                    {errors.mobile_number && (
+                      <ErrorText>{errors.mobile_number}</ErrorText>
+                    )}
+                  </div>
+                </div>
               </div>
             </Row>
           </Section>
-          /* Other Program MemberShip */
+          <Divider />
           <Section>
             <SectionTitle>{t("program_membership.heading")}</SectionTitle>
             <Row>
@@ -1148,13 +1184,13 @@ const RegistrationTypeStep: React.FC<RegistrationTypeStepProps> = ({
               </InputWrapper>
             </Row>
           </Section>
-          /* Financial and Operational Information */
+          <Divider />
           <Section>
             <SectionTitle>
               {t("financial_operational_info.heading")}
             </SectionTitle>
             <Row>
-              <InputWrapper>
+              <InputWrapper style={{ maxWidth: "550px", flex: 1 }}>
                 <Label>
                   <span>*</span>{" "}
                   {t("financial_operational_info.sector_of_operation.label")}
@@ -1167,7 +1203,7 @@ const RegistrationTypeStep: React.FC<RegistrationTypeStepProps> = ({
                 >
                   <option value="" disabled hidden>
                     {t(
-                      "inancial_operational_info.sector_of_operation.placeholder",
+                      "financial_operational_info.sector_of_operation.placeholder",
                       {
                         field: t(
                           "financial_operational_info.sector_of_operation.label"
@@ -1194,40 +1230,50 @@ const RegistrationTypeStep: React.FC<RegistrationTypeStepProps> = ({
                     "financial_operational_info.annual_revenue_past_two_years.label"
                   )}
                 </Label>
-                <Input
-                  name="annual_revenue_past_two_years"
-                  value={formData.annual_revenue_past_two_years}
-                  onChange={handleChange}
-                  placeholder={t(
-                    "financial_operational_info.placeholders.two_years_ago",
-                    {
-                      field: t(
-                        "financial_operational_info.annual_revenue_past_two_years.label"
-                      ),
-                    }
-                  )}
-                  $isRTL={isRTL}
-                />
-                {errors.annual_revenue_past_two_years && (
-                  <ErrorText>{errors.annual_revenue_past_two_years}</ErrorText>
-                )}
-                <Input
-                  name="annual_revenue_past_last_year"
-                  value={formData.annual_revenue_past_last_year}
-                  onChange={handleChange}
-                  placeholder={t(
-                    "financial_operational_info.placeholders.last_year",
-                    {
-                      field: t(
-                        "financial_operational_info.annual_revenue_past_two_years.label"
-                      ),
-                    }
-                  )}
-                  $isRTL={isRTL}
-                />
-                {errors.annual_revenue_past_last_year && (
-                  <ErrorText>{errors.annual_revenue_past_last_year}</ErrorText>
-                )}
+                <InputsRow>
+                  <InputWithErrorWrapper>
+                    <Input
+                      name="annual_revenue_past_two_years"
+                      value={formData.annual_revenue_past_two_years}
+                      onChange={handleChange}
+                      placeholder={t(
+                        "financial_operational_info.annual_revenue_past_two_years.placeholders.two_years_ago",
+                        {
+                          field: t(
+                            "financial_operational_info.annual_revenue_past_two_years.label"
+                          ),
+                        }
+                      )}
+                      $isRTL={isRTL}
+                    />
+                    {errors.annual_revenue_past_two_years && (
+                      <ErrorText>
+                        {errors.annual_revenue_past_two_years}
+                      </ErrorText>
+                    )}
+                  </InputWithErrorWrapper>
+                  <InputWithErrorWrapper>
+                    <Input
+                      name="annual_revenue_past_last_year"
+                      value={formData.annual_revenue_past_last_year}
+                      onChange={handleChange}
+                      placeholder={t(
+                        "financial_operational_info.annual_revenue_past_two_years.placeholders.last_year",
+                        {
+                          field: t(
+                            "financial_operational_info.annual_revenue_past_two_years.label"
+                          ),
+                        }
+                      )}
+                      $isRTL={isRTL}
+                    />
+                    {errors.annual_revenue_past_last_year && (
+                      <ErrorText>
+                        {errors.annual_revenue_past_last_year}
+                      </ErrorText>
+                    )}
+                  </InputWithErrorWrapper>
+                </InputsRow>
               </InputWrapper>
             </Row>
             <Row>
@@ -1238,42 +1284,50 @@ const RegistrationTypeStep: React.FC<RegistrationTypeStepProps> = ({
                     "financial_operational_info.total_employees_past_two_years.label"
                   )}
                 </Label>
-                <Input
-                  name="total_employees_past_two_years_ago"
-                  value={formData.total_employees_past_two_years_ago}
-                  onChange={handleChange}
-                  placeholder={t(
-                    "financial_operational_info.total_employees_past_two_years.placeholders.two_years_ago",
-                    {
-                      field: t(
-                        "financial_operational_info.total_employees_past_two_years.label"
-                      ),
-                    }
-                  )}
-                  $isRTL={isRTL}
-                />
-                {errors.total_employees_past_two_years_ago && (
-                  <ErrorText>
-                    {errors.total_employees_past_two_years_ago}
-                  </ErrorText>
-                )}
-                <Input
-                  name="total_employees_last_year"
-                  value={formData.total_employees_last_year}
-                  onChange={handleChange}
-                  placeholder={t(
-                    "financial_operational_info.total_employees_past_two_years.placeholders.two_years_ago",
-                    {
-                      field: t(
-                        "financial_operational_info.total_employees_past_two_years.label"
-                      ),
-                    }
-                  )}
-                  $isRTL={isRTL}
-                />
-                {errors.total_employees_last_year && (
-                  <ErrorText>{errors.total_employees_last_year}</ErrorText>
-                )}
+
+                <InputsRow>
+                  <InputWithErrorWrapper>
+                    <Input
+                      name="total_employees_past_two_years_ago"
+                      value={formData.total_employees_past_two_years_ago}
+                      onChange={handleChange}
+                      placeholder={t(
+                        "financial_operational_info.total_employees_past_two_years.placeholders.two_years_ago",
+                        {
+                          field: t(
+                            "financial_operational_info.total_employees_past_two_years.label"
+                          ),
+                        }
+                      )}
+                      $isRTL={isRTL}
+                    />
+                    {errors.total_employees_past_two_years_ago && (
+                      <ErrorText>
+                        {errors.total_employees_past_two_years_ago}
+                      </ErrorText>
+                    )}
+                  </InputWithErrorWrapper>
+
+                  <InputWithErrorWrapper>
+                    <Input
+                      name="total_employees_last_year"
+                      value={formData.total_employees_last_year}
+                      onChange={handleChange}
+                      placeholder={t(
+                        "financial_operational_info.total_employees_past_two_years.placeholders.last_year",
+                        {
+                          field: t(
+                            "financial_operational_info.total_employees_past_two_years.label"
+                          ),
+                        }
+                      )}
+                      $isRTL={isRTL}
+                    />
+                    {errors.total_employees_last_year && (
+                      <ErrorText>{errors.total_employees_last_year}</ErrorText>
+                    )}
+                  </InputWithErrorWrapper>
+                </InputsRow>
               </InputWrapper>
             </Row>
             <Row>
@@ -1284,42 +1338,48 @@ const RegistrationTypeStep: React.FC<RegistrationTypeStepProps> = ({
                     "financial_operational_info.saudi_employees_past_two_years.label"
                   )}
                 </Label>
-                <Input
-                  name="saudi_employees_past_two_years_ago"
-                  value={formData.saudi_employees_past_two_years_ago}
-                  onChange={handleChange}
-                  placeholder={t(
-                    "financial_operational_info.saudi_employees_past_two_years.placeholders.two_years_ago",
-                    {
-                      field: t(
-                        "financial_operational_info.saudi_employees_past_two_years.label"
-                      ),
-                    }
-                  )}
-                  $isRTL={isRTL}
-                />
-                {errors.saudi_employees_past_two_years_ago && (
-                  <ErrorText>
-                    {errors.saudi_employees_past_two_years_ago}
-                  </ErrorText>
-                )}
-                <Input
-                  name="saudi_employees_last_year"
-                  value={formData.saudi_employees_last_year}
-                  onChange={handleChange}
-                  placeholder={t(
-                    "financial_operational_info.saudi_employees_past_two_years.placeholders.last_year",
-                    {
-                      field: t(
-                        "financial_operational_info.saudi_employees_past_two_years.label"
-                      ),
-                    }
-                  )}
-                  $isRTL={isRTL}
-                />
-                {errors.saudi_employees_last_year && (
-                  <ErrorText>{errors.saudi_employees_last_year}</ErrorText>
-                )}
+                <InputsRow>
+                  <InputWithErrorWrapper>
+                    <Input
+                      name="saudi_employees_past_two_years_ago"
+                      value={formData.saudi_employees_past_two_years_ago}
+                      onChange={handleChange}
+                      placeholder={t(
+                        "financial_operational_info.saudi_employees_past_two_years.placeholders.two_years_ago",
+                        {
+                          field: t(
+                            "financial_operational_info.saudi_employees_past_two_years.label"
+                          ),
+                        }
+                      )}
+                      $isRTL={isRTL}
+                    />
+                    {errors.saudi_employees_past_two_years_ago && (
+                      <ErrorText>
+                        {errors.saudi_employees_past_two_years_ago}
+                      </ErrorText>
+                    )}
+                  </InputWithErrorWrapper>
+                  <InputWithErrorWrapper>
+                    <Input
+                      name="saudi_employees_last_year"
+                      value={formData.saudi_employees_last_year}
+                      onChange={handleChange}
+                      placeholder={t(
+                        "financial_operational_info.saudi_employees_past_two_years.placeholders.last_year",
+                        {
+                          field: t(
+                            "financial_operational_info.saudi_employees_past_two_years.label"
+                          ),
+                        }
+                      )}
+                      $isRTL={isRTL}
+                    />
+                    {errors.saudi_employees_last_year && (
+                      <ErrorText>{errors.saudi_employees_last_year}</ErrorText>
+                    )}
+                  </InputWithErrorWrapper>
+                </InputsRow>
               </InputWrapper>
             </Row>
             <Row>
@@ -1330,52 +1390,60 @@ const RegistrationTypeStep: React.FC<RegistrationTypeStepProps> = ({
                     "financial_operational_info.total_salaries_saudi_employees.label"
                   )}
                 </Label>
-                <Input
-                  name="total_salaries_saudi_employees_two_years_ago"
-                  value={formData.total_salaries_saudi_employees_two_years_ago}
-                  onChange={handleChange}
-                  placeholder={t(
-                    "financial_operational_info.total_salaries_saudi_employees.placeholders.two_years_ago",
-                    {
-                      field: t(
-                        "financial_operational_info.total_salaries_saudi_employees.label"
-                      ),
-                    }
-                  )}
-                  $isRTL={isRTL}
-                />
-                {errors.total_salaries_saudi_employees_two_years_ago && (
-                  <ErrorText>
-                    {errors.total_salaries_saudi_employees_two_years_ago}
-                  </ErrorText>
-                )}
-                <Input
-                  name="total_salaries_saudi_employees_last_year"
-                  value={formData.total_salaries_saudi_employees_last_year}
-                  onChange={handleChange}
-                  placeholder={t(
-                    "financial_operational_info.total_salaries_saudi_employees.placeholders.last_year",
-                    {
-                      field: t(
-                        "financial_operational_info.total_salaries_saudi_employees.label"
-                      ),
-                    }
-                  )}
-                  $isRTL={isRTL}
-                />
-                {errors.total_salaries_saudi_employees_last_year && (
-                  <ErrorText>
-                    {errors.total_salaries_saudi_employees_last_year}
-                  </ErrorText>
-                )}
+                <InputsRow>
+                  <InputWithErrorWrapper>
+                    <Input
+                      name="total_salaries_saudi_employees_two_years_ago"
+                      value={
+                        formData.total_salaries_saudi_employees_two_years_ago
+                      }
+                      onChange={handleChange}
+                      placeholder={t(
+                        "financial_operational_info.total_salaries_saudi_employees.placeholders.two_years_ago",
+                        {
+                          field: t(
+                            "financial_operational_info.total_salaries_saudi_employees.label"
+                          ),
+                        }
+                      )}
+                      $isRTL={isRTL}
+                    />
+                    {errors.total_salaries_saudi_employees_two_years_ago && (
+                      <ErrorText>
+                        {errors.total_salaries_saudi_employees_two_years_ago}
+                      </ErrorText>
+                    )}
+                  </InputWithErrorWrapper>
+                  <InputWithErrorWrapper>
+                    <Input
+                      name="total_salaries_saudi_employees_last_year"
+                      value={formData.total_salaries_saudi_employees_last_year}
+                      onChange={handleChange}
+                      placeholder={t(
+                        "financial_operational_info.total_salaries_saudi_employees.placeholders.last_year",
+                        {
+                          field: t(
+                            "financial_operational_info.total_salaries_saudi_employees.label"
+                          ),
+                        }
+                      )}
+                      $isRTL={isRTL}
+                    />
+                    {errors.total_salaries_saudi_employees_last_year && (
+                      <ErrorText>
+                        {errors.total_salaries_saudi_employees_last_year}
+                      </ErrorText>
+                    )}
+                  </InputWithErrorWrapper>
+                </InputsRow>
               </InputWrapper>
             </Row>
           </Section>
-          /* Strategic Information */
+          <Divider />
           <Section>
             <SectionTitle>{t("strategic_information.heading")}</SectionTitle>
             <Row>
-              <InputWrapper>
+              <InputWrapper style={{ maxWidth: "550px" }}>
                 <Label>
                   <span>*</span>{" "}
                   {t("strategic_information.sector_operation.label")}
@@ -1408,97 +1476,109 @@ const RegistrationTypeStep: React.FC<RegistrationTypeStepProps> = ({
                   <span>*</span>{" "}
                   {t("strategic_information.hs_codes_top_products.label")}
                 </Label>
-                <Row>
+                <div
+                  style={{
+                    display: "flex",
+                    flexWrap: "wrap",
+                    gap: "24px",
+                    marginBottom: "24px",
+                  }}
+                >
+                  <div style={{ flex: 1, minWidth: "280px" }}>
+                    <Input
+                      name="hs_codes_top_product_one"
+                      value={formData.hs_codes_top_product_one}
+                      onChange={handleChange}
+                      placeholder={t(
+                        "strategic_information.hs_codes_top_products.placeholders.product_one"
+                      )}
+                      $isRTL={isRTL}
+                    />
+                    {errors.hs_codes_top_product_one && (
+                      <ErrorText>{errors.hs_codes_top_product_one}</ErrorText>
+                    )}
+                  </div>
+
+                  <div style={{ flex: 1, minWidth: "280px" }}>
+                    <Input
+                      name="hs_codes_top_product_two"
+                      value={formData.hs_codes_top_product_two}
+                      onChange={handleChange}
+                      placeholder={t(
+                        "strategic_information.hs_codes_top_products.placeholders.product_two"
+                      )}
+                      $isRTL={isRTL}
+                    />
+                    {errors.hs_codes_top_product_two && (
+                      <ErrorText>{errors.hs_codes_top_product_two}</ErrorText>
+                    )}
+                  </div>
+                </div>
+                <div style={{ flex: 1, maxWidth: "550px" }}>
                   <Input
-                    name="hs_codes_top_product_one"
-                    value={formData.hs_codes_top_product_one}
+                    name="hs_codes_top_product_three"
+                    value={formData.hs_codes_top_product_three}
                     onChange={handleChange}
                     placeholder={t(
-                      "strategic_information.hs_codes_top_products.placeholders.product_one",
-                      {
-                        field: t(
-                          "strategic_information.hs_codes_top_products.label"
-                        ),
-                      }
+                      "strategic_information.hs_codes_top_products.placeholders.product_three"
                     )}
                     $isRTL={isRTL}
                   />
-                  {errors.hs_codes_top_product_one && (
-                    <ErrorText>{errors.hs_codes_top_product_one}</ErrorText>
+                  {errors.hs_codes_top_product_three && (
+                    <ErrorText>{errors.hs_codes_top_product_three}</ErrorText>
                   )}
-                  <Input
-                    name="hs_codes_top_product_two"
-                    value={formData.hs_codes_top_product_two}
-                    onChange={handleChange}
-                    placeholder={t(
-                      "strategic_information.hs_codes_top_products.placeholders.product_two",
-                      {
-                        field: t(
-                          "strategic_information.hs_codes_top_products.label"
-                        ),
-                      }
-                    )}
-                    $isRTL={isRTL}
-                  />
-                  {errors.hs_codes_top_product_two && (
-                    <ErrorText>{errors.hs_codes_top_product_two}</ErrorText>
-                  )}
-                </Row>
-                <Input
-                  name="hs_codes_top_product_three"
-                  value={formData.hs_codes_top_product_three}
-                  onChange={handleChange}
-                  placeholder={t(
-                    "strategic_information.hs_codes_top_products.placeholders.product_three",
-                    {
-                      field: t(
-                        "strategic_information.hs_codes_top_products.label"
-                      ),
-                    }
-                  )}
-                  $isRTL={isRTL}
-                />
-                {errors.hs_codes_top_product_three && (
-                  <ErrorText>{errors.hs_codes_top_product_three}</ErrorText>
-                )}
+                </div>
               </InputWrapper>
             </Row>
+
             <Row>
               <InputWrapper>
                 <Label>
                   <span>*</span>{" "}
                   {t("strategic_information.technologies_used.label")}
                 </Label>
-                <Input
-                  name="technologies_used_select"
-                  value={formData.technologies_used_select}
-                  onChange={handleChange}
-                  placeholder={t(
-                    "strategic_information.technologies_used.placeholder",
-                    {
-                      field: t("strategic_information.technologies_used.label"),
-                    }
-                  )}
-                  $isRTL={isRTL}
-                />
-                {errors.technologies_used_select && (
-                  <ErrorText>{errors.technologies_used_select}</ErrorText>
-                )}
-                <Input
-                  name="technologies_used_description"
-                  value={formData.technologies_used_description}
-                  onChange={handleChange}
-                  placeholder={t(
-                    "strategic_information.technologies_used.description_placeholder",
-                    {
-                      field: t("strategic_information.technologies_used.label"),
-                    }
-                  )}
-                  $isRTL={isRTL}
-                />
-                {errors.technologies_used_description && (
-                  <ErrorText>{errors.technologies_used_description}</ErrorText>
-                )}
+                <InputsRow>
+                  <InputWithErrorWrapper>
+                    <Input
+                      name="technologies_used_select"
+                      value={formData.technologies_used_select}
+                      onChange={handleChange}
+                      placeholder={t(
+                        "strategic_information.technologies_used.placeholder",
+                        {
+                          field: t(
+                            "strategic_information.technologies_used.label"
+                          ),
+                        }
+                      )}
+                      $isRTL={isRTL}
+                    />
+                    {errors.technologies_used_select && (
+                      <ErrorText>{errors.technologies_used_select}</ErrorText>
+                    )}
+                  </InputWithErrorWrapper>
+                  <InputWithErrorWrapper>
+                    <Input
+                      name="technologies_used_description"
+                      value={formData.technologies_used_description}
+                      onChange={handleChange}
+                      placeholder={t(
+                        "strategic_information.technologies_used.description_placeholder",
+                        {
+                          field: t(
+                            "strategic_information.technologies_used.label"
+                          ),
+                        }
+                      )}
+                      $isRTL={isRTL}
+                    />
+                    {errors.technologies_used_description && (
+                      <ErrorText>
+                        {errors.technologies_used_description}
+                      </ErrorText>
+                    )}
+                  </InputWithErrorWrapper>
+                </InputsRow>
               </InputWrapper>
             </Row>
             <Row>
@@ -1511,7 +1591,7 @@ const RegistrationTypeStep: React.FC<RegistrationTypeStepProps> = ({
               />
             </Row>
             <Row>
-              <InputWrapper>
+              <InputWrapper style={{ maxWidth: "550px" }}>
                 <Label>
                   <span>*</span>{" "}
                   {t("strategic_information.saudi_made_program.label")}
@@ -1541,7 +1621,7 @@ const RegistrationTypeStep: React.FC<RegistrationTypeStepProps> = ({
               </InputWrapper>
             </Row>
             <Row>
-              <InputWrapper>
+              <InputWrapper style={{ maxWidth: "550px" }}>
                 <Label>
                   <span>*</span>{" "}
                   {t("strategic_information.local_content_score.label")}
@@ -1564,6 +1644,8 @@ const RegistrationTypeStep: React.FC<RegistrationTypeStepProps> = ({
                   <ErrorText>{errors.local_content_score}</ErrorText>
                 )}
               </InputWrapper>
+            </Row>
+            <Row>
               <Label>
                 {t("strategic_information.local_content_score.note")}
               </Label>
@@ -1579,7 +1661,7 @@ const RegistrationTypeStep: React.FC<RegistrationTypeStepProps> = ({
               />
             </Row>
             <Row>
-              <InputWrapper>
+              <InputWrapper style={{ maxWidth: "550px" }}>
                 <Label>
                   <span>*</span>{" "}
                   {t("strategic_information.non_oil_exporter.label")}
@@ -1607,7 +1689,7 @@ const RegistrationTypeStep: React.FC<RegistrationTypeStepProps> = ({
               </InputWrapper>
             </Row>
             <Row>
-              <InputWrapper>
+              <InputWrapper style={{ maxWidth: "550px" }}>
                 <Label>
                   <span>*</span>{" "}
                   {t("strategic_information.average_yearly_salary.label")}
@@ -1659,53 +1741,59 @@ const RegistrationTypeStep: React.FC<RegistrationTypeStepProps> = ({
               </InputWrapper>
             </Row>
           </Section>
-          /* Attachment */
+          <Divider />
           <Section>
             <SectionTitle>{t("attachment.title")}</SectionTitle>
-            <Label>
+            <Label style={{ fontSize: "12px" }}>
               <strong>
                 {t("attachment.registrationAttachments.headingOne")}
               </strong>
             </Label>
-            <Row>
+            <Row style={{ marginTop: "10px" }}>
               {companyProfileAttachments.map(({ key, file, setFile }) => (
-                <FileAttachment
-                  key={key}
-                  file={file}
-                  setFile={setFile}
-                  labelKey={key}
-                />
-              ))}
-            </Row>
-            <Label>
-              <strong>
-                {t("attachment.registrationAttachments.headingTwo")}
-              </strong>
-            </Label>
-            <Row>
-              {financialStatementsAttachments.map(({ key, file, setFile }) => (
-                <FileAttachment
-                  key={key}
-                  file={file}
-                  setFile={setFile}
-                  labelKey={key}
-                />
-              ))}
-            </Row>
-            <Label>
-              <strong>
-                {t("attachment.registrationAttachments.headingThree")}
-              </strong>
-            </Label>
-            <Row>
-              {operationalInformationAttachments.map(
-                ({ key, file, setFile }) => (
+                <AttachmentWrapper>
                   <FileAttachment
                     key={key}
                     file={file}
                     setFile={setFile}
                     labelKey={key}
                   />
+                </AttachmentWrapper>
+              ))}
+            </Row>
+            <Label style={{ fontSize: "12px" }}>
+              <strong>
+                {t("attachment.registrationAttachments.headingTwo")}
+              </strong>
+            </Label>
+            <Row style={{ marginTop: "10px" }}>
+              {financialStatementsAttachments.map(({ key, file, setFile }) => (
+                <AttachmentWrapper>
+                  <FileAttachment
+                    key={key}
+                    file={file}
+                    setFile={setFile}
+                    labelKey={key}
+                  />
+                </AttachmentWrapper>
+              ))}
+            </Row>
+            <Label style={{ fontSize: "12px" }}>
+              <strong>
+                {t("attachment.registrationAttachments.headingThree")}
+              </strong>
+            </Label>
+            <Row style={{ marginTop: "10px" }}>
+              {operationalInformationAttachments.map(
+                ({ key, file, setFile }) => (
+                  <AttachmentWrapper>
+                    <FileAttachment
+                      key={key}
+                      file={file}
+                      setFile={setFile}
+                      labelKey={key}
+                    />
+                  </AttachmentWrapper>
                 )
               )}
             </Row>

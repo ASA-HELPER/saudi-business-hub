@@ -6,7 +6,7 @@ import Checkbox from "../Checkbox/Checkbox";
 const GroupContainer = styled.div`
   display: flex;
   flex-wrap: wrap;
-  gap: 1.5rem;
+  gap: 0.5rem;
 `;
 
 export interface Option {
@@ -43,7 +43,7 @@ const CheckboxGroup: React.FC<CheckboxGroupProps> = ({
   return (
     <GroupContainer>
       {options.map((option, index) =>
-        option.withInput ? (
+        option.withInput === true ? (
           <CheckboxWithInput
             key={option.label}
             label={option.label}
