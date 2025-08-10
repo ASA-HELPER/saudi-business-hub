@@ -37,19 +37,19 @@ const SectionContainer = styled.div<{ $isRTL?: boolean }>`
   padding: 2rem 5rem;
   animation: ${fadeInUp} 0.8s ease-out;
   background-color: #ffffff;
-  direction: ${({ $isRTL }) => ($isRTL ? 'rtl' : 'ltr')};
+  direction: ${({ $isRTL }) => ($isRTL ? "rtl" : "ltr")};
 `;
 
 const SectionHeader = styled.div<{ $isRTL?: boolean }>`
   margin-bottom: 28px;
   position: relative;
-  padding-${({ $isRTL }) => ($isRTL ? 'right' : 'left')}: 24px;
+  padding-${({ $isRTL }) => ($isRTL ? "right" : "left")}: 24px;
   margin-top: 20px;
 
   &::before {
     content: "";
     position: absolute;
-    ${({ $isRTL }) => ($isRTL ? 'right' : 'left')}: 0;
+    ${({ $isRTL }) => ($isRTL ? "right" : "left")}: 0;
     top: 0;
     bottom: 0;
     width: 4px;
@@ -59,13 +59,13 @@ const SectionHeader = styled.div<{ $isRTL?: boolean }>`
 `;
 
 const SectionTitle = styled.h1<{ $isRTL?: boolean }>`
-  font-family: ${({ $isRTL }) => 
-    $isRTL ? '"IBM Plex Sans Arabic", sans-serif' : 'inherit'};
+  font-family: ${({ $isRTL }) =>
+    $isRTL ? '"IBM Plex Sans Arabic", sans-serif' : "inherit"};
   font-size: 28px;
   font-weight: 700;
   color: #121212;
   margin-bottom: 8px;
-  text-align: ${({ $isRTL }) => ($isRTL ? 'right' : 'left')};
+  text-align: ${({ $isRTL }) => ($isRTL ? "right" : "left")};
 
   @media (max-width: 768px) {
     font-size: 32px;
@@ -73,12 +73,12 @@ const SectionTitle = styled.h1<{ $isRTL?: boolean }>`
 `;
 
 const SectionSubtitle = styled.p<{ $isRTL?: boolean }>`
-  font-family: ${({ $isRTL }) => 
-    $isRTL ? '"IBM Plex Sans Arabic", sans-serif' : 'inherit'};
+  font-family: ${({ $isRTL }) =>
+    $isRTL ? '"IBM Plex Sans Arabic", sans-serif' : "inherit"};
   font-size: 18px;
   color: #555555;
   font-weight: 600;
-  text-align: ${({ $isRTL }) => ($isRTL ? 'right' : 'left')};
+  text-align: ${({ $isRTL }) => ($isRTL ? "right" : "left")};
 `;
 
 const ContentLayout = styled.div`
@@ -351,7 +351,9 @@ const ApplyForSection: React.FC = () => {
       title: t("apply_for.misa.title"),
       description: t("apply_for.misa.description"),
       icon: <img src={MisaInvIconUnSelected} alt={t("apply_for.misa.alt")} />,
-      iconActive: <img src={MisaInvIconSelected} alt={t("apply_for.misa.alt")} />,
+      iconActive: (
+        <img src={MisaInvIconSelected} alt={t("apply_for.misa.alt")} />
+      ),
       detailTitle: t("apply_for.misa.detail_title"),
       detailDescription: t("apply_for.misa.detail_description"),
     },
@@ -368,8 +370,12 @@ const ApplyForSection: React.FC = () => {
       id: "strategic",
       title: t("apply_for.strategic.title"),
       description: t("apply_for.strategic.description"),
-      icon: <img src={StrategyIconUnSelected} alt={t("apply_for.strategic.alt")} />,
-      iconActive: <img src={StrategyIconSelected} alt={t("apply_for.strategic.alt")} />,
+      icon: (
+        <img src={StrategyIconUnSelected} alt={t("apply_for.strategic.alt")} />
+      ),
+      iconActive: (
+        <img src={StrategyIconSelected} alt={t("apply_for.strategic.alt")} />
+      ),
       detailTitle: t("apply_for.strategic.detail_title"),
       detailDescription: t("apply_for.strategic.detail_description"),
     },
@@ -377,8 +383,12 @@ const ApplyForSection: React.FC = () => {
       id: "bidding",
       title: t("apply_for.bidding.title"),
       description: t("apply_for.bidding.description"),
-      icon: <img src={BindingIconUnSelected} alt={t("apply_for.bidding.alt")} />,
-      iconActive: <img src={BindingIconSelected} alt={t("apply_for.bidding.alt")} />,
+      icon: (
+        <img src={BindingIconUnSelected} alt={t("apply_for.bidding.alt")} />
+      ),
+      iconActive: (
+        <img src={BindingIconSelected} alt={t("apply_for.bidding.alt")} />
+      ),
       detailTitle: t("apply_for.bidding.detail_title"),
       detailDescription: t("apply_for.bidding.detail_description"),
     },
@@ -427,7 +437,9 @@ const ApplyForSection: React.FC = () => {
             <DetailTitle>{activeOptionData.detailTitle}</DetailTitle>
           </DetailHeader>
 
-          <DetailDescription>{activeOptionData.detailDescription}</DetailDescription>
+          <DetailDescription>
+            {activeOptionData.detailDescription}
+          </DetailDescription>
 
           <ApplyButton onClick={() => setIsModalOpen(true)}>
             {t("apply_for.apply_button")}
@@ -455,6 +467,8 @@ const ApplyForSection: React.FC = () => {
         onSelect={(value: "yes" | "no") => {
           if (activeOption === "RHQ") {
             navigate("/RHQinvestmentReg");
+          } else if (activeOption === "bidding") {
+            navigate("/bidcertificateReg");
           } else {
             navigate("/investmentReg");
           }
