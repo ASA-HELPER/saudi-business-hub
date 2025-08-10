@@ -77,10 +77,10 @@ const InputWrapper = styled.div`
 `;
 
 const AttachmentWrapper = styled.div`
-  flex: 1 1 100%;
+  flex: 0 0 100%;
 
   @media (min-width: 768px) {
-    flex: 1 1 calc(50% - 1rem);
+    flex: 0 0 calc(50% - 1rem);
   }
 `;
 
@@ -478,7 +478,8 @@ const RegistrationTypeStep: React.FC<RegistrationTypeStepProps> = ({
   ];
 
   const [regionOptions, setRegionOptions] = useState(regionData);
-  const [companyAgendaOptions, setCompanyAgendaOptions] = useState(companyAgendaData);
+  const [companyAgendaOptions, setCompanyAgendaOptions] =
+    useState(companyAgendaData);
 
   const handleRegionOptionsChange = (updatedOptions: Option[]) => {
     setRegionOptions(updatedOptions);

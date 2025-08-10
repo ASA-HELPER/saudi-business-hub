@@ -132,8 +132,7 @@ const FileAttachment: React.FC<FileAttachmentProps> = ({
   return (
     <div style={{ flex: 1, minWidth: "280px" }}>
       <AttachmentLabel>
-        <span>*</span>
-        {`${labelKey}`}
+        <span>*</span> {`${labelKey}`}
       </AttachmentLabel>
       <DropZoneCard {...dropzone.getRootProps()}>
         <input {...dropzone.getInputProps()} />

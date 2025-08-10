@@ -15,8 +15,7 @@ import EmailverifySuccess from "../pages/EmailVerifySuccess/EmailverifySuccess";
 import ResetPassword from "../pages/ResetPassword/ResetPassword";
 import BusinessSectionScreen from "../pages/Investment/businessReg/BusinessSectionScreen";
 import RHQInvestmentRegistration from "../pages/RHQInvestment/RHQInvestmentRegistration";
-
-
+import BiddingCertificateRegistration from "../pages/BiddingCertificate/BiddingCertificateRegistration";
 
 const AppRoutes = () => {
   const location = useLocation();
@@ -35,7 +34,14 @@ const AppRoutes = () => {
         <Route path="/contact-us" element={<ContactUs />} />
         <Route path="/login/otp-verify" element={<OTPVerify />} />
         <Route path="/login/email-verify" element={<EmailVerify />} />
-        <Route path="/rhqinvestmentReg" element={<RHQInvestmentRegistration />} />
+        <Route
+          path="/bidcertificateReg"
+          element={<BiddingCertificateRegistration />}
+        />
+        <Route
+          path="/rhqinvestmentReg"
+          element={<RHQInvestmentRegistration />}
+        />
         <Route
           path="/login/email-verify-success"
           element={<EmailverifySuccess />}

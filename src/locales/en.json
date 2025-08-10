@@ -337,6 +337,12 @@
     "preview": "Preview"
   },
 
+  "biddingCertificate": {
+    "registrationTitle": "Bidding Certificate",
+    "entityInfo": "Entity Information",
+    "preview": "Preview"
+  },
+
   "entityInformation": {
     "basicInfo": "Basic Information",
     "entityInfo": "Entity Information",
@@ -377,6 +383,7 @@
       "placeholder": "Enter Mobile Number"
     },
     "telephone_number": {
+      "label": "Telephone Number",
       "placeholder": "Enter Telephone Number"
     },
     "capitalSr": {
