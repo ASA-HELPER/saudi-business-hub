@@ -11,6 +11,7 @@ interface SectionTitleProps {
   showActions?: boolean;
   onEdit?: () => void;
   onDelete?: () => void;
+  showEditText?: boolean;
 }
 
 const TitleWrapper = styled.div`
@@ -69,6 +70,13 @@ const IconButton = styled.button`
   }
 `;
 
+const EditText = styled.span`
+  color: #00778e;
+  font-weight: 600;
+  font-size: 14px;
+  margin-left: 4px;
+`;
+
 const SectionTitle: React.FC<SectionTitleProps> = ({
   children,
   borderColor = "#884699",
@@ -76,6 +84,7 @@ const SectionTitle: React.FC<SectionTitleProps> = ({
   showActions = false,
   onEdit,
   onDelete,
+  showEditText = false,
 }) => {
   return (
     <TitleWrapper>
@@ -88,6 +97,7 @@ const SectionTitle: React.FC<SectionTitleProps> = ({
             {onEdit && (
               <IconButton onClick={onEdit}>
                 <img src={editIcon} alt="Edit" />
+                {showEditText && <EditText>Edit</EditText>}
               </IconButton>
             )}
             {onDelete && (

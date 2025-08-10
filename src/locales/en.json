@@ -348,7 +348,8 @@
   "biddingCertificate": {
     "registrationTitle": "Bidding Certificate",
     "entityInfo": "Entity Information",
-    "preview": "Preview"
+    "preview": "Preview",
+    "uploadedDocuments": "Uploaded Documents"
   },
 
   "entityInformation": {

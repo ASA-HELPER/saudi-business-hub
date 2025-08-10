@@ -9,6 +9,8 @@ import previewIconSelected from "../../assets/images/investment/preview_selected
 import previewIconUnSelected from "../../assets/images/investment/preview_unselected.png";
 import { BiddingCertificateStepper } from "./BiddingCertificateStepper";
 import EntityInformationSection from "./EntityInformationSection";
+import BiddingPreviewScreen from "./BiddingPreviewScreen";
+import { useNavigate } from "react-router-dom";
 
 const Wrapper = styled.div`
   background-repeat: no-repeat;
@@ -67,12 +69,21 @@ const BiddingCertificateRegistration: React.FC = () => {
   const [currentStep, setCurrentStep] = useState(0);
   const bidEntityFormRef = useRef<{ submit: () => void }>(null);
   const previewRef = useRef<{ submit: () => void }>(null);
+  const navigate = useNavigate();
 
   const handleNext = async () => {
     if (currentStep === 0 && bidEntityFormRef.current) {
       bidEntityFormRef.current.submit();
-    } else if (currentStep < 2) {
-      setCurrentStep((prev) => prev + 1);
+    } else if (currentStep === 1) {
+      navigate("/dashboard");
+    }
+  };
+
+  const handleBack = async () => {
+    if (currentStep > 0) {
+      setCurrentStep((prev) => prev - 1);
+    } else {
+      navigate("/dashboard");
     }
   };
 
@@ -96,15 +107,16 @@ const BiddingCertificateRegistration: React.FC = () => {
         />
       )}
 
+      {currentStep === 1 && (
+        <BiddingPreviewScreen
+          previewRef={previewRef}
+          onSuccess={() => setCurrentStep((prev) => prev + 1)}
+          onEditClick={() => setCurrentStep((prev) => prev - 1)}
+        />
+      )}
+
       <Footer>
-        <Button
-          variant="back"
-          onClick={() => {
-            if (currentStep !== 0) {
-              setCurrentStep((prev) => prev - 1);
-            }
-          }}
-        >
+        <Button variant="back" onClick={handleBack}>
           Back
         </Button>
         <Button variant="next" onClick={handleNext}>
