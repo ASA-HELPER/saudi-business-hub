@@ -155,6 +155,8 @@ const InvestmentRegistration: React.FC = () => {
 
       {currentStep === 0 && (
         <RegistrationTypeStep
+          selected={selectedRegistrationType}
+          setSelected={setSelectedRegistrationType}
           entityFormRef={entityFormRef}
           onSuccess={() => setCurrentStep((prev) => prev + 1)}
         />

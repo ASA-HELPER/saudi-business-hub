@@ -4,19 +4,6 @@ import styled from "styled-components";
 import fileUpload from "../../../assets/images/investment/file-upload.svg";
 import { useTranslation } from "react-i18next";
 
-const Section = styled.div<{ $isArabic?: boolean }>`
-  margin-top: 2.5rem;
-  direction: ${(props) => (props.$isArabic ? "rtl" : "ltr")};
-`;
-
-const Row = styled.div`
-  display: flex;
-  flex-wrap: wrap;
-  gap: 2rem;
-  padding: 2rem;
-  border-radius: 0 0 8px 8px;
-`;
-
 const AttachmentLabel = styled.div`
   font-size: 10px;
   font-weight: 400;
@@ -34,7 +21,7 @@ const DropZoneCard = styled.div`
   border: 1.5px dashed #eceef1;
   border-radius: 5px;
   background-color: #f3f4f6;
-  padding: 2rem;
+  padding: 1rem 2rem;
   text-align: center;
   display: flex;
   flex-direction: column;

@@ -5,10 +5,14 @@ import { styled } from "styled-components";
 // Icons
 import entityIconSelected from "../../assets/images/investment/enity_icon_selected.svg";
 import entityIcon from "../../assets/images/entity-icon.svg";
+import stackHolderIconSelected from "../../assets/images/investment/shareholder_selected.svg";
+import stackHolderIconUnSelected from "../../assets/images/investment/shareholder_unselected.png";
+import contactIconSelected from "../../assets/images/investment/contact_person_selected.svg";
+import contactIconUnSelected from "../../assets/images/investment/contact_person_unselected.png";
 import previewIconSelected from "../../assets/images/investment/preview_selected.svg";
 import previewIconUnSelected from "../../assets/images/investment/preview_unselected.png";
-import { BiddingCertificateStepper } from "./BiddingCertificateStepper";
-import EntityInformationSection from "./EntityInformationSection";
+import StrategicInvestorStepper from "./StrategicInvestorStepper";
+import StrategicInvestorEntityStep from "./StrategicInvestorEntityStep";
 
 const Wrapper = styled.div`
   background-repeat: no-repeat;
@@ -35,6 +39,7 @@ const Footer = styled.div`
 `;
 
 const Button = styled.button<{ variant: string }>`
+  padding: 10px 10px;
   padding: ${({ variant }) => (variant === "back" ? "10px 45px" : "10px 15px")};
   border-radius: 3px;
   border: ${({ variant }) =>
@@ -56,21 +61,35 @@ const steps = [
     unselectedIcon: entityIcon,
   },
   {
+    label: "Shareholders",
+    selectedIcon: stackHolderIconSelected,
+    unselectedIcon: stackHolderIconUnSelected,
+    translationKey: "investment.shareholders",
+  },
+  {
+    label: "Contact Person",
+    selectedIcon: contactIconSelected,
+    unselectedIcon: contactIconUnSelected,
+    translationKey: "investment.contactPerson",
+  },
+  {
     label: "Preview",
     selectedIcon: previewIconSelected,
     unselectedIcon: previewIconUnSelected,
   },
 ];
 
-const BiddingCertificateRegistration: React.FC = () => {
+const StrategicInvestorRegistration: React.FC = () => {
   const [language, setLanguage] = useState<"en" | "ar">("ar");
   const [currentStep, setCurrentStep] = useState(0);
-  const bidEntityFormRef = useRef<{ submit: () => void }>(null);
+  const entityFormRef = useRef<{ submit: () => void }>(null);
   const previewRef = useRef<{ submit: () => void }>(null);
+  const contactFormRef = useRef<{ submit: () => void }>(null);
+  const shareholderFormRef = useRef<{ submit: () => void }>(null);
 
   const handleNext = async () => {
-    if (currentStep === 0 && bidEntityFormRef.current) {
-      bidEntityFormRef.current.submit();
+    if (currentStep === 0 && entityFormRef.current) {
+      entityFormRef.current.submit();
     } else if (currentStep < 2) {
       setCurrentStep((prev) => prev + 1);
     }
@@ -85,13 +104,13 @@ const BiddingCertificateRegistration: React.FC = () => {
           backgroundColor="#ffffff"
           isDarkBackground={false}
         />
-        <BiddingCertificateStepper steps={steps} activeStep={currentStep} />
+        <StrategicInvestorStepper steps={steps} activeStep={currentStep} />
       </Wrapper>
 
       {/* Render Step Form */}
       {currentStep === 0 && (
-        <EntityInformationSection
-          bidEntityFormRef={bidEntityFormRef}
+        <StrategicInvestorEntityStep
+          entityFormRef={entityFormRef}
           onSuccess={() => setCurrentStep((prev) => prev + 1)}
         />
       )}
@@ -115,4 +134,4 @@ const BiddingCertificateRegistration: React.FC = () => {
   );
 };
 
-export default BiddingCertificateRegistration;
+export default StrategicInvestorRegistration;

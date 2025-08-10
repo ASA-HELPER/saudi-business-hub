@@ -4,12 +4,14 @@ import styled from "styled-components";
 const Container = styled.div`
   display: flex;
   flex-direction: row;
-  width: 40%;
+  width: 45%;
+  gap: 5px;
 `;
 
 const Label = styled.label`
   display: flex;
   align-items: center;
+  font-size: 10px;
   gap: 0.5rem;
   flex: 1;
   color: #47515b;
@@ -19,7 +21,7 @@ const Input = styled.input<{ $isRTL?: boolean }>`
   padding: 10px 0;
   flex: 1;
   border: none;
-  border-bottom: 2px solid #cfd4dc;
+  border-bottom: 1px solid #cfd4dc;
   font-size: 10px;
   background-color: transparent;
   width: 100%;
@@ -45,7 +47,7 @@ interface Props {
   description: string;
   onCheckboxChange: () => void;
   onDescriptionChange: (value: string) => void;
-  placeholder:string;
+  placeholder: string;
 }
 
 const CheckboxWithInput: React.FC<Props> = ({
@@ -58,10 +60,8 @@ const CheckboxWithInput: React.FC<Props> = ({
 }) => {
   return (
     <Container>
-      <Label>
-        <input type="checkbox" checked={checked} onChange={onCheckboxChange} />
-        {label}
-      </Label>
+      <input type="checkbox" checked={checked} onChange={onCheckboxChange} />
+      <Label>{label}</Label>
       <Input
         type="text"
         placeholder={placeholder}

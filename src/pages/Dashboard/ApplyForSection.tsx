@@ -467,6 +467,8 @@ const ApplyForSection: React.FC = () => {
         onSelect={(value: "yes" | "no") => {
           if (activeOption === "RHQ") {
             navigate("/RHQinvestmentReg");
+          } else if (activeOption === "strategic") {
+            navigate("/strategicinvestorReg");
           } else if (activeOption === "bidding") {
             navigate("/bidcertificateReg");
           } else {

@@ -330,6 +330,14 @@
   },
 
   "investment": {
+    "registrationTitle": "MISA Investment Registration",
+    "entityInfo": "Entity Information",
+    "shareholders": "Shareholders",
+    "contactPerson": "Contact Person",
+    "preview": "Preview"
+  },
+
+  "strategicInvestor": {
     "registrationTitle": "Strategic Investment Program",
     "entityInfo": "Entity Information",
     "shareholders": "Shareholders",

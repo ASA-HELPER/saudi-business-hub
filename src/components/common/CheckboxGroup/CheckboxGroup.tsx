@@ -3,10 +3,11 @@ import styled from "styled-components";
 import CheckboxWithInput from "../Checkbox/CheckboxWithInput";
 import Checkbox from "../Checkbox/Checkbox";
 
-const GroupContainer = styled.div`
+const GroupContainer = styled.div<{ customStyles?: React.CSSProperties }>`
   display: flex;
   flex-wrap: wrap;
   gap: 0.5rem;
+  ${({ customStyles }) => customStyles && { ...customStyles }}
 `;
 
 export interface Option {
@@ -22,12 +23,14 @@ interface CheckboxGroupProps {
   options: Option[];
   onOptionsChange: (updatedOptions: Option[]) => void;
   checkboxInputPlaceholder?: string;
+  containerStyles?: React.CSSProperties;
 }
 
 const CheckboxGroup: React.FC<CheckboxGroupProps> = ({
   options,
   onOptionsChange,
-  checkboxInputPlaceholder="Please Describe"
+  checkboxInputPlaceholder = "Please Describe",
+  containerStyles,
 }) => {
   const handleCheckboxChange = (index: number) => {
     const updated = [...options];
@@ -43,7 +46,7 @@ const CheckboxGroup: React.FC<CheckboxGroupProps> = ({
   };
 
   return (
-    <GroupContainer>
+    <GroupContainer customStyles={containerStyles}>
       {options.map((option, index) =>
         option.withInput === true ? (
           <CheckboxWithInput

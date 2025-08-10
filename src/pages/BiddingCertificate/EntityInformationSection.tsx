@@ -71,8 +71,8 @@ const Label = styled.label`
 const Input = styled.input<{ $isRTL?: boolean }>`
   padding: 6px 0;
   border: none;
-  border-bottom: 2px solid #cfd4dc;
-  font-size: 12px;
+  border-bottom: 1px solid #cfd4dc;
+  font-size: 11px;
   background-color: transparent;
   width: 100%;
   transition: border-color 0.3s ease;
@@ -93,13 +93,12 @@ const Input = styled.input<{ $isRTL?: boolean }>`
 
 const Select = styled.select<{ $isRTL?: boolean }>`
   border: none;
-  border-bottom: 2px solid #cfd4dc;
+  border-bottom: 1px solid #cfd4dc;
   background: transparent;
-  font-size: 13px;
+  font-size: 11px;
   color: #94a3b8;
   width: 100%;
   height: 28px;
-  padding: 0 6px;
   transition: border-color 0.3s ease;
 
   &:focus {

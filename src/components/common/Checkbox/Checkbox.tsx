@@ -2,15 +2,15 @@ import React from "react";
 import styled from "styled-components";
 
 const CheckboxWrapper = styled.div`
-  width: 200px;
   display: inline-block;
   background-color: #f3f4f6;
+  border-radius: 5px;
 `;
 
 const Label = styled.label`
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 1px;
   color: #47515b;
   padding: 2px;
   font-size: 10px;
