@@ -37,7 +37,12 @@ const Footer = styled.div`
 `;
 
 const Button = styled.button<{ variant: string }>`
-  padding: ${({ variant }) => (variant === "back" ? "10px 45px" : "10px 15px")};
+  padding: ${({ variant }) =>
+    variant === "back"
+      ? "10px 45px"
+      : variant === "submit"
+      ? "10px 40px"
+      : "10px 15px"};
   border-radius: 3px;
   border: ${({ variant }) =>
     variant === "back" ? "1px solid #007c92" : "none"};
@@ -119,7 +124,10 @@ const BiddingCertificateRegistration: React.FC = () => {
         <Button variant="back" onClick={handleBack}>
           Back
         </Button>
-        <Button variant="next" onClick={handleNext}>
+        <Button
+          variant={currentStep === 0 ? "next" : "submit"}
+          onClick={handleNext}
+        >
           {currentStep === 0 ? "Save & Next ➔" : "Submit"}
         </Button>
       </Footer>
