@@ -1,4 +1,4 @@
-import React, { useImperativeHandle, useState } from "react";
+import React, { forwardRef, useImperativeHandle, useState } from "react";
 import styled from "styled-components";
 import SectionTitle from "../../components/common/SectionTitle";
 import { Country } from "../../store/types/countryTypes";
@@ -108,14 +108,17 @@ const Select = styled.select<{ $isRTL?: boolean }>`
 `;
 
 type EntityInformationSectionProps = {
-  bidEntityFormRef: React.Ref<{ submit: () => void }>;
   onSuccess: () => void;
 };
 
-const EntityInformationSection: React.FC<EntityInformationSectionProps> = ({
-  bidEntityFormRef,
-  onSuccess,
-}) => {
+export type EntityInformationSectionRef = {
+  submit: () => void;
+};
+
+const EntityInformationSection = forwardRef<
+  EntityInformationSectionRef,
+  EntityInformationSectionProps
+>(({ onSuccess }, ref) => {
   const { t, i18n } = useTranslation();
   const isRTL = i18n.language === "ar";
   const cities = useSelector(selectCities);
@@ -127,14 +130,14 @@ const EntityInformationSection: React.FC<EntityInformationSectionProps> = ({
     project_name_arabic: "",
     project_name_english: "",
     capital: "",
-    government_entity: "",
-    country_id: "",
+    government_entity: "Yes",
+    country_id: "29",
     city: "",
     po_box: "",
-    postal_code: "",
-    mobile_country_code: "",
+    postal_code: "0024",
+    mobile_country_code: "966",
     mobile_number: "",
-    telephone_country_code: "",
+    telephone_country_code: "966",
     telephone_number: "",
     email: "",
   });
@@ -162,11 +165,8 @@ const EntityInformationSection: React.FC<EntityInformationSectionProps> = ({
     onSuccess();
   };
 
-  useImperativeHandle(bidEntityFormRef, () => ({
+  useImperativeHandle(ref, () => ({
     submit: () => handleSubmit(),
-    getFormData: () => ({
-      ...formData,
-    }),
   }));
 
   return (
@@ -437,6 +437,6 @@ const EntityInformationSection: React.FC<EntityInformationSectionProps> = ({
       </Card>
     </PageWrapper>
   );
-};
+});
 
 export default EntityInformationSection;

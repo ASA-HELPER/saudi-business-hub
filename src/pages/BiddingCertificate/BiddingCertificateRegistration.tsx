@@ -102,7 +102,7 @@ const BiddingCertificateRegistration: React.FC = () => {
       {/* Render Step Form */}
       {currentStep === 0 && (
         <EntityInformationSection
-          bidEntityFormRef={bidEntityFormRef}
+          ref={bidEntityFormRef}
           onSuccess={() => setCurrentStep((prev) => prev + 1)}
         />
       )}

@@ -441,7 +441,15 @@ const ApplyForSection: React.FC = () => {
             {activeOptionData.detailDescription}
           </DetailDescription>
 
-          <ApplyButton onClick={() => setIsModalOpen(true)}>
+          <ApplyButton
+            onClick={() => {
+              if (activeOption === "bidding") {
+                navigate("/bidcertificateReg");
+              } else {
+                setIsModalOpen(true);
+              }
+            }}
+          >
             {t("apply_for.apply_button")}
             <ButtonIcon>
               <ArrowRight size={20} />
