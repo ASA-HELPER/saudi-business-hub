@@ -402,7 +402,10 @@
     "project_name_arabic": "Project Name in Arabic",
     "project_name_english": "Project Name in English",
     "company_name_arabic": "Company Name in Arabic",
-    "company_name_english": "Company Name in English"
+    "company_name_english": "Company Name in English",
+    "shareholders": "Shareholders",
+    "shareholderName": "Shareholder Name",
+    "ShareholdersNationality": "Shareholder’s Nationality"
   },
 
   "registrationTypes": {

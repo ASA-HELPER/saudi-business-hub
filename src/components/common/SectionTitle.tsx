@@ -11,6 +11,7 @@ interface SectionTitleProps {
   showActions?: boolean;
   onEdit?: () => void;
   onDelete?: () => void;
+  onAdd?: () => void;
   showEditText?: boolean;
 }
 
@@ -77,6 +78,20 @@ const EditText = styled.span`
   margin-left: 4px;
 `;
 
+const AddButton = styled.button`
+  background: none;
+  border: none;
+  font-size: 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  background-color: #00778e;
+  color: #ffffff;
+  padding: 8px 16px;
+`;
+
 const SectionTitle: React.FC<SectionTitleProps> = ({
   children,
   borderColor = "#884699",
@@ -84,6 +99,7 @@ const SectionTitle: React.FC<SectionTitleProps> = ({
   showActions = false,
   onEdit,
   onDelete,
+  onAdd,
   showEditText = false,
 }) => {
   return (
@@ -105,6 +121,7 @@ const SectionTitle: React.FC<SectionTitleProps> = ({
                 <img src={deleteIcon} alt="Delete" />
               </IconButton>
             )}
+            {onAdd && <AddButton onClick={onAdd}>+ Add</AddButton>}
           </Actions>
         )}
       </TitleRow>

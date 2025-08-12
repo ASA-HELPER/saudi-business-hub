@@ -169,19 +169,19 @@ const OptionDescription = styled.p`
   line-height: 1.5;
 `;
 
-const TimelineConnector = styled.div`
+const TimelineConnector = styled.div<{ $activeIndex: number }>`
   position: absolute;
   right: -25px;
-  top: 50%;
-  transform: translateY(-50%);
+  top: 0;
   width: 2px;
-  height: 60px;
-  background: linear-gradient(135deg, #0891b2 0%, #7c3aed 100%);
+  height: 100%;
+  background: linear-gradient(135deg, #0891b2 0%, #00778e 100%);
 
   &::before {
     content: "";
     position: absolute;
-    top: -6px;
+    top: ${({ $activeIndex }) =>
+      `calc(${100 * $activeIndex + 10 * $activeIndex}px + 65px)`};
     left: 50%;
     transform: translateX(-50%);
     width: 12px;
@@ -189,6 +189,7 @@ const TimelineConnector = styled.div`
     border-radius: 50%;
     background: #0891b2;
     box-shadow: 0 0 0 4px white, 0 0 0 6px #0891b2;
+    transition: top 0.3s ease-in-out;
   }
 
   @media (max-width: 1024px) {
@@ -397,6 +398,8 @@ const ApplyForSection: React.FC = () => {
   const activeOptionData =
     options.find((option) => option.id === activeOption) || options[0];
 
+  const activeIndex = options.findIndex((option) => option.id === activeOption);
+
   return (
     <SectionContainer $isRTL={isRTL}>
       <InvestmentBanner />
@@ -428,7 +431,7 @@ const ApplyForSection: React.FC = () => {
             ))}
           </OptionsContainer>
 
-          <TimelineConnector />
+          <TimelineConnector $activeIndex={activeIndex} />
         </CardContainer>
 
         <DetailPanel>
@@ -445,6 +448,8 @@ const ApplyForSection: React.FC = () => {
             onClick={() => {
               if (activeOption === "bidding") {
                 navigate("/bidcertificateReg");
+              } else if (activeOption === "strategic") {
+                navigate("/strategicinvestorReg");
               } else {
                 setIsModalOpen(true);
               }

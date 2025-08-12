@@ -59,12 +59,6 @@ const InputWithErrorWrapper = styled.div`
   min-width: 120px;
 `;
 
-const Col = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
-`;
-
 const InputWrapper = styled.div`
   flex: 1;
   min-width: 280px;
@@ -146,6 +140,45 @@ const Input = styled.input<{ $isRTL?: boolean }>`
   }
 `;
 
+const IconWrapper = styled.div`
+  width: 24px;
+  height: 24px;
+  border: 2px solid black;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  align-self: center;
+  justify-content: center;
+  cursor: pointer;
+`;
+
+const Cross = styled.div`
+  position: relative;
+  width: 10px;
+  height: 10px;
+
+  &::before,
+  &::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 50%;
+    width: 100%;
+    height: 2px;
+    background-color: black;
+  }
+
+  &::before {
+    transform: rotate(45deg);
+  }
+
+  &::after {
+    transform: rotate(-45deg);
+  }
+`;
+
+type ShareholderField = "name" | "nationality";
+
 type StrategicInvestorEntityStepProps = {
   entityFormRef: React.Ref<{ submit: () => void }>;
   onSuccess: () => void;
@@ -157,7 +190,7 @@ const StrategicInvestorEntityStep: React.FC<
   const { t, i18n } = useTranslation();
   const isRTL = i18n.language === "ar";
   const cities = useSelector(selectCities);
-  const [errors, setErrors] = useState<Record<string, string>>({});
+  const [errors, setErrors] = useState<Record<string, any>>({});
   const [commercialRegister, setCommercialRegister] = useState<File | null>(
     null
   );
@@ -215,6 +248,7 @@ const StrategicInvestorEntityStep: React.FC<
     phone_code: "",
     email: "",
     mobile_number: "",
+    shareholders: [{ name: "", nationality: "" }],
   });
 
   const handleChange = (
@@ -223,6 +257,51 @@ const StrategicInvestorEntityStep: React.FC<
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
     setErrors((prev) => ({ ...prev, [name]: "" }));
+  };
+
+  const handleAddShareholder = () => {
+    setFormData((prevData) => ({
+      ...prevData,
+      shareholders: [...prevData.shareholders, { name: "", nationality: "" }],
+    }));
+  };
+
+  const handleShareholderChange = (
+    index: number,
+    field: ShareholderField,
+    value: string
+  ) => {
+    const updatedShareholders = [...formData.shareholders];
+    updatedShareholders[index][field] = value;
+
+    setFormData((prev) => ({
+      ...prev,
+      shareholders: updatedShareholders,
+    }));
+
+    setErrors((prevErrors) => {
+      const newErrors = { ...prevErrors };
+
+      if (newErrors.shareholders) {
+        const updatedShareholderErrors = [...newErrors.shareholders];
+        if (updatedShareholderErrors[index]) {
+          updatedShareholderErrors[index] = {
+            ...updatedShareholderErrors[index],
+            [field]: "",
+          };
+        }
+
+        newErrors.shareholders = updatedShareholderErrors;
+      }
+
+      return newErrors;
+    });
+  };
+
+  const handleRemoveShareholder = (index: number) => {
+    const updated = [...formData.shareholders];
+    updated.splice(index, 1);
+    setFormData({ ...formData, shareholders: updated });
   };
 
   const companyProfileAttachments = [
@@ -486,12 +565,27 @@ const StrategicInvestorEntityStep: React.FC<
   };
 
   const handleSubmit = () => {
-    const newErrors: Record<string, string> = {};
+    const newErrors: Record<string, any> = {};
     Object.keys(formData).forEach((key) => {
       if (!formData[key as keyof typeof formData]) {
         newErrors[key] = t("entityInformation.requiredField");
       }
     });
+
+    const shareholderErrors = formData.shareholders.map((shareholder) => {
+      const err: Record<string, string> = {};
+      if (!shareholder.name) {
+        err.name = t("entityInformation.requiredField");
+      }
+      if (!shareholder.nationality) {
+        err.nationality = t("entityInformation.requiredField");
+      }
+      return err;
+    });
+
+    if (shareholderErrors.some((e) => Object.keys(e).length > 0)) {
+      newErrors.shareholders = shareholderErrors;
+    }
 
     setErrors(newErrors);
     if (Object.keys(newErrors).length !== 0) {
@@ -627,6 +721,77 @@ const StrategicInvestorEntityStep: React.FC<
               {errors.country_id && <ErrorText>{errors.country_id}</ErrorText>}
             </InputWrapper>
           </Row>
+        </Section>
+        <Divider />
+        <Section>
+          <SectionTitle showActions onAdd={handleAddShareholder}>
+            {t("entityInformation.shareholders")}
+          </SectionTitle>
+          {formData.shareholders.map((shareholder, index) => (
+            <Row key={index}>
+              <InputWrapper>
+                <Label>
+                  <span>*</span> {t("entityInformation.shareholderName")}
+                </Label>
+                <Input
+                  name={`shareholders[${index}].name`}
+                  value={shareholder.name}
+                  onChange={(e) =>
+                    handleShareholderChange(index, "name", e.target.value)
+                  }
+                  placeholder={t("common.inputPlaceholder", {
+                    field: t("entityInformation.shareholderName"),
+                  })}
+                  $isRTL={isRTL}
+                />
+                {errors.shareholders &&
+                  errors.shareholders[index] &&
+                  errors.shareholders[index].name && (
+                    <ErrorText>{errors.shareholders[index].name}</ErrorText>
+                  )}
+              </InputWrapper>
+
+              <InputWrapper>
+                <Label>
+                  <span>*</span>{" "}
+                  {t("entityInformation.ShareholdersNationality")}
+                </Label>
+                <Select
+                  name={`shareholders[${index}].nationality`}
+                  value={shareholder.nationality}
+                  onChange={(e) =>
+                    handleShareholderChange(
+                      index,
+                      "nationality",
+                      e.target.value
+                    )
+                  }
+                  $isRTL={isRTL}
+                >
+                  <option value="" disabled hidden>
+                    {t("entityInformation.choose", {
+                      field: t("entityInformation.ShareholdersNationality"),
+                    })}
+                  </option>
+                  {cities.map((city) => (
+                    <option key={city.id} value={city.id}>
+                      {city.name}
+                    </option>
+                  ))}
+                </Select>
+                {errors.shareholders &&
+                  errors.shareholders[index] &&
+                  errors.shareholders[index].nationality && (
+                    <ErrorText>
+                      {errors.shareholders[index].nationality}
+                    </ErrorText>
+                  )}
+              </InputWrapper>
+              <IconWrapper onClick={() => handleRemoveShareholder(index)}>
+                <Cross />
+              </IconWrapper>
+            </Row>
+          ))}
         </Section>
         <Divider />
         <Section>

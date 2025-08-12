@@ -133,30 +133,6 @@ export const StrategicInvestorStepper: React.FC<
         </BackArrow>
         <Title>{t("strategicInvestor.registrationTitle")}</Title>{" "}
       </TitleWrapper>
-      <StepsContainer>
-        {steps.map((step, index) => (
-          <StepWrapper key={index}>
-            <StepIconWrapper active={index === activeStep}>
-              <StepCircle>
-                <img
-                  src={
-                    index <= activeStep
-                      ? step.selectedIcon
-                      : step.unselectedIcon
-                  }
-                  alt={step.label}
-                  width={60}
-                  height={60}
-                />
-              </StepCircle>
-            </StepIconWrapper>
-            {index < steps.length - 1 && (
-              <Connector active={index < activeStep} />
-            )}
-            <StepLabel active={index === activeStep}>{step.label}</StepLabel>
-          </StepWrapper>
-        ))}
-      </StepsContainer>
     </Container>
   );
 };
