@@ -6,6 +6,12 @@ import InvestmentBanner from "./InvestmentBanner";
 import TermsModal2 from "./TermsModal2";
 import GccNationalModal from "../Investment/modal/GccNationalModal";
 import { useNavigate } from "react-router-dom";
+import BoxCurveSpan from "../../assets/images/box-corner.svg";
+import RegisterIcon from "../../assets/images/register-stepper-icon.svg";
+import FormIcon from "../../assets/images/form-stepper-icon.svg";
+import ApprovalIcon from "../../assets/images/approval-stepper-icon.svg";
+import ServicesIcon from "../../assets/images/services-stepper-icon.svg";
+
 import MisaInvIconSelected from "../../assets/images/applyfor/app_1_selected.svg";
 import MisaInvIconUnSelected from "../../assets/images/applyfor/app_1_unselected.svg";
 
@@ -83,7 +89,7 @@ const SectionSubtitle = styled.p<{ $isRTL?: boolean }>`
 
 const ContentLayout = styled.div`
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 45% 55%;
   gap: 48px;
   align-items: start;
 
@@ -198,40 +204,83 @@ const TimelineConnector = styled.div<{ $activeIndex: number }>`
 `;
 
 const DetailPanel = styled.div`
+  display: flex;
+  flex-direction: row;
+  gap: 16px;
   position: relative;
-  background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
-  border-radius: 24px;
-  padding: 40px;
+  background: linear-gradient(
+    180deg,
+    rgba(103, 63, 136, 0) 0%,
+    rgba(103, 63, 136, 0.16) 100%
+  );
+  border-radius: 16px;
+  padding: 34px;
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
   overflow: hidden;
-  //min-height: 500px;
 
-  &::before {
+  &::after {
     content: "";
     position: absolute;
-    bottom: -100px;
-    right: -100px;
-    width: 300px;
-    height: 300px;
-    background: linear-gradient(135deg, #7c3aed 0%, #0891b2 100%);
-    border-radius: 50%;
-    opacity: 0.1;
-    filter: blur(40px);
+    bottom: 0;
+    right: 0;
+    width: 60%;
+    height: 130px;
+    background-image: url(${BoxCurveSpan});
+    background-repeat: no-repeat;
+    background-position: bottom right;
+    background-size: cover;
+    z-index: 0;
+    pointer-events: none;
+
+    @media (max-width: 1024px) {
+      height: 100px;
+      background-size: contain;
+    }
+
+    @media (max-width: 768px) {
+      height: 80px;
+      background-position: contain;
+    }
+
+    @media (min-width: 1024px) and (max-width: 1280px) {
+      width: 65%;
+      height: 130px;
+      background-position: contain;
+    }
+
+    @media (min-width: 1280px) and (max-width: 1400px) {
+      height: 140px;
+      background-position: contain;
+    }
+
+    @media (min-width: 1400px) and (max-width: 1600px) {
+      height: 170px;
+      background-position: contain;
+    }
+
+    @media (min-width: 1600px) and (max-width: 1800px) {
+      height: 190px;
+      background-position: contain;
+    }
+
+    @media (min-width: 1800px) and (max-width: 2000px) {
+      height: 210px;
+      background-position: contain;
+    }
   }
 `;
 
 const DetailHeader = styled.div`
   display: flex;
-  align-items: center;
-  gap: 20px;
-  margin-bottom: 32px;
+  flex-direction: column;
+  gap: 10px;
   position: relative;
   z-index: 2;
 `;
 
 const DetailIconWrapper = styled.div`
-  width: 80px;
-  height: 80px;
+  width: 60px;
+  height: 60px;
   border-radius: 50%;
   //background: linear-gradient(135deg, #0891b2 0%, #7c3aed 100%);
   display: flex;
@@ -253,9 +302,11 @@ const DetailIconWrapper = styled.div`
 `;
 
 const DetailTitle = styled.h2`
-  font-size: 32px;
-  font-weight: 700;
-  color: #1a1a1a;
+  display: flex;
+  align-items: center;
+  font-size: 22px;
+  font-weight: 600;
+  color: #121212;
   line-height: 1.2;
 
   @media (max-width: 768px) {
@@ -264,23 +315,107 @@ const DetailTitle = styled.h2`
 `;
 
 const DetailDescription = styled.p`
-  font-size: 16px;
-  color: #4b5563;
-  line-height: 1.7;
-  margin-bottom: 32px;
+  font-size: 20px;
+  color: #555555;
+`;
+
+const QuestionLabel = styled.p`
+  font-size: 20px;
+  color: #121212;
+  font-weight: 600;
+`;
+
+const Connector = styled.div`
+  position: absolute;
+  top: 50px;
+  left: 69%;
+  right: -50%;
+  height: 2px;
+  background-color: #00778e;
+  z-index: 0;
+  @media (max-width: 1024px) {
+    left: 66%;
+  }
+
+  @media (min-width: 1024px) and (max-width: 1280px) {
+    left: 63%;
+  }
+
+  @media (min-width: 1280px) and (max-width: 1400px) {
+    left: 62%;
+  }
+
+  @media (min-width: 1400px) and (max-width: 1600px) {
+    left: 61%;
+  }
+
+  @media (min-width: 1600px) and (max-width: 1800px) {
+    left: 60%;
+  }
+
+  @media (min-width: 1800px) and (max-width: 2000px) {
+    left: 59%;
+  }
+`;
+
+const StepsContainer = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+`;
+
+const StepWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   position: relative;
-  z-index: 2;
+  flex: 1;
+`;
+
+const StepIconWrapper = styled.div`
+  width: 105px;
+  height: 105px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+`;
+
+const StepCircle = styled.div`
+  background: #eaf3fb;
+  border: 2px solid #00778e;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  margin: 0 auto 10px auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #00778e;
+  font-weight: bold;
+`;
+
+const StepLabel = styled.p`
+  font-size: 14px;
+  color: #555555;
+  text-align: center;
+`;
+
+const StepIndex = styled.p`
+  font-size: 16px;
+  color: #00778e;
 `;
 
 const ApplyButton = styled.button`
   display: inline-flex;
-  align-items: center;
+  width: max-content;
   gap: 12px;
   background: linear-gradient(135deg, #0891b2 0%, #0e7490 100%);
   color: white;
   border: none;
-  padding: 16px 32px;
-  border-radius: 12px;
+  padding: 12px 34px;
+  border-radius: 4px;
   font-size: 16px;
   font-weight: 600;
   cursor: pointer;
@@ -327,6 +462,11 @@ const ButtonIcon = styled.div`
   }
 `;
 
+interface stepType {
+  label: string;
+  icon: string;
+}
+
 interface Option {
   id: string;
   title: string;
@@ -335,6 +475,8 @@ interface Option {
   iconActive: React.ReactNode;
   detailTitle: string;
   detailDescription: string;
+  question?: string;
+  steps?: Array<stepType>;
 }
 
 const ApplyForSection: React.FC = () => {
@@ -379,6 +521,25 @@ const ApplyForSection: React.FC = () => {
       ),
       detailTitle: t("apply_for.strategic.detail_title"),
       detailDescription: t("apply_for.strategic.detail_description"),
+      question: t("apply_for.strategic.question"),
+      steps: [
+        {
+          label: "Register",
+          icon: RegisterIcon,
+        },
+        {
+          label: "Complete our Application Form",
+          icon: FormIcon,
+        },
+        {
+          label: "Waiting for the Approval",
+          icon: ApprovalIcon,
+        },
+        {
+          label: "Benefit from the value-added services and advantages",
+          icon: ServicesIcon,
+        },
+      ],
     },
     {
       id: "bidding",
@@ -392,6 +553,21 @@ const ApplyForSection: React.FC = () => {
       ),
       detailTitle: t("apply_for.bidding.detail_title"),
       detailDescription: t("apply_for.bidding.detail_description"),
+      question: t("apply_for.bidding.question"),
+      steps: [
+        {
+          label: "Register",
+          icon: RegisterIcon,
+        },
+        {
+          label: "Complete our Application Form",
+          icon: FormIcon,
+        },
+        {
+          label: "Waiting for the Approval",
+          icon: ApprovalIcon,
+        },
+      ],
     },
   ];
 
@@ -435,31 +611,54 @@ const ApplyForSection: React.FC = () => {
         </CardContainer>
 
         <DetailPanel>
+          <DetailIconWrapper>{activeOptionData.icon}</DetailIconWrapper>
           <DetailHeader>
-            <DetailIconWrapper>{activeOptionData.icon}</DetailIconWrapper>
             <DetailTitle>{activeOptionData.detailTitle}</DetailTitle>
+            <DetailDescription>
+              {activeOptionData.detailDescription}
+            </DetailDescription>
+
+            {activeOptionData.question && (
+              <QuestionLabel>{activeOptionData.question}</QuestionLabel>
+            )}
+
+            {activeOptionData.steps && (
+              <StepsContainer>
+                {activeOptionData.steps.map((step, index) => (
+                  <StepWrapper key={index}>
+                    <StepIconWrapper>
+                      <StepCircle>
+                        <img src={step.icon} />
+                      </StepCircle>
+                    </StepIconWrapper>
+                    {activeOptionData.steps &&
+                      index < activeOptionData?.steps?.length - 1 && (
+                        <Connector />
+                      )}
+                    <StepIndex>{`0${index + 1}`}</StepIndex>
+                    <StepLabel>{step.label}</StepLabel>
+                  </StepWrapper>
+                ))}
+              </StepsContainer>
+            )}
+
+            <ApplyButton
+              onClick={() => {
+                if (activeOption === "bidding") {
+                  navigate("/bidcertificateReg");
+                } else if (activeOption === "strategic") {
+                  navigate("/strategicinvestorReg");
+                } else {
+                  setIsModalOpen(true);
+                }
+              }}
+            >
+              {t("apply_for.apply_button")}
+              <ButtonIcon>
+                <ArrowRight size={20} />
+              </ButtonIcon>
+            </ApplyButton>
           </DetailHeader>
-
-          <DetailDescription>
-            {activeOptionData.detailDescription}
-          </DetailDescription>
-
-          <ApplyButton
-            onClick={() => {
-              if (activeOption === "bidding") {
-                navigate("/bidcertificateReg");
-              } else if (activeOption === "strategic") {
-                navigate("/strategicinvestorReg");
-              } else {
-                setIsModalOpen(true);
-              }
-            }}
-          >
-            {t("apply_for.apply_button")}
-            <ButtonIcon>
-              <ArrowRight size={20} />
-            </ButtonIcon>
-          </ApplyButton>
         </DetailPanel>
       </ContentLayout>
 

@@ -257,14 +257,16 @@
       "description": "Designed for investors who think beyond the short term.",
       "alt": "Strategic Investor icon",
       "detail_title": "Strategic Investor Program",
-      "detail_description": "Our Strategic Investor Program is tailored for sophisticated investors seeking long-term growth opportunities. This comprehensive program provides access to exclusive investment vehicles, personalized advisory services, and strategic market insights to help you build a robust investment portfolio."
+      "detail_description": "This service is provided to entities wishing to enroll to the Strategic Investor Program to benefit from the value-added services and advantages.",
+      "question": "How to apply for Strategic Investment Program"
     },
     "bidding": {
       "title": "Bidding Certificate",
       "description": "Start bidding with confidence—get your official certificate",
       "alt": "Bidding Certificate icon",
       "detail_title": "Bidding Certificate",
-      "detail_description": "Obtain your official bidding certificate to participate in government and private sector tenders with confidence. Our certification process ensures you meet all regulatory requirements and provides you with the credentials needed to compete in the bidding marketplace effectively."
+      "detail_description": "The Bidding Certificate granted to entities that wishing to submit bids for governmental projects according to the terms on investment services manual.",
+      "question": "How to apply for Bidding Certificate"
     }
   },
 
