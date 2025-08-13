@@ -281,34 +281,11 @@ const QuestionLabel = styled.p`
 const Connector = styled.div`
   position: absolute;
   top: 50px;
-  left: 69%;
+  left: 50%;
   right: -50%;
   height: 2px;
   background-color: #00778e;
-  z-index: 0;
-  @media (max-width: 1024px) {
-    left: 66%;
-  }
-
-  @media (min-width: 1024px) and (max-width: 1280px) {
-    left: 63%;
-  }
-
-  @media (min-width: 1280px) and (max-width: 1400px) {
-    left: 62%;
-  }
-
-  @media (min-width: 1400px) and (max-width: 1600px) {
-    left: 61%;
-  }
-
-  @media (min-width: 1600px) and (max-width: 1800px) {
-    left: 60%;
-  }
-
-  @media (min-width: 1800px) and (max-width: 2000px) {
-    left: 59%;
-  }
+  z-index: -1;
 `;
 
 const StepsContainer = styled.div`
