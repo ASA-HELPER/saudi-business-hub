@@ -209,65 +209,18 @@ const DetailPanel = styled.div`
   gap: 16px;
   position: relative;
   background: linear-gradient(
-    180deg,
-    rgba(103, 63, 136, 0) 0%,
-    rgba(103, 63, 136, 0.16) 100%
-  );
+      180deg,
+      rgba(103, 63, 136, 0) 0%,
+      rgba(103, 63, 136, 0.16) 100%
+    ),
+    url(${BoxCurveSpan});
+  background-repeat: no-repeat;
+  background-position: bottom right;
+  background-size: auto 130px;
   border-radius: 16px;
   padding: 34px;
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
   overflow: hidden;
-
-  &::after {
-    content: "";
-    position: absolute;
-    bottom: 0;
-    right: 0;
-    width: 60%;
-    height: 130px;
-    background-image: url(${BoxCurveSpan});
-    background-repeat: no-repeat;
-    background-position: bottom right;
-    background-size: cover;
-    z-index: 0;
-    pointer-events: none;
-
-    @media (max-width: 1024px) {
-      height: 100px;
-      background-size: contain;
-    }
-
-    @media (max-width: 768px) {
-      height: 80px;
-      background-position: contain;
-    }
-
-    @media (min-width: 1024px) and (max-width: 1280px) {
-      width: 65%;
-      height: 130px;
-      background-position: contain;
-    }
-
-    @media (min-width: 1280px) and (max-width: 1400px) {
-      height: 140px;
-      background-position: contain;
-    }
-
-    @media (min-width: 1400px) and (max-width: 1600px) {
-      height: 170px;
-      background-position: contain;
-    }
-
-    @media (min-width: 1600px) and (max-width: 1800px) {
-      height: 190px;
-      background-position: contain;
-    }
-
-    @media (min-width: 1800px) and (max-width: 2000px) {
-      height: 210px;
-      background-position: contain;
-    }
-  }
 `;
 
 const DetailHeader = styled.div`
@@ -370,6 +323,14 @@ const StepWrapper = styled.div`
   align-items: center;
   position: relative;
   flex: 1;
+`;
+
+const StepperLabelsWrapper = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  text-align: center;
 `;
 
 const StepIconWrapper = styled.div`
@@ -622,25 +583,34 @@ const ApplyForSection: React.FC = () => {
               <QuestionLabel>{activeOptionData.question}</QuestionLabel>
             )}
 
-            {activeOptionData.steps && (
-              <StepsContainer>
-                {activeOptionData.steps.map((step, index) => (
-                  <StepWrapper key={index}>
-                    <StepIconWrapper>
-                      <StepCircle>
-                        <img src={step.icon} />
-                      </StepCircle>
-                    </StepIconWrapper>
-                    {activeOptionData.steps &&
-                      index < activeOptionData?.steps?.length - 1 && (
-                        <Connector />
-                      )}
-                    <StepIndex>{`0${index + 1}`}</StepIndex>
-                    <StepLabel>{step.label}</StepLabel>
-                  </StepWrapper>
-                ))}
-              </StepsContainer>
-            )}
+            <div>
+              {activeOptionData.steps && (
+                <StepsContainer>
+                  {activeOptionData.steps.map((step, index) => (
+                    <StepWrapper key={index}>
+                      <StepIconWrapper>
+                        <StepCircle>
+                          <img src={step.icon} />
+                        </StepCircle>
+                      </StepIconWrapper>
+                      {activeOptionData.steps &&
+                        index < activeOptionData?.steps?.length - 1 && (
+                          <Connector />
+                        )}
+                      <StepIndex>{`0${index + 1}`}</StepIndex>
+                    </StepWrapper>
+                  ))}
+                </StepsContainer>
+              )}
+              <StepperLabelsWrapper>
+                {activeOptionData.steps &&
+                  activeOptionData.steps.map((step, index) => (
+                    <StepWrapper key={index}>
+                      <StepLabel>{step.label}</StepLabel>
+                    </StepWrapper>
+                  ))}
+              </StepperLabelsWrapper>
+            </div>
 
             <ApplyButton
               onClick={() => {
