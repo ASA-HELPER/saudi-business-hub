@@ -47,7 +47,9 @@ export const createShareholder = async (payload: ShareholderPersonPayload) => {
   });
 
   const response = await axiosClient.post(
-    "/investment/registration/shareholder",
+    payload._method == "PUT"
+      ? `/investment/registration/shareholder/${payload.shareHolderId}`
+      : "/investment/registration/shareholder",
     formData,
     {
       headers: {

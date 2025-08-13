@@ -148,7 +148,7 @@ const PreviewScreenStep: React.FC<PreviewStepProps> = ({
       <Card>
         <RegistrationDetails data={registrationData} />
 
-        <SectionTitle>Shareholder Information</SectionTitle>
+       
         <ShareholdersTable shareholders={mappedShareholders} />
 
         {contactPersonData && (
@@ -157,7 +157,6 @@ const PreviewScreenStep: React.FC<PreviewStepProps> = ({
               data={contactPersonData}
               ref={previewRef}
               onEditClick={onEditClick}
-              onDeleteClick={onDeleteClick}
             />
           </>
         )}

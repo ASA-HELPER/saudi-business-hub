@@ -47,13 +47,10 @@ const PageWrapper = styled.div<{ $isRTL?: boolean }>`
 const CheckboxIcon = styled.img<{ $isRTL?: boolean }>`
   width: 24px;
   height: 24px;
-  ${({ $isRTL }) =>
-    $isRTL
-      ? `
+  ${({ $isRTL }) => $isRTL ? `
     margin-left: 0;
     margin-right: auto;
-  `
-      : `
+  ` : `
     margin-left: auto;
     margin-right: 0;
   `}
@@ -65,8 +62,7 @@ const Card = styled.div<{ $isRTL?: boolean }>`
   padding: 32px;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
   width: 100%;
-  font-family: ${(props) =>
-    props.$isRTL && "'IBM Plex Sans Arabic', sans-serif"};
+  font-family: ${(props) => props.$isRTL && "'IBM Plex Sans Arabic', sans-serif"};
 `;
 
 const Container = styled.div`
@@ -100,10 +96,10 @@ const OptionCard = styled.div<{ selected: boolean; $isRTL?: boolean }>`
   cursor: pointer;
   transition: border-color 0.3s;
   background-color: ${({ selected }) => (selected ? "#edf5f7" : "#fff")};
-
+  
   /* Add this RTL flip */
   flex-direction: ${({ $isRTL }) => ($isRTL ? "row-reverse" : "row")};
-
+  
   &:hover {
     border-color: #00778e;
     background-color: #edf5f7;
@@ -114,7 +110,7 @@ const OptionContent = styled.div<{ $isRTL?: boolean }>`
   display: flex;
   align-items: center;
   gap: 16px;
-
+  
   /* Add this RTL flip */
   flex-direction: ${({ $isRTL }) => ($isRTL ? "row-reverse" : "row")};
 `;
@@ -131,8 +127,7 @@ const OptionLabel = styled.div<{ $isRTL?: boolean }>`
   font-weight: 600;
   color: #1f2937;
   text-align: ${(props) => (props.$isRTL ? "right" : "left")};
-  font-family: ${(props) =>
-    props.$isRTL && "'IBM Plex Sans Arabic', sans-serif"};
+  font-family: ${(props) => props.$isRTL && "'IBM Plex Sans Arabic', sans-serif"};
 `;
 
 const CheckboxOuter = styled.div<{ checked: boolean }>`
@@ -384,47 +379,43 @@ const RegistrationTypeStep: React.FC<RegistrationTypeStepProps> = ({
   };
 
   return (
-    <PageWrapper $isRTL={isRTL}>
+     <PageWrapper $isRTL={isRTL}>
       <Card $isRTL={isRTL}>
-        <SectionTitle $isRTL={isRTL}>
-          {t("registrationTypes.title")}
-        </SectionTitle>
+        <SectionTitle $isRTL={isRTL}>{t("registrationTypes.title")}</SectionTitle>
 
         {loading && <p>{t("common.loading")}</p>}
-        {error && (
-          <p style={{ color: "red" }}>
-            {t("common.error")}: {error}
-          </p>
-        )}
+        {error && <p style={{ color: "red" }}>{t("common.error")}: {error}</p>}
 
-        <OptionsGrid>
-          {registrationTypes
-            .filter((type) => type.name !== "RHQ") // Filter out RHQ
-            .map((type) => (
-              <OptionCard
-                key={type.id}
-                selected={selectedType?.id === type.id}
-                onClick={() => handleSelect(type.id)}
-                $isRTL={isRTL}
-              >
-                <OptionContent $isRTL={isRTL}>
-                  <OptionImage
-                    src={iconMap[type.name] || "/images/default-reg-type.svg"}
-                    alt={type.name}
-                  />
-                  <OptionLabel $isRTL={isRTL}>{type.name}</OptionLabel>
-                </OptionContent>
-                <CheckboxIcon
-                  src={selectedType?.id === type.id ? checkOn : checkOff}
-                  alt={
-                    selectedType?.id === type.id
-                      ? t("common.selected")
-                      : t("common.notSelected")
-                  }
+      <OptionsGrid>
+        {registrationTypes
+          .filter(type => type.name !== "RHQ") // Filter out RHQ
+          .map((type) => (
+            <OptionCard
+              key={type.id}
+              selected={selectedType?.id === type.id}
+              onClick={() => handleSelect(type.id)}
+              $isRTL={isRTL}
+            >
+              <OptionContent $isRTL={isRTL}>
+                <OptionImage
+                  src={iconMap[type.name] || "/images/default-reg-type.svg"}
+                  alt={type.name}
                 />
-              </OptionCard>
-            ))}
-        </OptionsGrid>
+                <OptionLabel $isRTL={isRTL}>
+                  {type.name}
+                </OptionLabel>
+              </OptionContent>
+              <CheckboxIcon
+                src={selectedType?.id === type.id ? checkOn : checkOff}
+                alt={
+                  selectedType?.id === type.id
+                    ? t("common.selected")
+                    : t("common.notSelected")
+                }
+              />
+            </OptionCard>
+          ))}
+      </OptionsGrid>
 
         {selectedType && (
           <>

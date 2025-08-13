@@ -240,38 +240,51 @@
     "preview": "معاينة"
   },
 
-    "entityInformation": {
-    "basicInfo": "المعلومات الأساسية",
-    "feeDuration": "مدة الرخصة",
-    "noRecords": "لا توجد سجلات لعرضها.",
-    "addActivitiesPrompt": "أضف أنشطتك التجارية للبدء.",
-    "addActivitiesButton": "+ إضافة أنشطة تجارية",
-    "entityNameEn": "اسم الكيان بالإنجليزية",
-    "entityNameAr": "اسم الكيان بالعربية",
-    "legalStatus": "الحالة القانونية",
-    "capital": "رأس المال",
-    "email": "البريد الإلكتروني",
-    "mobileNumber": "رقم الجوال",
-    "invalidEmail": "الرجاء إدخال عنوان بريد إلكتروني صحيح",
-    "invalidMobile": "الرجاء إدخال رقم جوال صحيح",
-    "country": "البلد",
-    "region": "المنطقة",
-    "city": "المدينة",
-    "investmentSpending": "الإنفاق الاستثماري (السنوات الخمس القادمة)",
-    "licenseDuration": "مدة الرخصة (سنوات)",
-    "selectPlaceholder": "اختر {field}",
-    "enterPlaceholder": "أدخل {field}",
-    "requiredField": "هذا الحقل مطلوب.",
-    "validation": {
-      "minActivities": "الرجاء إضافة نشاط تجاري واحد على الأقل."
-    }
-  },
+"entityInformation": {
+  "basicInfo": "المعلومات الأساسية",
+  "feeDuration": "مدة الرسوم",
+  "noRecords": "لا توجد سجلات لعرضها.",
+  "addActivitiesPrompt": "أضف أنشطتك التجارية للبدء.",
+  "addActivitiesButton": "+ إضافة أنشطة تجارية",
+  "entityNameEn": "اسم الكيان بالإنجليزية",
+  "entityNameAr": "اسم الكيان بالعربية",
+  "legalStatus": "الوضع القانوني",
+  "capital": "رأس المال",
+  "country": "البلد",
+  "email": "البريد الإلكتروني",
+  "mobileNumber": "رقم الجوال",
+  "invalidEmail": "الرجاء إدخال عنوان بريد إلكتروني صحيح",
+  "invalidMobile": "الرجاء إدخال رقم جوال صحيح",
+  "region": "المنطقة",
+  "city": "المدينة",
+  "investmentSpending": "الإنفاق الاستثماري (في السنوات الخمس القادمة)",
+  "licenseDuration": "مدة الرخصة (بالسنوات)",
+  "selectPlaceholder": "اختر {field}",
+  "selectCountry": "اختر البلد",
+  "selectRegion": "اختر المنطقة",
+  "selectCity": "اختر المدينة",
+  "selectLegalStatus": "اختر الوضع القانوني",
+  "selectLicenseDuration": "اختر مدة الرخصة",
+  "selectInvestmentSpending": "الإنفاق الاستثماري المتوقع",
+  "enterEntityNameEn": "أدخل اسم الكيان بالإنجليزية",
+  "enterEntityNameAr": "أدخل اسم الكيان بالعربية",
+  "enterCapital": "أدخل رأس المال",
+  "enterEmail": "أدخل البريد الإلكتروني",
+  "enterMobileNumber": "أدخل رقم الجوال",
+  "requireToPay": "اختر عدد السنوات",
+  "enterPlaceholder": "أدخل {field}",
+  "requiredField": "هذا الحقل مطلوب.",
+  "validation": {
+    "minActivities": "الرجاء إضافة نشاط تجاري واحد على الأقل."
+  }
+},
   "registrationTypes": {
     "title": "نوع التسجيل"
   },
 
     "attachment": {
     "title": "المرفقات",
+    "label": "رخصة الجواز",
     "boardResolution": {
       "label": "قرار مجلس الإدارة",
       "requiredIndicator": "*"
@@ -291,7 +304,263 @@
       "invalidFileType": "نوع الملف غير مدعوم. التنسيقات المدعومة: {formats}",
       "required": "هذا الملف مطلوب."
     }
-  }
+  },
+    "contactForm": {
+    "contactPerson": "الشخص المسؤول",
+    "selectOption": "اختر",
+    "otherPerson": "آخرون",
+    "identityType": "نوع الهوية",
+    "identityNumber": "رقم الهوية",
+    "enterIdentityNumber": "أدخل رقم الهوية",
+    "dateOfBirth": "تاريخ الميلاد",
+    "validate": "تحقق",
+    "title": "اللقب",
+    "firstNameArabic": "الاسم الأول بالعربية",
+    "lastNameArabic": "اسم العائلة بالعربية",
+    "fullNameEnglish": "الاسم الكامل بالإنجليزية",
+    "currentNationality": "الجنسية الحالية",
+    "idIssueDate": "تاريخ إصدار الهوية",
+    "idExpiryDate": "تاريخ انتهاء الهوية",
+    "country": "الدولة",
+    "selectCountry": "اختر الدولة",
+    "city": "المدينة",
+    "selectCity": "اختر المدينة",
+    "mobileNumber": "رقم الجوال",
+    "enterMobileNumber": "+966 أدخل رقم الجوال",
+    "emailAddress": "البريد الإلكتروني",
+    "enterEmailAddress": "أدخل البريد الإلكتروني",
+    "contactInformation": "معلومات الاتصال",
+    "requiredField": "هذا الحقل مطلوب",
+    "fillRequiredFields": "الرجاء تعبئة جميع الحقول المطلوبة",
+    "enterCity": "أدخل المدينة"
+  },
+  "shareholderList": {
+    "title": "قائمة المساهمين",
+    "note": "ملاحظة: فقط {{percentage}}٪ متاحة لإضافة المساهمين.",
+    "addButton": "+ إضافة مساهم",
+    "emptyState": {
+      "title": "لا توجد سجلات لعرضها.",
+      "subtitle": "أضف مساهماً لتبدأ."
+    },
+    "tableHeaders": {
+      "id": "#",
+      "name": "الاسم",
+      "type": "النوع",
+      "percentage": "النسبة",
+      "actions": "إجراءات"
+    }
+  },
+  "shareholderTypes": {
+    "person": "فرد",
+    "company": "شركة"
+  },
+  "legalStatus": {
+    "restricted": "مقيد",
+    "unrestricted": "غير مقيد"
+  },
+  "actions": {
+    "edit": "تعديل",
+    "delete": "حذف"
+  },
+  "altText": {
+    "businessActivityLogo": "شعار النشاط التجاري"
+  },
+    "businessActivity": {
+    "tableHeaders": {
+      "number": "#",
+      "isicCode": "رمز ISIC",
+      "activity": "نشاط التسجيل التجاري",
+      "classification": "التصنيف",
+      "actions": "إجراءات"
+    },
+    "addButton": "+ إضافة أنشطة تجارية"
+  },
+  "action": {
+    "delete": "حذف"
+  },
+  "shareholderModal": {
+    "title": "إضافة مساهمين",
+    "titles": "اللقب",
+    "newShareholder": "مساهم جديد",
+    "existingShareholder": "مساهم موجود",
+    "shareholderType": "نوع المساهم",
+    "person": "فرد",
+    "organizations": "منظمة",
+    "identityInformation": "معلومات الهوية",
+    "identityType": "نوع الهوية",
+    "firstNameArabic": "الاسم الأول بالعربية",
+    "lastNameArabic": "اسم العائلة بالعربية",
+    "fullName": "الاسم الكامل بالإنجليزية",
+    "sharePercentage": "نسبة المشاركة",
+    "identityNumber": "رقم الهوية",
+    "nationality": "الجنسية",
+    "country": "الدولة",
+    "city": "المدينة",
+    "professionalLicense": "رخصة مهنية",
+    "mobileNumber": "رقم الجوال",
+    "email": "البريد الإلكتروني",
+    "placeOfBirth": "مكان الولادة",
+    "passportIssueDate": "تاريخ إصدار الجواز",
+    "passportExpiryDate": "تاريخ انتهاء الجواز",
+    "dateOfBirth": "تاريخ الميلاد",
+    "organizationNameEn": "اسم المنظمة بالإنجليزية",
+    "organizationNameAr": "اسم المنظمة بالعربية",
+    "legalStatus": "الحالة القانونية",
+    "yearsEstablished": "سنوات التأسيس",
+    "website": "الموقع الإلكتروني",
+    "entityNumber": "رقم الكيان",
+    "parentCompanyCountry": "دولة الشركة الأم",
+    "validate": "تحقق",
+    "saveButton": "حفظ المساهم الجديد",
+    "cancel": "إلغاء",
+    "select": "اختر",
+    "selectCountry": "اختر الدولة",
+    "documentData": "بيانات الوثيقة",
+    "idIssueDate": "تاريخ إصدار الهوية",
+    "idExpiryDate": "تاريخ انتهاء الهوية",
+    "enterEntityNumber": "أدخل رقم كيان المساهم",
+    "name": "الاسم",
+    "yes": "نعم",
+    "no": "لا",
+    "uploadProfessionalLicense": "تحميل الرخصة المهنية",
+    "dragDrop": "اسحب وأفلت الملفات هنا للتحميل",
+    "fileNote": "الحد الأقصى لحجم الملف 2 ميجابايت، الصيغ المدعومة: .jpg، .png، .pdf.",
+    "browseFiles": "تصفح الملفات",
+    "organizationNameEnglish": "اسم المنظمة باللغة الإنجليزية",
+    "organizationNameArabic": "اسم المنظمة باللغة العربية",
+    "selectLegalStatus": "اختر الوضع القانوني",
+    "llc": "شركة ذات مسؤولية محدودة",
+    "jointStock": "شركة مساهمة",
+    "selectYears": "اختر عدد السنوات",
+    "years_1_5": "1-5",
+    "years_5_10": "5-10",
+    "years_10_plus": "أكثر من 10",
+    "commercialRegCopy": "نسخة من السجل التجاري (بلد المنشأ)",
+    "lastYearFinancial": "البيان المالي للسنة الماضية",
+    "otherAttachment1": "مرفق آخر 1",
+    "otherAttachment2": "مرفق آخر 2",
+    "saveNewShareholder": "حفظ المساهم الجديد",
+    "upload": {
+      "dragDrop": "اسحب وأسقط الملفات هنا للرفع",
+      "requirements": "الحد الأقصى لحجم الملف 2MB، الصيغ المدعومة: .pdf, .doc, .docx, .jpg, .jpeg, .png",
+      "browse": "تصفح الملفات"
+    },
+      "organization": {
+    "sectionTitle": "تفاصيل المساهم",
+    "country": "الدولة",
+    "selectCountry": "اختر الدولة",
+    "unifiedNumber": "الرقم الموحد",
+    "validate": "تحقق",
 
+    "orgNameEn": "اسم المنظمة باللغة الإنجليزية",
+    "orgNameAr": "اسم المنظمة باللغة العربية",
+    "legalStatus": "الوضع القانوني",
+    "selectLegalStatus": "اختر الوضع القانوني",
+    "llc": "ذ.م.م",
+    "jointStock": "شركة مساهمة",
+
+    "yearsEstablished": "عدد سنوات التأسيس في بلد المنشأ",
+    "selectYears": "اختر عدد السنوات",
+    "1_5": "1-5",
+    "5_10": "5-10",
+    "10_plus": "10+",
+
+    "mobile": "رقم الجوال",
+    "sharePercentage": "نسبة الأسهم",
+    "email": "البريد الإلكتروني",
+    "website": "الموقع الإلكتروني",
+
+    "attachmentsTitle": "المرفقات",
+    "commercialReg": "نسخة السجل التجاري (بلد المنشأ)",
+    "financialStatement": "البيان المالي للسنة الأخيرة",
+    "otherAttachment1": "مرفق آخر 1",
+    "otherAttachment2": "مرفق آخر 2"
+  }
+  },
+  "errors": {
+    "required": "هذا الحقل مطلوب",
+    "invalidFileType": "نوع الملف غير مدعوم",
+    "fileSizeExceeded": "حجم الملف يتجاوز 2MB"
+  },
+    "preview": {
+    "registration": {
+      "entityInformation": "معلومات الكيان",
+      "edit": "تعديل",
+      "registrationType": "نوع التسجيل",
+      "yearsRequired": "السنوات المطلوبة",
+      "entityName": "اسم الكيان (إنجليزي)",
+      "entityNameArabic": "اسم الكيان (عربي)",
+      "legalStatus": "الحالة القانونية",
+      "capital": "رأس المال",
+      "email": "البريد الإلكتروني",
+      "mobileNumber": "رقم الجوال",
+      "country": "البلد",
+      "region": "المنطقة",
+      "city": "المدينة",
+      "expectedInvestment": "الإستثمار المتوقع",
+      "businessActivities": "الأنشطة التجارية"
+    },
+        "shareholder": {
+      "title": "قائمة المساهمين",
+      "searchPlaceholder": "اسم المساهم، الجنسية",
+      "columns": {
+        "number": "#",
+        "name": "اسم المساهم",
+        "type": "النوع",
+        "percentage": "النسبة",
+        "nationality": "الجنسية",
+        "legalStatus": "الحالة القانونية",
+        "identityNumber": "رقم الهوية",
+        "actions": "الإجراءات"
+      },
+      "types": {
+        "person": "فرد",
+        "organization": "منظمة"
+      },
+      "emptyState": "لا توجد مساهمين مطابقين لمعايير البحث الخاصة بك.",
+      "edit": "تعديل",
+      "delete": "حذف"
+    },
+        "contactdetail": {
+      "title": "معلومات الاتصال",
+      "fields": {
+        "name": "الاسم",
+        "fullNameEn": "الاسم الكامل بالإنجليزية",
+        "identityNumber": "رقم الهوية",
+        "issueDate": "تاريخ إصدار الهوية",
+        "expiryDate": "تاريخ انتهاء الهوية",
+        "nationality": "الجنسية",
+        "city": "المدينة",
+        "country": "البلد",
+        "mobileNumber": "رقم الجوال",
+        "email": "البريد الإلكتروني"
+      },
+      "deleteModal": {
+        "title": "هل أنت متأكد أنك تريد حذف جهة الاتصال هذه؟",
+        "yesLabel": "حذف",
+        "noLabel": "إلغاء"
+      },
+      "edit": "تعديل",
+      "delete": "حذف"
+    },
+      "terms": {
+      "acknowledgment": "أقر بأني قد قرأت ووافقت على",
+      "termsConditions": "الشروط والأحكام",
+      "privacyPolicy": "سياسة الخصوصية",
+      "validationText": "، وصحة ودقة البيانات المدخلة، وحق الوزارة في معالجتها بما يخدم المصلحة العامة ويسهل تقديم خدمات الاستثمار.",
+      "checkboxLabel": "الإقرار بالشروط والأحكام"
+    }
+  },
+    "investments": {
+    "buttons": {
+      "cancel": "إلغاء",
+      "back": "رجوع",
+      "next": "التالي"
+    }
+  }
 }
+
+
+
+
 

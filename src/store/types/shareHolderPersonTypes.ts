@@ -4,7 +4,8 @@ export interface ShareholderPersonPayload {
   shares_percentage: string;
   place_of_birth: string;
   code: string;
-
+  _method: string;
+  shareHolderId: number;
   person: {
     current_nationality_id: number;
     previous_nationality_id: number;

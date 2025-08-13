@@ -10,3 +10,7 @@ export const createShareholderSuccess = createAction<any>(
 export const createShareholderFailure = createAction<string>(
   "CREATE_SHAREHOLDER_FAILURE"
 );
+
+export const updateShareholderRequest = createAction<ShareholderPersonPayload>(
+  "UPDATE_SHAREHOLDER_REQUEST"
+);

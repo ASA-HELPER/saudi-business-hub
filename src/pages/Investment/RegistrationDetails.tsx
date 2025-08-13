@@ -3,6 +3,7 @@ import styled from "styled-components";
 import SectionTitle from "../../components/common/SectionTitle";
 import editIcon from "../../assets/images/investment/edit_icon.svg";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 export interface RegistrationData {
   registrationType: string;
@@ -22,10 +23,9 @@ export interface RegistrationData {
 
 interface RegistrationDetailsProps {
   data?: RegistrationData;
-} 
+}
 
-
-const StyledCard = styled.div`
+const StyledCard = styled.div<{ dir?: "rtl" | "ltr" }>`
   width: 100%;
   max-width: 1152px;
   margin: 0;
@@ -33,6 +33,7 @@ const StyledCard = styled.div`
   border: 1px solid #fff;
   border-radius: 8px;
   overflow: hidden;
+  direction: ${props => props.dir || "ltr"};
 `;
 
 export const Divider = styled.hr`
@@ -55,7 +56,9 @@ const StyledTable = styled.table`
   border-collapse: collapse;
 `;
 
-const StyledTableCell = styled.td<{ $isArabic?: boolean }>`
+export const StyledTableCell = styled.td<{ $isArabic?: boolean }>`
+  text-align: ${({ $isArabic }) => ($isArabic ? "right" : "left")};
+  direction: ${({ $isArabic }) => ($isArabic ? "rtl" : "ltr")};
   padding: 16px;
   vertical-align: top;
   border-bottom: 1px solid #d1d5db;
@@ -142,18 +145,18 @@ const ActivityTag = styled.div`
   }
 `;
 
-const TitleContainer = styled.div`
-  padding-left: 16px;
-  padding-right: 16px;
+const TitleContainer = styled.div<{ dir?: "rtl" | "ltr" }>`
+  padding: ${props => props.dir === "rtl" ? "0 16px 0 0" : "0 0 0 16px"};
 `;
 
-const TitleWrapper = styled.div`
+const TitleWrapper = styled.div<{ dir?: "rtl" | "ltr" }>`
   position: relative;
   margin-top: 26px;
   margin-bottom: 16px;
+  text-align: ${props => props.dir === "rtl" ? "right" : "left"};
 `;
 
-const TitleText = styled.div`
+const TitleText = styled.div<{ dir?: "rtl" | "ltr" }>`
   display: inline-block;
   border-bottom: 2px solid #884699;
   font-size: 20px;
@@ -162,51 +165,54 @@ const TitleText = styled.div`
   padding-bottom: 15px;
   position: relative;
   z-index: 1;
-  margin-left: -12px;
+  margin-${props => props.dir === "rtl" ? "right" : "left"}: -12px;
 `;
 
-const EditButton = styled.div`
+const EditButton = styled.div<{ dir?: "rtl" | "ltr" }>`
   position: absolute;
-  right: 0;
+  ${props => props.dir === "rtl" ? "left" : "right"}: 0;
   top: 50%;
   transform: translateY(-50%);
   display: flex;
   align-items: center;
   cursor: pointer;
   z-index: 2;
-    img {
+  flex-direction: ${props => props.dir === "rtl" ? "row-reverse" : "row"};
+  
+  img {
     width: 24px;
     height: 24px;
   }
-
 `;
 
-const EditText = styled.span`
+const EditText = styled.span<{ dir?: "rtl" | "ltr" }>`
   color: #00778E;
   font-weight: 700;
   font-size: 18px;
-  margin-left: 4px;
+  margin-${props => props.dir === "rtl" ? "right" : "left"}: 4px;
 `;
 
-const TitleUnderline = styled.div`
+const TitleUnderline = styled.div<{ dir?: "rtl" | "ltr" }>`
   position: absolute;
   bottom: 0;
-  left: 0;
+  ${props => props.dir === "rtl" ? "right" : "left"}: 0;
   height: 2px;
   width: 100%;
-  background: linear-gradient(to right, #884699 0 140px, #d1d5db 140px 100%);
+  background: ${props => props.dir === "rtl" 
+    ? "linear-gradient(to left, #884699 0 140px, #d1d5db 140px 100%)" 
+    : "linear-gradient(to right, #884699 0 140px, #d1d5db 140px 100%)"};
   z-index: 0;
 `;
 
-const FullWidthCard = styled(StyledCard)`
+export const FullWidthCard = styled.div<{ dir?: "rtl" | "ltr" }>`
   width: 100%;
   max-width: none;
+  direction: ${(props) => props.dir || "ltr"};
 `;
 
 const FullWidthTable = styled(StyledTable)`
   width: 100%;
 `;
-
 
 const defaultData: RegistrationData = {
   registrationType: "Entrepreneur",
@@ -228,79 +234,113 @@ const defaultData: RegistrationData = {
 };
 
 export const RegistrationDetails: React.FC<RegistrationDetailsProps> = ({
-  data,
+  data = defaultData,
 }) => {
+  const { t, i18n } = useTranslation();
+  const isArabic = i18n.language === "ar";
+  const dir = isArabic ? "rtl" : "ltr";
   const navigate = useNavigate();
 
-  if (!data) return null;
   const TableCell: React.FC<{
     label: string;
     value: string;
     isArabic?: boolean;
   }> = ({ label, value, isArabic = false }) => (
-    <StyledTableCell $isArabic={isArabic}>
+    <StyledTableCell $isArabic={isArabic} dir={dir}>
       <CellContainer>
         <CellLabel>{label}</CellLabel>
-        <CellValue $isArabic={isArabic}>{value}</CellValue>
+        <CellValue $isArabic={isArabic} dir={dir}>
+          {value}
+        </CellValue>
       </CellContainer>
     </StyledTableCell>
   );
 
   return (
-    <FullWidthCard>
-      <TitleContainer>
-        <TitleWrapper>
-          <TitleText>Entity Information</TitleText>
-            <EditButton onClick={() => navigate("/investment-registration?step=0")}>
-              <img src={editIcon} alt="Edit" />
-            <EditText>Edit</EditText>
+    <FullWidthCard dir={dir}>
+      <TitleContainer dir={dir}>
+        <TitleWrapper dir={dir}>
+          <TitleText dir={dir}>{t("preview.registration.entityInformation")}</TitleText>
+          <EditButton 
+            dir={dir}
+            onClick={() => navigate("/investment-registration?step=0")}
+          >
+            <img src={editIcon} alt={t("preview.registration.edit")} />
+            <EditText dir={dir}>{t("preview.registration.edit")}</EditText>
           </EditButton>
-          <TitleUnderline />
+          <TitleUnderline dir={dir} />
         </TitleWrapper>
       </TitleContainer>
 
-      <FullWidthTable>
+      <FullWidthTable dir={dir}>
         <tbody>
           <StyledTableRow>
-            <TableCell label="Registration Type" value={data.registrationType} />
             <TableCell
-              label="Number of years required to pay the fee"
+              label={t("preview.registration.registrationType")}
+              value={data.registrationType}
+            />
+            <TableCell
+              label={t("preview.registration.yearsRequired")}
               value={data.yearsRequired}
             />
-            <TableCell label="Entity Name" value={data.entityName} />
             <TableCell
-              label="Entity Name in Arabic"
+              label={t("preview.registration.entityName")}
+              value={data.entityName}
+            />
+            <TableCell
+              label={t("preview.registration.entityNameArabic")}
               value={data.entityNameArabic}
               isArabic={true}
             />
           </StyledTableRow>
-
           <StyledTableRow>
-            <TableCell label="Legal Status" value={data.legalStatus} />
-            <TableCell label="Capital" value={data.capital} />
-            <TableCell label="Email" value={data.email} />
-            <TableCell label="Mobile Number" value={data.mobileNumber} />
-          </StyledTableRow>
-
-          <StyledTableRow>
-            <TableCell label="Country" value={data.country} />
-            <TableCell label="Region" value={data.region} />
-            <TableCell label="City" value={data.city} />
             <TableCell
-              label="Expected Investment"
+              label={t("preview.registration.email")}
+              value={data.email}
+            />
+            <TableCell
+              label={t("preview.registration.mobileNumber")}
+              value={data.mobileNumber}
+            />
+            <TableCell
+              label={t("preview.registration.region")}
+              value={data.region}
+            />
+            <TableCell
+              label={t("preview.registration.city")}
+              value={data.city}
+            />
+          </StyledTableRow>
+          <StyledTableRow>
+            <TableCell
+              label={t("preview.registration.country")}
+              value={data.country}
+            />
+            <TableCell
+              label={t("preview.registration.capital")}
+              value={data.capital}
+            />
+            <TableCell
+              label={t("preview.registration.expectedInvestment")}
               value={data.expectedInvestment}
+            />
+            <TableCell
+              label={t("preview.registration.legalStatus")}
+              value={data.legalStatus}
             />
           </StyledTableRow>
         </tbody>
       </FullWidthTable>
 
-      <BusinessActivitiesSection>
-        <BusinessActivitiesLabel>
-          Registration Business Activities
+      <BusinessActivitiesSection dir={dir}>
+        <BusinessActivitiesLabel dir={dir}>
+          {t("preview.registration.businessActivities")}
         </BusinessActivitiesLabel>
-        <ActivitiesContainer>
+        <ActivitiesContainer dir={dir}>
           {data.businessActivities.map((activity, index) => (
-            <ActivityTag key={index}>{activity}</ActivityTag>
+            <ActivityTag key={index} dir={dir}>
+              {activity}
+            </ActivityTag>
           ))}
         </ActivitiesContainer>
       </BusinessActivitiesSection>

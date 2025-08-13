@@ -3,6 +3,9 @@ import styled from "styled-components";
 import { Search } from "lucide-react";
 import editIcon from "../../assets/images/investment/edit_icon.svg";
 import deleteIcon from "../../assets/images/investment/delete_icon.svg";
+import SectionTitle from "../../components/common/SectionTitle";
+import { useTranslation } from "react-i18next";
+
 
 interface Shareholder {
   id: number;
@@ -18,6 +21,7 @@ interface ShareholdersTableProps {
   shareholders?: Shareholder[];
   onEdit?: (id: number) => void;
   onDelete?: (id: number) => void;
+  dir?: "ltr" | "rtl";
 }
 
 // Styled Components
@@ -215,8 +219,10 @@ export const ShareholdersTable: React.FC<ShareholdersTableProps> = ({
   shareholders = defaultShareholders,
   onEdit,
   onDelete,
+  dir = "ltr",
 }) => {
   const [searchTerm, setSearchTerm] = useState("");
+  const { t } = useTranslation();
 
   const filteredShareholders = shareholders.filter(
     (shareholder) =>
@@ -242,68 +248,78 @@ export const ShareholdersTable: React.FC<ShareholdersTableProps> = ({
   };
 
   return (
-    <TableContainer>
-      <SearchContainer>
-        <SearchInputWrapper>
-          <SearchIcon />
-          <SearchInput
-            type="text"
-            placeholder="Shareholder name, Nationality"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
-        </SearchInputWrapper>
-      </SearchContainer>
+    <>
+      <SectionTitle>
+        {t("preview.shareholder.title")}
+      </SectionTitle>  
+      <TableContainer dir={dir}>
+        <SearchContainer>
+          <SearchInputWrapper>
+            <SearchIcon />
+            <SearchInput
+              type="text"
+              placeholder={t("preview.shareholder.searchPlaceholder")}
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              dir={dir}
+            />
+          </SearchInputWrapper>
+        </SearchContainer>
 
-      <Table>
-        <TableHeader>
-          <TableHeaderRow>
-            <TableHeaderCell>#</TableHeaderCell>
-            <TableHeaderCell>Shareholder Name</TableHeaderCell>
-            <TableHeaderCell>Type</TableHeaderCell>
-            <TableHeaderCell>Percentage</TableHeaderCell>
-            <TableHeaderCell>Nationality</TableHeaderCell>
-            <TableHeaderCell>Legal Status</TableHeaderCell>
-            <TableHeaderCell>Identity Number</TableHeaderCell>
-            <TableHeaderCell>Actions</TableHeaderCell>
-          </TableHeaderRow>
-        </TableHeader>
-        <TableBody>
-          {filteredShareholders.length > 0 ? (
-            filteredShareholders.map((shareholder, index) => (
-              <TableRow key={shareholder.id}>
-                <TableCell>{index + 1}</TableCell>
-                <TableCell>{shareholder.name}</TableCell>
-                <TableCell>{shareholder.type}</TableCell>
-                <TableCell>{shareholder.percentage}</TableCell>
-                <TableCell>{shareholder.nationality}</TableCell>
-                <TableCell>{shareholder.legalStatus}</TableCell>
-                <TableCell>{shareholder.identityNumber || "—"}</TableCell>
-                <ActionsCell>
-                  <ActionImage 
-                    src={editIcon} 
-                    alt="Edit" 
-                    onClick={() => handleEdit(shareholder.id)} 
-                  />
-                  <ActionImage 
-                    src={deleteIcon} 
-                    alt="Delete" 
-                    onClick={() => handleDelete(shareholder.id)} 
-                  />
-                </ActionsCell>
+        <Table dir={dir}>
+          <TableHeader>
+            <TableHeaderRow>
+              <TableHeaderCell>{t("preview.shareholder.columns.number")}</TableHeaderCell>
+              <TableHeaderCell>{t("preview.shareholder.columns.name")}</TableHeaderCell>
+              <TableHeaderCell>{t("preview.shareholder.columns.type")}</TableHeaderCell>
+              <TableHeaderCell>{t("preview.shareholder.columns.percentage")}</TableHeaderCell>
+              <TableHeaderCell>{t("preview.shareholder.columns.nationality")}</TableHeaderCell>
+              <TableHeaderCell>{t("preview.shareholder.columns.legalStatus")}</TableHeaderCell>
+              <TableHeaderCell>{t("preview.shareholder.columns.identityNumber")}</TableHeaderCell>
+              <TableHeaderCell>{t("preview.shareholder.columns.actions")}</TableHeaderCell>
+            </TableHeaderRow>
+          </TableHeader>
+          <TableBody>
+            {filteredShareholders.length > 0 ? (
+              filteredShareholders.map((shareholder, index) => (
+                <TableRow key={shareholder.id}>
+                  <TableCell>{index + 1}</TableCell>
+                  <TableCell>{shareholder.name}</TableCell>
+                  <TableCell>
+                    {shareholder.type === "Person" 
+                      ? t("preview.shareholder.types.person") 
+                      : t("preview.shareholder.types.organization")}
+                  </TableCell>
+                  <TableCell>{shareholder.percentage}</TableCell>
+                  <TableCell>{shareholder.nationality}</TableCell>
+                  <TableCell>{shareholder.legalStatus}</TableCell>
+                  <TableCell>{shareholder.identityNumber || "—"}</TableCell>
+                  <ActionsCell>
+                    <ActionImage 
+                      src={editIcon} 
+                      alt={t("preview.shareholder.edit")} 
+                      onClick={() => handleEdit(shareholder.id)} 
+                    />
+                    <ActionImage 
+                      src={deleteIcon} 
+                      alt={t("preview.shareholder.delete")} 
+                      onClick={() => handleDelete(shareholder.id)} 
+                    />
+                  </ActionsCell>
+                </TableRow>
+              ))
+            ) : (
+              <TableRow>
+                <TableCell colSpan={8}>
+                  <EmptyState>
+                    {t("preview.shareholder.emptyState")}
+                  </EmptyState>
+                </TableCell>
               </TableRow>
-            ))
-          ) : (
-            <TableRow>
-              <TableCell colSpan={8}>
-                <EmptyState>
-                  No shareholders found matching your search criteria.
-                </EmptyState>
-              </TableCell>
-            </TableRow>
-          )}
-        </TableBody>
-      </Table>
-    </TableContainer>
+            )}
+          </TableBody>
+        </Table>
+      </TableContainer>
+    </>
   );
 };

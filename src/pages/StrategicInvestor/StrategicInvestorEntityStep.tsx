@@ -41,10 +41,10 @@ const Row = styled.div`
   margin-bottom: 10px;
 `;
 
-const Divider = styled.hr`
-  border: none;
-  border-top: 1.5px solid #d1d5db;
-`;
+// const Divider = styled.hr`
+//   border: none;
+//   border-top: 1.5px solid #d1d5db;
+// `;
 
 const InputsRow = styled.div`
   display: flex;
@@ -722,7 +722,7 @@ const StrategicInvestorEntityStep: React.FC<
             </InputWrapper>
           </Row>
         </Section>
-        <Divider />
+        {/* <Divider /> */}
         <Section>
           <SectionTitle showActions onAdd={handleAddShareholder}>
             {t("entityInformation.shareholders")}
@@ -787,13 +787,17 @@ const StrategicInvestorEntityStep: React.FC<
                     </ErrorText>
                   )}
               </InputWrapper>
-              <IconWrapper onClick={() => handleRemoveShareholder(index)}>
-                <Cross />
-              </IconWrapper>
+             {
+              index !== 0 && (
+                <IconWrapper onClick={() => handleRemoveShareholder(index)}>
+                  <Cross />
+                </IconWrapper>
+              )
+             }
             </Row>
           ))}
         </Section>
-        <Divider />
+        {/* <Divider /> */}
         <Section>
           <SectionTitle>{t("contact_details.heading")}</SectionTitle>
           <Row>
@@ -912,7 +916,7 @@ const StrategicInvestorEntityStep: React.FC<
             </InputWrapper>
           </Row>
         </Section>
-        <Divider />
+        {/* <Divider /> */}
         <Section>
           <SectionTitle>{t("program_membership.heading")}</SectionTitle>
           <Row>
@@ -943,7 +947,7 @@ const StrategicInvestorEntityStep: React.FC<
             </InputWrapper>
           </Row>
         </Section>
-        <Divider />
+        {/* <Divider /> */}
         <Section>
           <SectionTitle>{t("financial_operational_info.heading")}</SectionTitle>
           <Row style={{ width: "50%", paddingRight: "12px" }}>
@@ -1196,7 +1200,7 @@ const StrategicInvestorEntityStep: React.FC<
             </InputWrapper>
           </Row>
         </Section>
-        <Divider />
+        {/* <Divider /> */}
         <Section>
           <SectionTitle>{t("strategic_information.heading")}</SectionTitle>
           <Row style={{ width: "50%", paddingRight: "12px" }}>
@@ -1512,7 +1516,7 @@ const StrategicInvestorEntityStep: React.FC<
             </InputWrapper>
           </Row>
         </Section>
-        <Divider />
+        {/* <Divider /> */}
         <Section>
           <SectionTitle>{t("attachment.title")}</SectionTitle>
           <Label style={{ fontSize: "12px" }}>

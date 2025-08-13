@@ -1,12 +1,20 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import { useDropzone } from "react-dropzone";
 import { useTranslation } from "react-i18next";
 import fileUpload from "../../../assets/images/investment/file-upload.svg";
+import deleteIcon from "../../../assets/images/investment/delete_icon.svg";
 import SectionTitle from "../../../components/common/SectionTitle";
 
 const Section = styled.div<{ $isArabic?: boolean }>`
   margin-top: 2.5rem;
+  border: 2px dashed #ccc;
+  padding: 2rem;
+  text-align: center;
+  cursor: pointer;
+  &:hover {
+    background-color: #f9f9f9;
+  }
   direction: ${(props) => (props.$isArabic ? "rtl" : "ltr")};
 `;
 
@@ -43,12 +51,27 @@ const DropZoneCard = styled.div`
   justify-content: center;
   min-height: 200px;
   cursor: pointer;
+  transition: all 0.3s ease;
+
+  &.has-file {
+    min-height: auto;
+    padding: 1rem;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    text-align: left;
+  }
 `;
 
 const UploadIcon = styled.img`
-  width: 24px;
-  height: 24px;
+  width: 28px;
+  height: 28px;
   margin-bottom: 1rem;
+
+  .has-file & {
+    margin-bottom: 0;
+    margin-right: 1rem;
+  }
 `;
 
 const PrimaryText = styled.div`
@@ -56,6 +79,10 @@ const PrimaryText = styled.div`
   font-weight: 500;
   color: #1f2a37;
   margin-bottom: 0.5rem;
+
+  .has-file & {
+    display: none;
+  }
 `;
 
 const SecondaryText = styled.div`
@@ -67,6 +94,10 @@ const SecondaryText = styled.div`
   strong {
     font-weight: 400;
   }
+
+  .has-file & {
+    display: none;
+  }
 `;
 
 const BrowseText = styled.div`
@@ -74,13 +105,34 @@ const BrowseText = styled.div`
   font-weight: 500;
   color: #161616;
   cursor: pointer;
+
+  .has-file & {
+    display: none;
+  }
+`;
+
+const FileInfo = styled.div`
+  display: flex;
+  align-items: center;
 `;
 
 const FileName = styled.div`
-  margin-top: 1rem;
-  font-size: 14px;
+  font-size: 17px;
   color: #00778e;
   font-weight: 500;
+  margin-left: 0.5rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 200px;
+`;
+
+const DeleteButton = styled.button`
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.5rem;
+  margin-left: 1rem;
 `;
 
 const MAX_FILE_SIZE_MB = 5;
@@ -119,12 +171,25 @@ const Attachment: React.FC<AttachmentProps> = ({
       }
     };
 
+  const handleDelete = (setter: (file: File | null) => void) => (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setter(null);
+  };
+
+  const getDisplayFileName = (name: string) => {
+    const extension = name.includes(".") ? name.split(".").pop() : "";
+    const baseName = name.replace(/\.[^/.]+$/, "");
+    return baseName.length > 15
+      ? `${baseName.slice(0, 15)}...${extension}`
+      : name;
+  };
+
   const dropzone1 = useDropzone({
     onDrop: handleDrop(setBoardResolutionFile),
     multiple: false,
     accept: ALLOWED_TYPES,
     maxSize: MAX_FILE_SIZE_MB * 1024 * 1024,
-    noClick: true,
+    noClick: false, 
     noKeyboard: true,
   });
 
@@ -133,7 +198,7 @@ const Attachment: React.FC<AttachmentProps> = ({
     multiple: false,
     accept: ALLOWED_TYPES,
     maxSize: MAX_FILE_SIZE_MB * 1024 * 1024,
-    noClick: true,
+    noClick: false, 
     noKeyboard: true,
   });
 
@@ -146,20 +211,34 @@ const Attachment: React.FC<AttachmentProps> = ({
             <span>{t("attachment.boardResolution.requiredIndicator")}</span>
             {t("attachment.boardResolution.label")}
           </AttachmentLabel>
-          <DropZoneCard {...dropzone1.getRootProps()}>
+          <DropZoneCard
+            {...dropzone1.getRootProps()}
+            className={boardResolutionFile ? "has-file" : ""}
+          >
             <input {...dropzone1.getInputProps()} />
-            <UploadIcon src={fileUpload} alt="upload" />
-            <PrimaryText>{t("attachment.dropzone.primaryText")}</PrimaryText>
-            <SecondaryText>
-              {t("attachment.dropzone.secondaryText", {
-                formats: t("attachment.dropzone.formats")
-              })}
-            </SecondaryText>
-            <BrowseText onClick={dropzone1.open}>
-              {t("attachment.dropzone.browseButton")}
-            </BrowseText>
-            {boardResolutionFile && (
-              <FileName>📎 {boardResolutionFile.name}</FileName>
+            {boardResolutionFile ? (
+              <>
+                <FileInfo>
+                  <UploadIcon src={fileUpload} alt="upload" />
+                    <FileName title={boardResolutionFile.name}>
+                      📎 {getDisplayFileName(boardResolutionFile.name.split("?")[0])}
+                    </FileName>
+                </FileInfo>
+                <DeleteButton onClick={handleDelete(setBoardResolutionFile)}>
+                  <img src={deleteIcon} alt="delete" />
+                </DeleteButton>
+              </>
+            ) : (
+              <>
+                <UploadIcon src={fileUpload} alt="upload" />
+                <PrimaryText>{t("attachment.dropzone.primaryText")}</PrimaryText>
+                <SecondaryText>
+                  {t("attachment.dropzone.secondaryText", {
+                    formats: t("attachment.dropzone.formats"),
+                  })}
+                </SecondaryText>
+                <BrowseText>{t("attachment.dropzone.browseButton")}</BrowseText>
+              </>
             )}
           </DropZoneCard>
         </div>
@@ -169,20 +248,34 @@ const Attachment: React.FC<AttachmentProps> = ({
             <span>{t("attachment.letterOfSupport.requiredIndicator")}</span>
             {t("attachment.letterOfSupport.label")}
           </AttachmentLabel>
-          <DropZoneCard {...dropzone2.getRootProps()}>
+          <DropZoneCard
+            {...dropzone2.getRootProps()}
+            className={letterOfSupportFile ? "has-file" : ""}
+          >
             <input {...dropzone2.getInputProps()} />
-            <UploadIcon src={fileUpload} alt="upload" />
-            <PrimaryText>{t("attachment.dropzone.primaryText")}</PrimaryText>
-            <SecondaryText>
-              {t("attachment.dropzone.secondaryText", {
-                formats: t("attachment.dropzone.formats")
-              })}
-            </SecondaryText>
-            <BrowseText onClick={dropzone2.open}>
-              {t("attachment.dropzone.browseButton")}
-            </BrowseText>
-            {letterOfSupportFile && (
-              <FileName>📎 {letterOfSupportFile.name}</FileName>
+            {letterOfSupportFile ? (
+              <>
+                <FileInfo>
+                  <UploadIcon src={fileUpload} alt="upload" />
+                    <FileName title={letterOfSupportFile.name}>
+                      📎 {getDisplayFileName(letterOfSupportFile.name.split("?")[0])}
+                    </FileName>
+                </FileInfo>
+                <DeleteButton onClick={handleDelete(setLetterOfSupportFile)}>
+                  <img src={deleteIcon} alt="delete" />
+                </DeleteButton>
+              </>
+            ) : (
+              <>
+                <UploadIcon src={fileUpload} alt="upload" />
+                <PrimaryText>{t("attachment.dropzone.primaryText")}</PrimaryText>
+                <SecondaryText>
+                  {t("attachment.dropzone.secondaryText", {
+                    formats: t("attachment.dropzone.formats"),
+                  })}
+                </SecondaryText>
+                <BrowseText>{t("attachment.dropzone.browseButton")}</BrowseText>
+              </>
             )}
           </DropZoneCard>
         </div>

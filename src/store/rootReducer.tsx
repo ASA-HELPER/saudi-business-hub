@@ -29,6 +29,7 @@ import contactPersonListReducer from "./reducers/contactPersonListReducer";
 import { shareholderPersonListReducer } from "./reducers/shareholderPersonListReducer";
 import previewReducer from "./reducers/previewReducer";
 import deleteContactPersonReducer from "./reducers/contactDeleteReducer";
+import shareholderDeleteReducer from "./reducers/shareholderDeleteReducer";
 
 export const rootReducer = combineReducers({
   user: userReducer,
@@ -61,6 +62,7 @@ export const rootReducer = combineReducers({
   shareholderPersons: shareholderPersonListReducer,
   preview: previewReducer,
   deleteContactPerson: deleteContactPersonReducer,
+  shareholder: shareholderDeleteReducer,
 });
 
 export type RootState = ReturnType<typeof rootReducer>;

@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import { Check } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 interface TermsAcknowledgmentProps {
   onAcknowledgmentChange?: (acknowledged: boolean) => void;
@@ -8,24 +9,22 @@ interface TermsAcknowledgmentProps {
 }
 
 // Styled Components
-const Container = styled.div`
+const Container = styled.div<{ dir?: "rtl" | "ltr" }>`
   width: 100%;
   max-width: 1200px;
-
   padding: 24px;
   background-color: white;
-  //border: 1px solid #e5e7eb;
-  //border-radius: 8px;
-  //box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
   margin-top: 20px;
+  direction: ${props => props.dir || "ltr"};
 `;
 
-const CheckboxContainer = styled.div`
+const CheckboxContainer = styled.div<{ dir?: "rtl" | "ltr" }>`
   display: flex;
   align-items: flex-start;
   gap: 12px;
   cursor: pointer;
   transition: all 0.2s ease;
+  flex-direction: ${props => props.dir === "rtl" ? "row-reverse" : "row"};
 
   &:hover {
     background-color: #f9fafb;
@@ -83,20 +82,23 @@ const CheckIcon = styled(Check)<{ $visible: boolean }>`
   transition: all 0.2s ease;
 `;
 
-const TextContent = styled.div`
+const TextContent = styled.div<{ dir?: "rtl" | "ltr" }>`
   flex: 1;
   line-height: 1.6;
   font-size: 16px;
   color: #374151;
   font-family: "29LT_Bukra-Regular", Helvetica, sans-serif;
+  text-align: ${props => props.dir === "rtl" ? "right" : "left"};
+  direction: ${props => props.dir || "ltr"};
 `;
 
-const LinkText = styled.a`
+const LinkText = styled.a<{ dir?: "rtl" | "ltr" }>`
   color: #00778e;
   text-decoration: underline;
   font-weight: 500;
   font-family: "29LT_Bukra-Medium", Helvetica, sans-serif;
   transition: color 0.2s ease;
+  margin: ${props => props.dir === "rtl" ? "0 0 0 4px" : "0 4px 0 0"};
 
   &:hover {
     color: #00667a;
@@ -114,6 +116,9 @@ export const TermsAcknowledgment: React.FC<TermsAcknowledgmentProps> = ({
   onAcknowledgmentChange,
   className,
 }) => {
+  const { t, i18n } = useTranslation();
+  const isArabic = i18n.language === "ar";
+  const dir = isArabic ? "rtl" : "ltr";
   const [isChecked, setIsChecked] = useState(false);
 
   const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -135,45 +140,43 @@ export const TermsAcknowledgment: React.FC<TermsAcknowledgmentProps> = ({
   };
 
   return (
-    <Container className={className}>
-      <CheckboxContainer onClick={handleContainerClick}>
+    <Container className={className} dir={dir}>
+      <CheckboxContainer onClick={handleContainerClick} dir={dir}>
         <CheckboxWrapper $checked={isChecked}>
           <HiddenCheckbox
             type="checkbox"
             checked={isChecked}
             onChange={handleCheckboxChange}
             onClick={(e) => e.stopPropagation()}
-            aria-label="Acknowledge terms and conditions"
+            aria-label={t("preview.terms.checkboxLabel")}
           />
           <CheckIcon $visible={isChecked} />
         </CheckboxWrapper>
 
-        <TextContent>
-          I acknowledge reading and agreeing to the{" "}
+        <TextContent dir={dir}>
+          {t("preview.terms.acknowledgment")}{" "}
           <LinkText
             href="#terms"
+            dir={dir}
             onClick={(e) => {
               e.stopPropagation();
-              // Handle terms link click
               console.log("Terms & Conditions clicked");
             }}
           >
-            terms & conditions
+            {t("preview.terms.termsConditions")}
           </LinkText>{" "}
-          and{" "}
+          {t("common.and")}{" "}
           <LinkText
             href="#privacy"
+            dir={dir}
             onClick={(e) => {
               e.stopPropagation();
-              // Handle privacy policy link click
               console.log("Privacy Policy clicked");
             }}
           >
-            Privacy Policy
+            {t("preview.terms.privacyPolicy")}
           </LinkText>
-          , the validity and accuracy of the data entered, and the Ministry's
-          right to process it in a way that serves the public interest and
-          facilitates the provision of investment services.
+          {t("preview.terms.validationText")}
         </TextContent>
       </CheckboxContainer>
     </Container>

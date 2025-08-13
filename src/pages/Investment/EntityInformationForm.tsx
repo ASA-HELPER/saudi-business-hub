@@ -90,7 +90,7 @@ export const EntityInformationForm = forwardRef<
   const regions = useSelector(selectRegions);
   const legalStatuses = useSelector(selectLegalStatuses);
   const expectedInvestments = useSelector(selectExpectedInvestmentList);
-  const [boardResolutionFile, setBoardResolutionFile] = useState<File | null>(
+  const [ boardResolutionFile, setBoardResolutionFile] = useState<File | null>(
     null
   );
   const [letterOfSupportFile, setLetterOfSupportFile] = useState<File | null>(
@@ -122,8 +122,21 @@ export const EntityInformationForm = forwardRef<
         list_of_rhq_corporate_activties: [],
         activity_ids: entityInfo.activities?.map((a) => a.id) ?? [],
       });
+    if (entityInfo.board_resolution_file) {
+      const boardResolutionFile = {
+        name: entityInfo.board_resolution_file.split('/').pop() || 'board_resolution.pdf',
+      } as unknown as File;
+      setBoardResolutionFile(boardResolutionFile);
     }
-  }, [entityInfo]);
+    
+    if (entityInfo.letter_of_support_file) {
+      const letterOfSupportFile = {
+        name: entityInfo.letter_of_support_file.split('/').pop() || 'letter_of_support.pdf',
+      } as unknown as File;
+      setLetterOfSupportFile(letterOfSupportFile);
+    }
+  }
+}, [entityInfo]);
 
   useEffect(() => {
     dispatch(fetchCountriesRequest());
@@ -255,7 +268,7 @@ export const EntityInformationForm = forwardRef<
                 name="entity_name"
                 value={formData.entity_name}
                 onChange={handleChange}
-                placeholder={t("entityInformation.enterPlaceholder", {
+                placeholder={t("entityInformation.enterEntityNameEn", {
                   field: t("entityInformation.entityNameEn"),
                 })}
                 $isRTL={isRTL}
@@ -273,7 +286,7 @@ export const EntityInformationForm = forwardRef<
                 name="entity_name_arabic"
                 value={formData.entity_name_arabic}
                 onChange={handleChange}
-                placeholder={t("entityInformation.enterPlaceholder", {
+                placeholder={t("entityInformation.enterEntityNameAr", {
                   field: t("entityInformation.entityNameAr"),
                 })}
                 $isRTL={isRTL}
@@ -296,7 +309,7 @@ export const EntityInformationForm = forwardRef<
                 $isRTL={isRTL}
               >
                 <option value="" disabled hidden>
-                  {t("entityInformation.selectPlaceholder", {
+                  {t("entityInformation.selectLegalStatus", {
                     field: t("entityInformation.legalStatus"),
                   })}
                 </option>
@@ -321,7 +334,7 @@ export const EntityInformationForm = forwardRef<
                   name="capital"
                   value={formData.capital}
                   onChange={handleChange}
-                  placeholder={t("entityInformation.enterPlaceholder", {
+                  placeholder={t("entityInformation.enterCapital", {
                     field: t("entityInformation.capital"),
                   })}
                   $isRTL={isRTL}
@@ -341,7 +354,7 @@ export const EntityInformationForm = forwardRef<
                 type="email"
                 value={formData.email}
                 onChange={handleChange}
-                placeholder={t("entityInformation.enterPlaceholder", {
+                placeholder={t("entityInformation.enterEmail", {
                   field: t("entityInformation.email"),
                 })}
                 $isRTL={isRTL}
@@ -361,7 +374,7 @@ export const EntityInformationForm = forwardRef<
                   style={{ width: "25%" }}
                 >
                   <option value="" disabled hidden>
-                    + Code
+                    +code
                   </option>
                   {countries.map((country: Country) => (
                     <option key={country.id} value={country.id}>
@@ -375,7 +388,7 @@ export const EntityInformationForm = forwardRef<
                   type="tel"
                   value={formData.mobile_phone}
                   onChange={handleChange}
-                  placeholder={t("entityInformation.enterPlaceholder", {
+                  placeholder={t("entityInformation.enterMobileNumber", {
                     field: t("entityInformation.mobileNumber"),
                   })}
                   $isRTL={isRTL}
@@ -402,7 +415,7 @@ export const EntityInformationForm = forwardRef<
                 $isRTL={isRTL}
               >
                 <option value="" disabled hidden>
-                  {t("entityInformation.selectPlaceholder", {
+                  {t("entityInformation.selectCountry", {
                     field: t("entityInformation.country"),
                   })}
                 </option>
@@ -426,7 +439,7 @@ export const EntityInformationForm = forwardRef<
                 $isRTL={isRTL}
               >
                 <option value="" disabled hidden>
-                  {t("entityInformation.selectPlaceholder", {
+                  {t("entityInformation.selectRegion", {
                     field: t("entityInformation.region"),
                   })}
                 </option>
@@ -452,7 +465,7 @@ export const EntityInformationForm = forwardRef<
                 $isRTL={isRTL}
               >
                 <option value="" disabled hidden>
-                  {t("entityInformation.selectPlaceholder", {
+                  {t("entityInformation.selectCity", {
                     field: t("entityInformation.city"),
                   })}
                 </option>
@@ -476,7 +489,7 @@ export const EntityInformationForm = forwardRef<
                 $isRTL={isRTL}
               >
                 <option value="" disabled hidden>
-                  {t("entityInformation.selectPlaceholder", {
+                  {t("entityInformation.selectInvestmentSpending", {
                     field: t("entityInformation.investmentSpending"),
                   })}
                 </option>
@@ -506,7 +519,7 @@ export const EntityInformationForm = forwardRef<
               $isRTL={isRTL}
             >
               <option value="" disabled hidden>
-                {t("entityInformation.selectPlaceholder", {
+                {t("entityInformation.selectLicenseDuration", {
                   field: t("entityInformation.licenseDuration"),
                 })}
               </option>
