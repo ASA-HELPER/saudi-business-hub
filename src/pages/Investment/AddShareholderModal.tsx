@@ -23,6 +23,10 @@ import { useTranslation } from "react-i18next";
 import { fetchShareholderPersonsRequest } from "../../store/actions/shareholderPersonListActions";
 import { selectShareholderPersons } from "../../store/selectors/shareholderPersonListSelectors";
 import FileUpload from "./modal/FileUpload";
+import { getShareholderByIdRequest } from "../../store/actions/shareholderGetByIdActions";
+import { AppDispatch, RootState } from "../../store";
+import { selectShareholderByIdData } from "../../store/selectors/shareholderByIdSelectors";
+import { selectAppLang } from "../../store/slices/languageSlice";
 
 const ModalOverlay = styled.div`
   position: fixed;
@@ -341,7 +345,7 @@ export default function AddShareholderModal({
   customerId: number;
   sharePercentage: string;
 }) {
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
 
   const [shareholderType, setShareholderType] = useState("new");
   const [personOrOrg, setPersonOrOrg] = useState("person");
@@ -355,8 +359,12 @@ export default function AddShareholderModal({
   const [identityType, setIdentityType] = useState("");
   const [fileError, setFileError] = useState<string>("");
   const shareHolderPersonList = useSelector(selectShareholderPersons);
-  const [passportLicenseFile, setPassportLicenseFile] = useState<File | null>(null);
+  const [passportLicenseFile, setPassportLicenseFile] = useState<File | null>(
+    null
+  );
+  const selectedLanguage = useSelector(selectAppLang);
 
+  const shareholderByIdData = useSelector(selectShareholderByIdData);
 
   const allowedTypes = [
     "application/pdf",
@@ -390,7 +398,8 @@ export default function AddShareholderModal({
 
   useEffect(() => {
     if (shareHolderId != 0 && customerId != 0) {
-      dispatch(fetchShareholderPersonsRequest(customerId));
+      //dispatch(fetchShareholderPersonsRequest(customerId));
+      dispatch(getShareholderByIdRequest(shareHolderId));
     }
   }, []);
 
@@ -436,33 +445,64 @@ export default function AddShareholderModal({
     dateOfBirth: "",
   });
 
+  // useEffect(() => {
+  //   const shareHolder = shareHolderPersonList.find(
+  //     (c) => c.id === shareHolderId
+  //   );
+  //   setIdentityType("passport");
+  //   setFormData({
+  //     identityType: shareHolder?.id_type.toString() ?? "",
+  //     title: shareHolder?.title_id?.toString() ?? "",
+  //     firstNameArabic: shareHolder?.first_name_arabic ?? "",
+  //     lastNameArabic: shareHolder?.last_name_arabic ?? "",
+  //     fullName: shareHolder?.full_name ?? "",
+  //     sharePercentage: sharePercentage,
+  //     identityNumber: shareHolder?.passport_number ?? "",
+  //     nationality: shareHolder?.nationality_id.toString() ?? "",
+  //     country: shareHolder?.country_id.toString() ?? "",
+  //     city: shareHolder?.contact_person_city.toString() ?? "",
+  //     professionalLicense: "",
+  //     mobile_code_country_id:
+  //       shareHolder?.mobile_code_country_id.toString() ?? "",
+  //     phoneNumber: shareHolder?.mobile_number.toString() ?? "",
+  //     email: shareHolder?.email.toString() ?? "",
+  //     placeOfBirth: "",
+  //     passportIssueDate: shareHolder?.passport_issue_date.toString() ?? "",
+  //     passportExpiryDate: shareHolder?.passport_expiry_date.toString() ?? "",
+  //     dateOfBirth: shareHolder?.date_of_birth.toString() ?? "",
+  //   });
+  // }, [shareHolderPersonList]);
+
   useEffect(() => {
-    const shareHolder = shareHolderPersonList.find(
-      (c) => c.id === shareHolderId
-    );
+    console.log("selectShareholderByIdState", shareholderByIdData);
+    const shareHolder = shareholderByIdData?.person;
+    console.log("shareHolder", JSON.stringify(shareHolder));
     setIdentityType("passport");
-    setFormData({
-      identityType: shareHolder?.id_type.toString() ?? "",
-      title: shareHolder?.title_id?.toString() ?? "",
-      firstNameArabic: shareHolder?.first_name_arabic ?? "",
-      lastNameArabic: shareHolder?.last_name_arabic ?? "",
-      fullName: shareHolder?.full_name ?? "",
-      sharePercentage: sharePercentage,
-      identityNumber: shareHolder?.passport_number ?? "",
-      nationality: shareHolder?.nationality_id.toString() ?? "",
-      country: shareHolder?.country_id.toString() ?? "",
-      city: shareHolder?.contact_person_city.toString() ?? "",
-      professionalLicense: "",
-      mobile_code_country_id:
-        shareHolder?.mobile_code_country_id.toString() ?? "",
-      phoneNumber: shareHolder?.mobile_number.toString() ?? "",
-      email: shareHolder?.email.toString() ?? "",
-      placeOfBirth: "",
-      passportIssueDate: shareHolder?.passport_issue_date.toString() ?? "",
-      passportExpiryDate: shareHolder?.passport_expiry_date.toString() ?? "",
-      dateOfBirth: shareHolder?.date_of_birth.toString() ?? "",
-    });
-  }, [shareHolderPersonList]);
+    if (shareHolder) {
+      setFormData({
+        identityType: shareHolder?.share_holder_id_type_id?.toString() ?? "",
+        title: shareHolder?.shareholder_title?.toString() ?? "",
+        firstNameArabic: shareHolder?.first_name_arabic ?? "",
+        lastNameArabic: shareHolder?.last_name_arabic ?? "",
+        fullName: shareHolder?.full_name ?? "",
+        sharePercentage: sharePercentage,
+        identityNumber: shareHolder?.passport_number ?? "",
+        nationality: shareHolder?.current_nationality_id?.toString() ?? "",
+        country: shareHolder?.country_id?.toString() ?? "",
+        city: shareHolder?.person_shareholder_city?.toString() ?? "",
+        professionalLicense:
+          shareHolder?.professional_license === true ? "yes" : "no",
+        mobile_code_country_id:
+          shareHolder?.mobile_country_code_id?.toString() ?? "",
+        phoneNumber: shareHolder?.mobile_number?.toString() ?? "",
+        email: shareHolder?.email?.toString() ?? "",
+        placeOfBirth: shareHolder?.place_of_birth?.toString() ?? "",
+        passportIssueDate: shareHolder?.passport_issue_date?.toString() ?? "",
+        passportExpiryDate: shareHolder?.passport_expiry_date?.toString() ?? "",
+        dateOfBirth: shareHolder?.date_of_birth?.toString() ?? "",
+      });
+    }
+  }, [shareholderByIdData]);
 
   const [startDate, setStartDate] = useState(new Date());
 
@@ -600,8 +640,8 @@ export default function AddShareholderModal({
         passport_issue_date: formData.passportIssueDate,
         passport_expiry_date: formData.passportExpiryDate,
         professional_license: formData.professionalLicense === "yes" ? 1 : 0,
-        passport_id_copy: selectedFile!, // non-null asserted if validated
-        professional_license_certificate: selectedFile!, // dummy or another file if applicable
+        passport_id_copy: passportLicenseFile!, // non-null asserted if validated
+        professional_license_certificate: passportLicenseFile!, // dummy or another file if applicable
       },
     };
 
@@ -705,7 +745,9 @@ export default function AddShareholderModal({
                           </option>
                           {shareholderIdTypes.map((idT) => (
                             <option key={idT.id} value={idT.id}>
-                              {idT.name}
+                              {selectedLanguage == "ar"
+                                ? idT.name_ar
+                                : idT.name_en}
                             </option>
                           ))}
                         </Select>
@@ -778,7 +820,9 @@ export default function AddShareholderModal({
                         )}
 
                         <InputGroup>
-                          <Label>* {t("shareholderModal.firstNameArabic")}</Label>
+                          <Label>
+                            * {t("shareholderModal.firstNameArabic")}
+                          </Label>
                           <>
                             <Input
                               name="firstNameArabic"
@@ -879,7 +923,9 @@ export default function AddShareholderModal({
                                 </option>
                                 {countries.map((c: Country) => (
                                   <option key={c.id} value={c.id}>
-                                    {c.name}
+                                    {selectedLanguage == "ar"
+                                      ? c.name_ar
+                                      : c.name_en}
                                   </option>
                                 ))}
                               </Select>
@@ -902,7 +948,9 @@ export default function AddShareholderModal({
                                 </option>
                                 {countries.map((c: Country) => (
                                   <option key={c.id} value={c.id}>
-                                    {c.name}
+                                    {selectedLanguage == "ar"
+                                      ? c.name_ar
+                                      : c.name_en}
                                   </option>
                                 ))}
                               </Select>

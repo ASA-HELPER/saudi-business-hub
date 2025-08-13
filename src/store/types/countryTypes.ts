@@ -5,6 +5,8 @@ export const FETCH_COUNTRIES_FAILURE = "FETCH_COUNTRIES_FAILURE";
 export interface Country {
   id: number;
   name: string;
+  name_en: string;
+  name_ar: string;
   code: string;
   phone_prefix: number;
 }

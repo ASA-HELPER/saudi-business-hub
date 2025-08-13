@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import styled from "styled-components";
 import { EntityInformationForm } from "./EntityInformationForm";
 import RegistrationPill from "./RegistrationPill";
@@ -28,7 +28,10 @@ import {
 import { selectEntityList } from "../../store/selectors/getEntityListSelectors";
 import { getEntityListRequest } from "../../store/actions/getEntityListActions";
 import { assembleBusinessActivityRows } from "./businessReg/assembleActivityRows";
-import { EntityActivity } from "../../store/types/getEntityList";
+import {
+  EntityActivity,
+  EntityInformation,
+} from "../../store/types/getEntityList";
 import { Activity } from "./businessReg/types";
 import { addActivityRows } from "../../store/reducers/businessActivitySlice";
 import { BusinessActivityRowItem } from "../../store/types/businessActivity";
@@ -47,10 +50,13 @@ const PageWrapper = styled.div<{ $isRTL?: boolean }>`
 const CheckboxIcon = styled.img<{ $isRTL?: boolean }>`
   width: 24px;
   height: 24px;
-  ${({ $isRTL }) => $isRTL ? `
+  ${({ $isRTL }) =>
+    $isRTL
+      ? `
     margin-left: 0;
     margin-right: auto;
-  ` : `
+  `
+      : `
     margin-left: auto;
     margin-right: 0;
   `}
@@ -62,7 +68,8 @@ const Card = styled.div<{ $isRTL?: boolean }>`
   padding: 32px;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
   width: 100%;
-  font-family: ${(props) => props.$isRTL && "'IBM Plex Sans Arabic', sans-serif"};
+  font-family: ${(props) =>
+    props.$isRTL && "'IBM Plex Sans Arabic', sans-serif"};
 `;
 
 const Container = styled.div`
@@ -96,10 +103,10 @@ const OptionCard = styled.div<{ selected: boolean; $isRTL?: boolean }>`
   cursor: pointer;
   transition: border-color 0.3s;
   background-color: ${({ selected }) => (selected ? "#edf5f7" : "#fff")};
-  
+
   /* Add this RTL flip */
   flex-direction: ${({ $isRTL }) => ($isRTL ? "row-reverse" : "row")};
-  
+
   &:hover {
     border-color: #00778e;
     background-color: #edf5f7;
@@ -110,7 +117,7 @@ const OptionContent = styled.div<{ $isRTL?: boolean }>`
   display: flex;
   align-items: center;
   gap: 16px;
-  
+
   /* Add this RTL flip */
   flex-direction: ${({ $isRTL }) => ($isRTL ? "row-reverse" : "row")};
 `;
@@ -127,7 +134,8 @@ const OptionLabel = styled.div<{ $isRTL?: boolean }>`
   font-weight: 600;
   color: #1f2937;
   text-align: ${(props) => (props.$isRTL ? "right" : "left")};
-  font-family: ${(props) => props.$isRTL && "'IBM Plex Sans Arabic', sans-serif"};
+  font-family: ${(props) =>
+    props.$isRTL && "'IBM Plex Sans Arabic', sans-serif"};
 `;
 
 const CheckboxOuter = styled.div<{ checked: boolean }>`
@@ -268,6 +276,7 @@ type RegistrationTypeStepProps = {
   setSelected: (type: string) => void;
   entityFormRef: React.Ref<{ submit: () => void }>;
   onSuccess: () => void;
+  onRefresh: () => void;
 };
 
 const RegistrationTypeStep: React.FC<RegistrationTypeStepProps> = ({
@@ -275,6 +284,7 @@ const RegistrationTypeStep: React.FC<RegistrationTypeStepProps> = ({
   setSelected,
   entityFormRef,
   onSuccess,
+  onRefresh,
 }) => {
   const dispatch = useDispatch();
   const { t, i18n } = useTranslation();
@@ -283,8 +293,19 @@ const RegistrationTypeStep: React.FC<RegistrationTypeStepProps> = ({
   const selectedType = useSelector(selectSelectedRegistrationType);
   const loading = useSelector(selectRegistrationTypesLoading);
   const error = useSelector(selectRegistrationTypesError);
+  const [localEntityData, setLocalEntityData] =
+    useState<EntityInformation | null>(null);
 
   const entityData = useSelector(selectEntityList);
+  const storedLang = localStorage.getItem("appLang") || "en";
+
+  const refreshEntityList = useCallback(() => {
+    dispatch(getEntityListRequest());
+  }, [dispatch]);
+
+  useEffect(() => {
+    refreshEntityList();
+  }, [refreshEntityList]);
 
   useEffect(() => {
     dispatch(getEntityListRequest());
@@ -349,6 +370,8 @@ const RegistrationTypeStep: React.FC<RegistrationTypeStepProps> = ({
       section_id: item.section_id,
       division_id: item.division_id,
       description: item.description,
+      description_en: item.description_en,
+      description_ar: item.description_ar,
       isic_master_rule: {
         classification: item?.isic_master_rule?.classification ?? "",
       },
@@ -379,43 +402,54 @@ const RegistrationTypeStep: React.FC<RegistrationTypeStepProps> = ({
   };
 
   return (
-     <PageWrapper $isRTL={isRTL}>
+    <PageWrapper $isRTL={isRTL}>
       <Card $isRTL={isRTL}>
-        <SectionTitle $isRTL={isRTL}>{t("registrationTypes.title")}</SectionTitle>
+        <SectionTitle $isRTL={isRTL}>
+          {t("registrationTypes.title")}
+        </SectionTitle>
 
         {loading && <p>{t("common.loading")}</p>}
-        {error && <p style={{ color: "red" }}>{t("common.error")}: {error}</p>}
+        {error && (
+          <p style={{ color: "red" }}>
+            {t("common.error")}: {error}
+          </p>
+        )}
 
-      <OptionsGrid>
-        {registrationTypes
-          .filter(type => type.name !== "RHQ") // Filter out RHQ
-          .map((type) => (
-            <OptionCard
-              key={type.id}
-              selected={selectedType?.id === type.id}
-              onClick={() => handleSelect(type.id)}
-              $isRTL={isRTL}
-            >
-              <OptionContent $isRTL={isRTL}>
-                <OptionImage
-                  src={iconMap[type.name] || "/images/default-reg-type.svg"}
-                  alt={type.name}
+        <OptionsGrid>
+          {registrationTypes
+            .filter(
+              (type) =>
+                (storedLang === "ar" ? type.name_ar : type.name_en) !== "RHQ"
+            )
+            .map((type) => (
+              <OptionCard
+                key={type.id}
+                selected={selectedType?.id === type.id}
+                onClick={() => handleSelect(type.id)}
+                $isRTL={isRTL}
+              >
+                <OptionContent $isRTL={isRTL}>
+                  <OptionImage
+                    src={
+                      iconMap[type.name_en] || "/images/default-reg-type.svg"
+                    }
+                    alt={storedLang === "ar" ? type.name_ar : type.name_en}
+                  />
+                  <OptionLabel $isRTL={isRTL}>
+                    {storedLang === "ar" ? type.name_ar : type.name_en}
+                  </OptionLabel>
+                </OptionContent>
+                <CheckboxIcon
+                  src={selectedType?.id === type.id ? checkOn : checkOff}
+                  alt={
+                    selectedType?.id === type.id
+                      ? t("common.selected")
+                      : t("common.notSelected")
+                  }
                 />
-                <OptionLabel $isRTL={isRTL}>
-                  {type.name}
-                </OptionLabel>
-              </OptionContent>
-              <CheckboxIcon
-                src={selectedType?.id === type.id ? checkOn : checkOff}
-                alt={
-                  selectedType?.id === type.id
-                    ? t("common.selected")
-                    : t("common.notSelected")
-                }
-              />
-            </OptionCard>
-          ))}
-      </OptionsGrid>
+              </OptionCard>
+            ))}
+        </OptionsGrid>
 
         {selectedType && (
           <>
@@ -427,6 +461,7 @@ const RegistrationTypeStep: React.FC<RegistrationTypeStepProps> = ({
               entityInfo={
                 entityData.length > 0 ? entityData[entityData.length - 1] : null
               }
+              onRefresh={refreshEntityList}
             />
           </>
         )}

@@ -16,6 +16,7 @@ import {
 } from "../../store/types/previewTypes";
 import { deleteContactPersonRequest } from "../../store/actions/deleteContactAction";
 import { selectDeleteContactPersonSuccess } from "../../store/selectors/deleteContactPersonSelector";
+import { selectAppLang } from "../../store/slices/languageSlice";
 
 // Styled Components
 const PageWrapper = styled.div`
@@ -72,6 +73,7 @@ const PreviewScreenStep: React.FC<PreviewStepProps> = ({
   };
 
   const shareholders = previewData?.shareholders ?? [];
+  const selectedLanguage = useSelector(selectAppLang);
 
   // Convert entity_information to RegistrationData
   const mapEntityInfoToRegistrationData = (
@@ -129,7 +131,7 @@ const PreviewScreenStep: React.FC<PreviewStepProps> = ({
     previewData?.contact_person
       ? {
           contactId: previewData.contact_person.id,
-          fullName:`${previewData.contact_person.first_name_arabic} ${previewData.contact_person.last_name_arabic}`,
+          fullName: `${previewData.contact_person.first_name_arabic} ${previewData.contact_person.last_name_arabic}`,
           fullNameEn: previewData.contact_person.full_name,
           nationalId: previewData.contact_person.national_id,
           passportNumber: previewData.contact_person.passport_number,
@@ -148,7 +150,6 @@ const PreviewScreenStep: React.FC<PreviewStepProps> = ({
       <Card>
         <RegistrationDetails data={registrationData} />
 
-       
         <ShareholdersTable shareholders={mappedShareholders} />
 
         {contactPersonData && (

@@ -14,6 +14,8 @@ export interface EntityActivity {
   division_id: number;
   isic_master_rule_id: number;
   description: string;
+  description_en: string;
+  description_ar: string;
   spl_requirement_id: string;
   qeemah_channel: string;
   active: number;

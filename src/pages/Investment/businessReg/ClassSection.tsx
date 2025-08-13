@@ -9,6 +9,7 @@ import {
   resetAfterClasses,
   setClasses,
 } from "../../../store/reducers/businessActivitySlice";
+import { selectAppLang } from "../../../store/slices/languageSlice";
 const Wrapper = styled.div`
   background-color: white;
   border-radius: 8px;
@@ -104,6 +105,7 @@ interface ClassSectionProps {
 
 const ClassSection: React.FC<ClassSectionProps> = ({ structureData }) => {
   const [searchTerm, setSearchTerm] = useState("");
+  const selectedLanguage = useSelector(selectAppLang);
 
   const dispatch = useDispatch();
   const selectedGroups = useSelector(
@@ -134,7 +136,9 @@ const ClassSection: React.FC<ClassSectionProps> = ({ structureData }) => {
             structureData.class.filter(
               (cls) =>
                 selectedGroups.some((group) => group.id === cls.group_id) &&
-                cls.description.toLowerCase().includes(searchTerm.toLowerCase())
+                cls.description_en
+                  .toLowerCase()
+                  .includes(searchTerm.toLowerCase())
             ).length
           }
           )
@@ -148,10 +152,14 @@ const ClassSection: React.FC<ClassSectionProps> = ({ structureData }) => {
 
       <Content>
         {selectedGroups.map((group, index) => {
-          const groupClasses = structureData.class.filter(
-            (cls) =>
-              cls.group_id === group.id &&
-              cls.description.toLowerCase().includes(searchTerm.toLowerCase())
+          const groupClasses = structureData.class.filter((cls) =>
+            cls.group_id === group.id && selectedLanguage == "ar"
+              ? cls.description_ar
+                  .toLowerCase()
+                  .includes(searchTerm.toLowerCase())
+              : cls.description_en
+                  .toLowerCase()
+                  .includes(searchTerm.toLowerCase())
           );
 
           if (groupClasses.length === 0) return null;
@@ -177,7 +185,9 @@ const ClassSection: React.FC<ClassSectionProps> = ({ structureData }) => {
                         alt={isSelected ? "Selected" : "Not selected"}
                       />
                       <Label checked={isSelected}>
-                        {item.classid + " - " + item.description}
+                        {item.classid + " - " + selectedLanguage == "ar"
+                          ? item.description_ar
+                          : item.description_en}
                       </Label>
                     </Card>
                   );

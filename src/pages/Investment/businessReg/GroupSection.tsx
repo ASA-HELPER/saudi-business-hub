@@ -10,6 +10,7 @@ import {
   resetAfterGroup,
   setGroups,
 } from "../../../store/reducers/businessActivitySlice";
+import { selectAppLang } from "../../../store/slices/languageSlice";
 
 const Wrapper = styled.div`
   background-color: white;
@@ -110,6 +111,7 @@ const GroupSection: React.FC<GroupSectionProps> = ({
   structureData,
 }) => {
   const [searchTerm, setSearchTerm] = useState("");
+  const selectedLanguage = useSelector(selectAppLang);
 
   const dispatch = useDispatch();
   const selectedGroups = useSelector(
@@ -154,16 +156,23 @@ const GroupSection: React.FC<GroupSectionProps> = ({
             (g) => g.division_id === division.id
           );
 
-          const filteredGroups = relatedGroups?.filter((group) =>
-            group.description.toLowerCase().includes(searchTerm.toLowerCase())
-          );
+          const filteredGroups = relatedGroups?.filter((group) => {
+            const desc =
+              selectedLanguage === "en"
+                ? group.description_en
+                : group.description_ar;
+            return desc?.toLowerCase().includes(searchTerm.toLowerCase());
+          });
 
           if (filteredGroups?.length === 0) return null;
 
           return (
             <div key={division.division_id}>
               <GroupTitle>
-                {division.division_id} - {division.description}
+                {division.division_id} -{" "}
+                {selectedLanguage === "en"
+                  ? division.description_en
+                  : division.description_ar}
               </GroupTitle>
 
               <CardGrid>
@@ -171,6 +180,10 @@ const GroupSection: React.FC<GroupSectionProps> = ({
                   const isSelected = selectedGroups.some(
                     (g) => g.groupid === group.groupid
                   );
+                  const label =
+                    selectedLanguage === "en"
+                      ? group.description_en
+                      : group.description_ar;
                   return (
                     <Card
                       key={group.groupid}
@@ -182,7 +195,7 @@ const GroupSection: React.FC<GroupSectionProps> = ({
                         alt={isSelected ? "Selected" : "Not selected"}
                       />
                       <Label checked={isSelected}>
-                        {group.groupid} - {group.description}
+                        {group.groupid} - {label}
                       </Label>
                     </Card>
                   );
@@ -197,5 +210,99 @@ const GroupSection: React.FC<GroupSectionProps> = ({
     </Wrapper>
   );
 };
+
+// const GroupSection: React.FC<GroupSectionProps> = ({
+//   selectedDivisions,
+//   structureData,
+// }) => {
+//   const [searchTerm, setSearchTerm] = useState("");
+//   const selectedLanguage = useSelector(selectAppLang);
+
+//   const dispatch = useDispatch();
+//   const selectedGroups = useSelector(
+//     (state: RootState) => state.businessActivity.groups
+//   );
+
+//   const handleToggle = (group: Group) => {
+//     const isSelected = selectedGroups.some((g) => g.groupid === group.groupid);
+
+//     if (isSelected) {
+//       dispatch(
+//         setGroups(selectedGroups.filter((g) => g.groupid !== group.groupid))
+//       );
+//     } else if (selectedGroups.length < 10) {
+//       dispatch(setGroups([...selectedGroups, group]));
+//     }
+//     dispatch(resetAfterGroup());
+//   };
+
+//   return (
+//     <Wrapper>
+//       <Header>
+//         <Title>
+//           Choose your Group ({selectedGroups.length}/
+//           {structureData?.groups?.filter((group) =>
+//             selectedDivisions.some(
+//               (division) => division.id === group.division_id
+//             )
+//           )?.length || 0}
+//           )
+//         </Title>
+//         <SearchInput
+//           placeholder="Search"
+//           value={searchTerm}
+//           onChange={(e) => setSearchTerm(e.target.value)}
+//         />
+//       </Header>
+
+//       <Content>
+//         {selectedDivisions.map((division, index) => {
+//           const relatedGroups = structureData?.groups.filter(
+//             (g) => g.division_id === division.id
+//           );
+
+//           const filteredGroups = relatedGroups?.filter((group) =>
+//             group.description.toLowerCase().includes(searchTerm.toLowerCase())
+//           );
+
+//           if (filteredGroups?.length === 0) return null;
+
+//           return (
+//             <div key={division.division_id}>
+//               <GroupTitle>
+//                 {division.division_id} - {division.description}
+//               </GroupTitle>
+
+//               <CardGrid>
+//                 {filteredGroups?.map((group) => {
+//                   const isSelected = selectedGroups.some(
+//                     (g) => g.groupid === group.groupid
+//                   );
+//                   return (
+//                     <Card
+//                       key={group.groupid}
+//                       selected={isSelected}
+//                       onClick={() => handleToggle(group)}
+//                     >
+//                       <CheckboxIcon
+//                         src={isSelected ? checkOn : checkOff}
+//                         alt={isSelected ? "Selected" : "Not selected"}
+//                       />
+//                       <Label checked={isSelected}>
+//                         {group.groupid} - {group.description}
+//                       </Label>
+//                     </Card>
+//                   );
+//                 })}
+//               </CardGrid>
+
+//               {index < selectedDivisions.length - 1 && <Divider />}
+//             </div>
+//           );
+//         })}
+//       </Content>
+//     </Wrapper>
+//   );
+// };
 
 export default GroupSection;

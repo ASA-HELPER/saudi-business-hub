@@ -17,6 +17,8 @@ import {
   LanguageButton,
   LanguageSwitch,
 } from "../../../pages/Login/LoginComponent.styles";
+import { useDispatch } from "react-redux";
+import { setAppLanguage } from "../../../store/slices/languageSlice";
 
 const NavbarWrapper = styled.nav<{ backgroundColor?: string }>`
   display: flex;
@@ -142,11 +144,14 @@ const Navbar: React.FC<Props> = ({
 }) => {
   const [activeTab, setActiveTab] = useState("home");
   const { t, i18n } = useTranslation();
+  const dispatch = useDispatch();
 
   const handleLanguageChange = (lang: "en" | "ar") => {
     setLanguage(lang);
-    i18n.changeLanguage(lang);
-    document.documentElement.dir = lang === "ar" ? "rtl" : "ltr";
+    dispatch(setAppLanguage(lang)); // update redux store
+    localStorage.setItem("appLang", lang); // persist to local storage
+    i18n.changeLanguage(lang); // change translation
+    document.documentElement.dir = lang === "ar" ? "rtl" : "ltr"; // set text direction
   };
 
   return (

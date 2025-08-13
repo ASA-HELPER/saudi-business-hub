@@ -95,14 +95,15 @@ const ArrowButton = styled.div`
 
 const Footer = styled.div<{ $isRTL?: boolean }>`
   display: flex;
-  justify-content: flex-end;
+  justify-content: center; 
   padding: 20px;
   gap: 16px;
   position: absolute;
   bottom: 0;
-  ${(props) => (props.$isRTL ? "left: 150px" : "right: 150px")};
+  width: 100%; 
   flex-direction: ${(props) => (props.$isRTL ? "row-reverse" : "row")};
 `;
+
 
 const CloseBtn = styled.button`
   border: 2px solid #007d8a;

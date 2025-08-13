@@ -12,7 +12,7 @@ const Label = styled.label`
   align-items: center;
   gap: 1px;
   color: #47515b;
-  padding: 2px;
+  padding: 7px 2px;
   font-size: 10px;
 `;
 

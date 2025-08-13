@@ -37,6 +37,7 @@ import {
   selectStructureLoading,
 } from "../../../store/selectors/structureSelectors";
 import { selectSelectedRegistrationType } from "../../../store/selectors/registrationTypeSelectors";
+import { selectAppLang } from "../../../store/slices/languageSlice";
 
 const Container = styled.div`
   display: flex;
@@ -243,6 +244,7 @@ const BusinessSectionScreen: React.FC = () => {
   const [language, setLanguage] = useState<"en" | "ar">("en");
 
   const selectedType = useSelector(selectSelectedRegistrationType);
+  const selectedLanguage = useSelector(selectAppLang);
 
   const [currentStep, setCurrentStep] = useState<number>(0);
   const [searchTerm, setSearchTerm] = useState("");
@@ -332,11 +334,16 @@ const BusinessSectionScreen: React.FC = () => {
               ) : (
                 <Grid>
                   {busineesRegData?.sections
-                    .filter((section) =>
-                      section.description
-                        .toLowerCase()
-                        .includes(searchTerm.toLowerCase())
-                    )
+                    .filter((section) => {
+                      const description =
+                        selectedLanguage === "en"
+                          ? section.description_en
+                          : section.description_ar;
+
+                      return description
+                        ?.toLowerCase()
+                        .includes(searchTerm.toLowerCase());
+                    })
                     .map((section) => {
                       const isSelected =
                         selectedSection?.sectionid === section.sectionid;
@@ -357,7 +364,10 @@ const BusinessSectionScreen: React.FC = () => {
                           }}
                         >
                           <CardLabel selected={isSelected}>
-                            {section.sectionid} - {section.description}
+                            {section.sectionid} -{" "}
+                            {selectedLanguage == "en"
+                              ? section.description_en
+                              : section.description_ar}
                           </CardLabel>
                           <Radio selected={isSelected} />
                         </Card>

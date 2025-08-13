@@ -162,9 +162,8 @@ const FileUpload: React.FC<FileUploadProps> = ({
     fileName = fileName.split(/[?#]/)[0];
     try {
       fileName = decodeURIComponent(fileName);
-    } catch {
-    }
-    
+    } catch {}
+
     return fileName;
   };
 
@@ -219,13 +218,20 @@ const FileUpload: React.FC<FileUploadProps> = ({
             ) : (
               <>
                 <UploadIcon src={fileUpload} alt="upload" />
-                <PrimaryText>{t("attachment.dropzone.primaryText")}</PrimaryText>
+                <PrimaryText>
+                  {t("attachment.dropzone.primaryText")}
+                </PrimaryText>
                 <SecondaryText>
                   {t("attachment.dropzone.secondaryText", {
                     formats: "PDF, DOC, JPG, PNG",
                   })}
                 </SecondaryText>
-                <BrowseText onClick={dropzone.open}>
+                <BrowseText
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    dropzone.open();
+                  }}
+                >
                   {t("attachment.dropzone.browseButton")}
                 </BrowseText>
               </>

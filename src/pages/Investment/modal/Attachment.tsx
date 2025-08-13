@@ -5,6 +5,8 @@ import { useTranslation } from "react-i18next";
 import fileUpload from "../../../assets/images/investment/file-upload.svg";
 import deleteIcon from "../../../assets/images/investment/delete_icon.svg";
 import SectionTitle from "../../../components/common/SectionTitle";
+import { deleteAttachmentRequest } from "../../../store/actions/attachmentDeleteActions";
+import { useDispatch } from "react-redux";
 
 const Section = styled.div<{ $isArabic?: boolean }>`
   margin-top: 2.5rem;
@@ -150,6 +152,9 @@ interface AttachmentProps {
   setBoardResolutionFile: (file: File | null) => void;
   letterOfSupportFile: File | null;
   setLetterOfSupportFile: (file: File | null) => void;
+  boardResolutionId?: number;
+  letterOfSupportId?: number;
+  onDeleteSuccess: () => void;
 }
 
 const Attachment: React.FC<AttachmentProps> = ({
@@ -157,6 +162,9 @@ const Attachment: React.FC<AttachmentProps> = ({
   setBoardResolutionFile,
   letterOfSupportFile,
   setLetterOfSupportFile,
+  boardResolutionId,
+  letterOfSupportId,
+  onDeleteSuccess,
 }) => {
   const { t, i18n } = useTranslation();
   const isArabic = i18n.language === "ar";
@@ -171,10 +179,18 @@ const Attachment: React.FC<AttachmentProps> = ({
       }
     };
 
-  const handleDelete = (setter: (file: File | null) => void) => (e: React.MouseEvent) => {
-    e.stopPropagation();
-    setter(null);
-  };
+  const dispatch = useDispatch();
+
+  const handleDelete =
+    (setter: (file: File | null) => void, mediaId?: number) =>
+    (e: React.MouseEvent) => {
+      e.stopPropagation();
+      if (mediaId) {
+        dispatch(deleteAttachmentRequest(mediaId));
+      }
+      onDeleteSuccess();
+      setter(null);
+    };
 
   const getDisplayFileName = (name: string) => {
     const extension = name.includes(".") ? name.split(".").pop() : "";
@@ -189,7 +205,7 @@ const Attachment: React.FC<AttachmentProps> = ({
     multiple: false,
     accept: ALLOWED_TYPES,
     maxSize: MAX_FILE_SIZE_MB * 1024 * 1024,
-    noClick: false, 
+    noClick: false,
     noKeyboard: true,
   });
 
@@ -198,7 +214,7 @@ const Attachment: React.FC<AttachmentProps> = ({
     multiple: false,
     accept: ALLOWED_TYPES,
     maxSize: MAX_FILE_SIZE_MB * 1024 * 1024,
-    noClick: false, 
+    noClick: false,
     noKeyboard: true,
   });
 
@@ -220,18 +236,26 @@ const Attachment: React.FC<AttachmentProps> = ({
               <>
                 <FileInfo>
                   <UploadIcon src={fileUpload} alt="upload" />
-                    <FileName title={boardResolutionFile.name}>
-                      📎 {getDisplayFileName(boardResolutionFile.name.split("?")[0])}
-                    </FileName>
+                  <FileName title={boardResolutionFile.name}>
+                    📎{" "}
+                    {getDisplayFileName(boardResolutionFile.name.split("?")[0])}
+                  </FileName>
                 </FileInfo>
-                <DeleteButton onClick={handleDelete(setBoardResolutionFile)}>
+                <DeleteButton
+                  onClick={handleDelete(
+                    setBoardResolutionFile,
+                    boardResolutionId
+                  )}
+                >
                   <img src={deleteIcon} alt="delete" />
                 </DeleteButton>
               </>
             ) : (
               <>
                 <UploadIcon src={fileUpload} alt="upload" />
-                <PrimaryText>{t("attachment.dropzone.primaryText")}</PrimaryText>
+                <PrimaryText>
+                  {t("attachment.dropzone.primaryText")}
+                </PrimaryText>
                 <SecondaryText>
                   {t("attachment.dropzone.secondaryText", {
                     formats: t("attachment.dropzone.formats"),
@@ -257,18 +281,26 @@ const Attachment: React.FC<AttachmentProps> = ({
               <>
                 <FileInfo>
                   <UploadIcon src={fileUpload} alt="upload" />
-                    <FileName title={letterOfSupportFile.name}>
-                      📎 {getDisplayFileName(letterOfSupportFile.name.split("?")[0])}
-                    </FileName>
+                  <FileName title={letterOfSupportFile.name}>
+                    📎{" "}
+                    {getDisplayFileName(letterOfSupportFile.name.split("?")[0])}
+                  </FileName>
                 </FileInfo>
-                <DeleteButton onClick={handleDelete(setLetterOfSupportFile)}>
+                <DeleteButton
+                  onClick={handleDelete(
+                    setLetterOfSupportFile,
+                    letterOfSupportId
+                  )}
+                >
                   <img src={deleteIcon} alt="delete" />
                 </DeleteButton>
               </>
             ) : (
               <>
                 <UploadIcon src={fileUpload} alt="upload" />
-                <PrimaryText>{t("attachment.dropzone.primaryText")}</PrimaryText>
+                <PrimaryText>
+                  {t("attachment.dropzone.primaryText")}
+                </PrimaryText>
                 <SecondaryText>
                   {t("attachment.dropzone.secondaryText", {
                     formats: t("attachment.dropzone.formats"),

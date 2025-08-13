@@ -49,20 +49,24 @@ import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Attachment from "./modal/Attachment";
 import { useTranslation } from "react-i18next";
+import { selectAppLang } from "../../store/slices/languageSlice";
+import { City } from "../../store/types/cityTypes";
 
 type EntityInformationFormProps = {
   registrationTypeId: number | null;
   onSuccess?: () => void;
+  onRefresh?: () => void;
   entityInfo: EntityInformation | null;
 };
 
 export const EntityInformationForm = forwardRef<
   { submit: () => void },
   EntityInformationFormProps
->(({ registrationTypeId, onSuccess, entityInfo }, ref) => {
+>(({ registrationTypeId, onSuccess, onRefresh, entityInfo }, ref) => {
   const { t, i18n } = useTranslation();
   const isRTL = i18n.language === "ar";
   const [showModal, setShowModal] = useState(false);
+  const selectedLanguage = useSelector(selectAppLang);
 
   const [formData, setFormData] = useState({
     entity_name: "",
@@ -90,7 +94,7 @@ export const EntityInformationForm = forwardRef<
   const regions = useSelector(selectRegions);
   const legalStatuses = useSelector(selectLegalStatuses);
   const expectedInvestments = useSelector(selectExpectedInvestmentList);
-  const [ boardResolutionFile, setBoardResolutionFile] = useState<File | null>(
+  const [boardResolutionFile, setBoardResolutionFile] = useState<File | null>(
     null
   );
   const [letterOfSupportFile, setLetterOfSupportFile] = useState<File | null>(
@@ -122,21 +126,25 @@ export const EntityInformationForm = forwardRef<
         list_of_rhq_corporate_activties: [],
         activity_ids: entityInfo.activities?.map((a) => a.id) ?? [],
       });
-    if (entityInfo.board_resolution_file) {
-      const boardResolutionFile = {
-        name: entityInfo.board_resolution_file.split('/').pop() || 'board_resolution.pdf',
-      } as unknown as File;
-      setBoardResolutionFile(boardResolutionFile);
+      if (entityInfo.board_resolution_file) {
+        const boardResolutionFile = {
+          name:
+            entityInfo.board_resolution_file.split("/").pop() ||
+            "board_resolution.pdf",
+        } as unknown as File;
+        setBoardResolutionFile(boardResolutionFile);
+      }
+
+      if (entityInfo.letter_of_support_file) {
+        const letterOfSupportFile = {
+          name:
+            entityInfo.letter_of_support_file.split("/").pop() ||
+            "letter_of_support.pdf",
+        } as unknown as File;
+        setLetterOfSupportFile(letterOfSupportFile);
+      }
     }
-    
-    if (entityInfo.letter_of_support_file) {
-      const letterOfSupportFile = {
-        name: entityInfo.letter_of_support_file.split('/').pop() || 'letter_of_support.pdf',
-      } as unknown as File;
-      setLetterOfSupportFile(letterOfSupportFile);
-    }
-  }
-}, [entityInfo]);
+  }, [entityInfo]);
 
   useEffect(() => {
     dispatch(fetchCountriesRequest());
@@ -225,6 +233,19 @@ export const EntityInformationForm = forwardRef<
       dispatch(registerEntityRequest(payload));
     }
   };
+
+  const extractMediaIdFromUrl = (url?: string) => {
+    if (!url) return undefined;
+    const parts = url.split("/");
+    const id = parts[parts.length - 2];
+    return Number(id);
+  };
+
+  const onAttachementDeleted = () => {
+    onRefresh?.();
+  };
+
+  console.log("selectedLanguage", selectedLanguage);
 
   return (
     <>
@@ -315,7 +336,7 @@ export const EntityInformationForm = forwardRef<
                 </option>
                 {legalStatuses.map((legal) => (
                   <option key={legal.id} value={legal.id}>
-                    {legal.name}
+                    {selectedLanguage == "ar" ? legal.name_ar : legal.name_en}
                   </option>
                 ))}
               </Select>
@@ -378,7 +399,11 @@ export const EntityInformationForm = forwardRef<
                   </option>
                   {countries.map((country: Country) => (
                     <option key={country.id} value={country.id}>
-                      +{country.phone_prefix} ({country.name})
+                      +{country.phone_prefix} (
+                      {selectedLanguage == "en"
+                        ? country.name_en
+                        : country.name_ar}
+                      )
                     </option>
                   ))}
                 </Select>
@@ -421,7 +446,9 @@ export const EntityInformationForm = forwardRef<
                 </option>
                 {countries.map((country: Country) => (
                   <option key={country.id} value={country.id}>
-                    {country.name}
+                    {selectedLanguage == "en"
+                      ? country.name_en
+                      : country.name_ar}
                   </option>
                 ))}
               </Select>
@@ -443,9 +470,9 @@ export const EntityInformationForm = forwardRef<
                     field: t("entityInformation.region"),
                   })}
                 </option>
-                {regions.map((region) => (
+                {regions.map((region: Region) => (
                   <option key={region.id} value={region.id}>
-                    {region.name}
+                    {selectedLanguage == "en" ? region.name_en : region.name_ar}
                   </option>
                 ))}
               </Select>
@@ -469,9 +496,9 @@ export const EntityInformationForm = forwardRef<
                     field: t("entityInformation.city"),
                   })}
                 </option>
-                {cities.map((city) => (
+                {cities.map((city: City) => (
                   <option key={city.id} value={city.id}>
-                    {city.name}
+                    {selectedLanguage == "en" ? city.name_en : city.name_ar}
                   </option>
                 ))}
               </Select>
@@ -495,7 +522,7 @@ export const EntityInformationForm = forwardRef<
                 </option>
                 {expectedInvestments.map((item) => (
                   <option key={item.id} value={item.id}>
-                    {item.name}
+                    {selectedLanguage == "en" ? item.name_en : item.name_ar}
                   </option>
                 ))}
               </Select>
@@ -540,6 +567,13 @@ export const EntityInformationForm = forwardRef<
           setBoardResolutionFile={setBoardResolutionFile}
           letterOfSupportFile={letterOfSupportFile}
           setLetterOfSupportFile={setLetterOfSupportFile}
+          boardResolutionId={extractMediaIdFromUrl(
+            entityInfo?.board_resolution_file
+          )}
+          letterOfSupportId={extractMediaIdFromUrl(
+            entityInfo?.letter_of_support_file
+          )}
+          onDeleteSuccess={onAttachementDeleted}
         />
       </OuterCard>
 

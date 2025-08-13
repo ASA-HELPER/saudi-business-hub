@@ -6,6 +6,7 @@ import { Activity, Branch } from "./types";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../../store/rootReducer";
 import { setActivities } from "../../../store/reducers/businessActivitySlice";
+import { selectAppLang } from "../../../store/slices/languageSlice";
 
 const Wrapper = styled.div`
   background-color: white;
@@ -102,6 +103,7 @@ interface ActivitySectionProps {
 
 const ActivitySection: React.FC<ActivitySectionProps> = ({ structureData }) => {
   const [searchTerm, setSearchTerm] = useState("");
+  const selectedLanguage = useSelector(selectAppLang);
 
   const dispatch = useDispatch();
   const selectedBranches = useSelector(
@@ -132,10 +134,15 @@ const ActivitySection: React.FC<ActivitySectionProps> = ({ structureData }) => {
         <Title>
           Choose your Activity ({selectedActivities.length}/
           {
-            structureData.activities.filter(
-              (a) =>
-                selectedBranches.some((branch) => branch.id === a.branch_id) &&
-                a.description.toLowerCase().includes(searchTerm.toLowerCase())
+            structureData.activities.filter((a) =>
+              selectedBranches.some((branch) => branch.id === a.branch_id) &&
+              selectedLanguage == "ar"
+                ? a.description_ar
+                    .toLowerCase()
+                    .includes(searchTerm.toLowerCase())
+                : a.description_en
+                    .toLowerCase()
+                    .includes(searchTerm.toLowerCase())
             ).length
           }
           )
@@ -149,10 +156,14 @@ const ActivitySection: React.FC<ActivitySectionProps> = ({ structureData }) => {
 
       <Content>
         {selectedBranches.map((branch, index) => {
-          const branchActivities = structureData.activities.filter(
-            (a) =>
-              a.branch_id === branch.id &&
-              a.description.toLowerCase().includes(searchTerm.toLowerCase())
+          const branchActivities = structureData.activities.filter((a) =>
+            a.branch_id === branch.id && selectedLanguage == "ar"
+              ? a.description_ar
+                  .toLowerCase()
+                  .includes(searchTerm.toLowerCase())
+              : a.description_en
+                  .toLowerCase()
+                  .includes(searchTerm.toLowerCase())
           );
 
           if (branchActivities.length === 0) return null;
@@ -178,7 +189,9 @@ const ActivitySection: React.FC<ActivitySectionProps> = ({ structureData }) => {
                         alt={isSelected ? "Selected" : "Not selected"}
                       />
                       <Label checked={isSelected}>
-                        {activity.activityid + " - " + activity.description}
+                        {activity.activityid + " - " + selectedLanguage == "ar"
+                          ? activity.description_ar
+                          : activity.description_en}
                       </Label>
                     </Card>
                   );

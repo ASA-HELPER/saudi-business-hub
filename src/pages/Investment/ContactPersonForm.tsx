@@ -34,6 +34,7 @@ import { selectShareholderIdTypes } from "../../store/selectors/shareHolderIdSel
 import { fetchShareholderIdTypesRequest } from "../../store/actions/shareHolderIdActions";
 import { selectContactPersonData } from "../../store/selectors/contactPersonSelectors";
 import { useTranslation } from "react-i18next";
+import { selectAppLang } from "../../store/slices/languageSlice";
 // Card Wrapper
 const Card = styled.div`
   background: #ffffff;
@@ -172,6 +173,7 @@ export const ContactPersonForm = forwardRef<
   const [idType, setIdType] = useState("National ID");
   const [isValidated, setIsValidated] = useState(false);
   const dispatch = useDispatch();
+  const selectedLanguage = useSelector(selectAppLang);
 
   const contactPersonList = useSelector(selectContactPersons);
   const contactPersonListLoading = useSelector(selectContactPersonsLoading);
@@ -499,7 +501,7 @@ export const ContactPersonForm = forwardRef<
                 <option value="">{t("contactForm.selectOption")}</option>
                 {shareholderIdTypes.map((idT) => (
                   <option key={idT.id} value={idT.name}>
-                    {idT.name}
+                    {selectedLanguage == "ar" ? idT.name_ar : idT.name_en}
                   </option>
                 ))}
               </Select>
@@ -656,7 +658,9 @@ export const ContactPersonForm = forwardRef<
                 <option value="">{t("contactForm.selectOption")}</option>
                 {countries.map((country: Country) => (
                   <option key={country.id} value={country.id}>
-                    {country.name}
+                    {selectedLanguage == "ar"
+                      ? country.name_ar
+                      : country.name_en}
                   </option>
                 ))}
               </Select>
@@ -758,7 +762,9 @@ export const ContactPersonForm = forwardRef<
                 <option value="">{t("contactForm.selectCountry")}</option>
                 {countries.map((country: Country) => (
                   <option key={country.id} value={country.id}>
-                    {country.name}
+                    {selectedLanguage == "ar"
+                      ? country.name_ar
+                      : country.name_en}
                   </option>
                 ))}
               </Select>

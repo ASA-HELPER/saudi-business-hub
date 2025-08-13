@@ -86,10 +86,10 @@ const Select = styled.select<{ $isRTL?: boolean }>`
   border: none;
   border-bottom: 1px solid #cfd4dc;
   background: transparent;
-  font-size: 10px;
+  font-size: 12px;
   color: #1f2937;
   width: 100%;
-  height: 33px;
+  height: 36px;
   transition: border-color 0.3s ease;
   text-align: ${(props) => (props.$isRTL ? "right" : "left")};
   font-family: ${(props) =>
@@ -108,7 +108,7 @@ const Select = styled.select<{ $isRTL?: boolean }>`
 const Label = styled.label`
   font-weight: 400;
   margin-bottom: 8px;
-  font-size: 10px;
+  font-size: 13px;
   color: #384250;
 
   span {
@@ -121,7 +121,7 @@ const Input = styled.input<{ $isRTL?: boolean }>`
   padding: 10px 0;
   border: none;
   border-bottom: 1px solid #cfd4dc;
-  font-size: 10px;
+  font-size: 13px;
   background-color: transparent;
   width: 100%;
   transition: border-color 0.3s ease;
@@ -137,6 +137,7 @@ const Input = styled.input<{ $isRTL?: boolean }>`
   &::placeholder {
     color: #94a3b8;
     text-align: ${(props) => (props.$isRTL ? "right" : "left")};
+    font-size: 12px
   }
 `;
 
@@ -750,50 +751,63 @@ const StrategicInvestorEntityStep: React.FC<
                     <ErrorText>{errors.shareholders[index].name}</ErrorText>
                   )}
               </InputWrapper>
-
               <InputWrapper>
                 <Label>
                   <span>*</span>{" "}
                   {t("entityInformation.ShareholdersNationality")}
                 </Label>
-                <Select
-                  name={`shareholders[${index}].nationality`}
-                  value={shareholder.nationality}
-                  onChange={(e) =>
-                    handleShareholderChange(
-                      index,
-                      "nationality",
-                      e.target.value
-                    )
-                  }
-                  $isRTL={isRTL}
+                <div
+                  style={{
+                    display: "flex",
+                    gap: "12px",
+                    alignItems: "flex-end",
+                  }}
                 >
-                  <option value="" disabled hidden>
-                    {t("entityInformation.choose", {
-                      field: t("entityInformation.ShareholdersNationality"),
-                    })}
-                  </option>
-                  {cities.map((city) => (
-                    <option key={city.id} value={city.id}>
-                      {city.name}
-                    </option>
-                  ))}
-                </Select>
-                {errors.shareholders &&
-                  errors.shareholders[index] &&
-                  errors.shareholders[index].nationality && (
-                    <ErrorText>
-                      {errors.shareholders[index].nationality}
-                    </ErrorText>
+                  <div
+                    style={{
+                      flex: 1,
+                      display: "flex",
+                      flexDirection: "column",
+                    }}
+                  >
+                    <Select
+                      name={`shareholders[${index}].nationality`}
+                      value={shareholder.nationality}
+                      onChange={(e) =>
+                        handleShareholderChange(
+                          index,
+                          "nationality",
+                          e.target.value
+                        )
+                      }
+                      $isRTL={isRTL}
+                    >
+                      <option value="" disabled hidden>
+                        {t("entityInformation.choose", {
+                          field: t("entityInformation.ShareholdersNationality"),
+                        })}
+                      </option>
+                      {cities.map((city) => (
+                        <option key={city.id} value={city.id}>
+                          {city.name}
+                        </option>
+                      ))}
+                    </Select>
+                    {errors.shareholders &&
+                      errors.shareholders[index] &&
+                      errors.shareholders[index].nationality && (
+                        <ErrorText>
+                          {errors.shareholders[index].nationality}
+                        </ErrorText>
+                      )}
+                  </div>
+                  {index !== 0 && (
+                    <IconWrapper onClick={() => handleRemoveShareholder(index)}>
+                      <Cross />
+                    </IconWrapper>
                   )}
+                </div>
               </InputWrapper>
-             {
-              index !== 0 && (
-                <IconWrapper onClick={() => handleRemoveShareholder(index)}>
-                  <Cross />
-                </IconWrapper>
-              )
-             }
             </Row>
           ))}
         </Section>

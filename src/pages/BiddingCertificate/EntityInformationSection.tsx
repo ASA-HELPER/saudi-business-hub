@@ -98,7 +98,7 @@ const Select = styled.select<{ $isRTL?: boolean }>`
   font-size: 11px;
   color: #94a3b8;
   width: 100%;
-  height: 28px;
+  height: 25px;
   transition: border-color 0.3s ease;
 
   &:focus {

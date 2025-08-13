@@ -10,6 +10,7 @@ import {
   resetAfterBranches,
   setBranches,
 } from "../../../store/reducers/businessActivitySlice";
+import { selectAppLang } from "../../../store/slices/languageSlice";
 
 const Wrapper = styled.div`
   background-color: white;
@@ -138,6 +139,7 @@ interface BranchSectionProps {
 
 const BranchSection: React.FC<BranchSectionProps> = ({ structureData }) => {
   const [searchTerm, setSearchTerm] = useState("");
+  const selectedLanguage = useSelector(selectAppLang);
 
   const dispatch = useDispatch();
   const selectedClasses = useSelector(
@@ -166,7 +168,9 @@ const BranchSection: React.FC<BranchSectionProps> = ({ structureData }) => {
             structureData.branch.filter(
               (b) =>
                 selectedClasses.some((cls) => cls.id === b.class_id) &&
-                b.description.toLowerCase().includes(searchTerm.toLowerCase())
+                b.description_en
+                  .toLowerCase()
+                  .includes(searchTerm.toLowerCase())
             ).length
           }
           )
@@ -180,10 +184,14 @@ const BranchSection: React.FC<BranchSectionProps> = ({ structureData }) => {
 
       <Content>
         {selectedClasses.map((cls, index) => {
-          const branches = structureData.branch.filter(
-            (b) =>
-              b.class_id === cls.id &&
-              b.description.toLowerCase().includes(searchTerm.toLowerCase())
+          const branches = structureData.branch.filter((b) =>
+            b.class_id === cls.id && selectedLanguage == "ar"
+              ? b.description_ar
+                  .toLowerCase()
+                  .includes(searchTerm.toLowerCase())
+              : b.description_en
+                  .toLowerCase()
+                  .includes(searchTerm.toLowerCase())
           );
 
           if (branches.length === 0) return null;
@@ -209,7 +217,9 @@ const BranchSection: React.FC<BranchSectionProps> = ({ structureData }) => {
                         alt={isSelected ? "Selected" : "Not selected"}
                       />
                       <Label checked={isSelected}>
-                        {branch.branchid + " - " + branch.description}
+                        {branch.branchid + " - " + selectedLanguage == "ar"
+                          ? branch.description_ar
+                          : branch.description_en}
                       </Label>
                     </Card>
                   );

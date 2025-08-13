@@ -12,6 +12,7 @@ import {
 import { useNavigate } from "react-router-dom";
 import { selectSelectedRegistrationType } from "../../store/selectors/registrationTypeSelectors";
 import { useTranslation } from "react-i18next";
+import { selectAppLang } from "../../store/slices/languageSlice";
 
 // Styled Components
 const TableWrapper = styled.div`
@@ -24,7 +25,7 @@ const Table = styled.table<{ $isRTL: boolean }>`
   font-size: 0.95rem;
   border-radius: 12px;
   overflow: hidden;
-  direction: ${({ $isRTL }) => ($isRTL ? 'rtl' : 'ltr')};
+  direction: ${({ $isRTL }) => ($isRTL ? "rtl" : "ltr")};
 
   thead {
     background-color: #f3f4f6;
@@ -35,7 +36,7 @@ const Table = styled.table<{ $isRTL: boolean }>`
   th,
   td {
     padding: 1rem;
-    text-align: ${({ $isRTL }) => ($isRTL ? 'right' : 'left')};
+    text-align: ${({ $isRTL }) => ($isRTL ? "right" : "left")};
     border-bottom: 1px solid #e5e7eb;
   }
 
@@ -79,10 +80,11 @@ const ButtonContainer = styled.div`
 
 export default function BusinessActivityRow() {
   const { t, i18n } = useTranslation();
-  const isRTL = i18n.language === 'ar';
+  const isRTL = i18n.language === "ar";
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  
+  const selectedLanguage = useSelector(selectAppLang);
+
   const activityRows: BusinessActivityRowItem[] = useSelector(
     (state: RootState) => state.businessActivity.activityRows
   );
@@ -96,11 +98,11 @@ export default function BusinessActivityRow() {
         <Table $isRTL={isRTL}>
           <thead>
             <tr>
-              <th>{t('businessActivity.tableHeaders.number')}</th>
-              <th>{t('businessActivity.tableHeaders.isicCode')}</th>
-              <th>{t('businessActivity.tableHeaders.activity')}</th>
-              <th>{t('businessActivity.tableHeaders.classification')}</th>
-              <th>{t('businessActivity.tableHeaders.actions')}</th>
+              <th>{t("businessActivity.tableHeaders.number")}</th>
+              <th>{t("businessActivity.tableHeaders.isicCode")}</th>
+              <th>{t("businessActivity.tableHeaders.activity")}</th>
+              <th>{t("businessActivity.tableHeaders.classification")}</th>
+              <th>{t("businessActivity.tableHeaders.actions")}</th>
             </tr>
           </thead>
           <tbody>
@@ -108,12 +110,16 @@ export default function BusinessActivityRow() {
               <tr key={row.activity.id}>
                 <td>{String(index + 1).padStart(2, "0")}</td>
                 <td>{row.activity.activityid}</td>
-                <td>{row.activity.description}</td>
+                <td>
+                  {selectedLanguage == "ar"
+                    ? row.activity.description_ar
+                    : row.activity.description_en}
+                </td>
                 <td>{row.activity.isic_master_rule?.classification}</td>
                 <td>
                   <ActionImage
                     src={deleteIcon}
-                    alt={t('action.delete')}
+                    alt={t("action.delete")}
                     onClick={() => dispatch(deleteActivityRow(index))}
                   />
                 </td>
@@ -131,7 +137,7 @@ export default function BusinessActivityRow() {
             });
           }}
         >
-          {t('businessActivity.addButton')}
+          {t("businessActivity.addButton")}
         </AddButton>
       </ButtonContainer>
     </>

@@ -88,55 +88,64 @@ const NafathLoginForm = () => {
       });
 
       socketInstance.onAny((event, data) => {
-        console.log("Received event:", event, data);
+        console.log("Received event:", event);
+        console.log("Received Data:", data);
+        console.log("Received Data Json Stringify:", JSON.stringify(data));
+        console.log("Received Data Status:", data?.status);
+        console.log("Received Data PersonId:", data?.person?.Id);
       });
 
-      socketInstance.on("nafath_status", async (data: any) => {
-        console.log("status received:", data);
-        setSocketResponse(data);
+      socketInstance.on(
+        "invest_saudi_database_callback-channel",
+        async (data: any) => {
+          console.log("status received:", JSON.stringify(data));
+          console.log("Data Status:", data?.status);
+          console.log("Data PersonId:", data?.person?.Id);
+          setSocketResponse(data);
 
-        const status = data?.data?.status || data?.status;
+          const status = data?.data?.status || data?.status;
 
-        if (status === "COMPLETED" && data?.data?.person?.Id) {
-          try {
-            const personId = data.data.person.Id;
+          if (status === "COMPLETED" && data?.person?.Id) {
+            try {
+              const personId = data.data.person.Id;
 
-            const response = await fetch(
-              `https://eservices.deenzprojects.com/auth/nafath/users/by-nid/${personId}`
-            );
-            const json = await response.json();
+              const response = await fetch(
+                `https://eservices.deenzprojects.com/auth/nafath/users/by-nid/${personId}`
+              );
+              const json = await response.json();
 
-            if (json.success && Array.isArray(json.data)) {
-              setNafathUsers(json.data);
+              if (json.success && Array.isArray(json.data)) {
+                setNafathUsers(json.data);
 
-              // Close Nafath modal and open user selection modal
-              setShowModal(false);
-              setShowUserSelectModal(true);
-            } else {
-              toast.error("Failed to retrieve users.");
+                // Close Nafath modal and open user selection modal
+                setShowModal(false);
+                setShowUserSelectModal(true);
+              } else {
+                toast.error("Failed to retrieve users.");
+              }
+            } catch (err) {
+              console.error(err);
+              toast.error("Error fetching users.");
             }
-          } catch (err) {
-            console.error(err);
-            toast.error("Error fetching users.");
+          }
+
+          // if (status === "APPROVED") {
+          //   toast.success("Login approved!");
+          //   setShowModal(false);
+          //   navigate("/dashboard");
+          // }
+
+          if (status === "REJECTED") {
+            toast.error("Login rejected");
+            setShowModal(false);
+          }
+
+          if (status === "EXPIRED") {
+            toast.warn("⏳ Request expired");
+            setShowModal(false);
           }
         }
-
-        // if (status === "APPROVED") {
-        //   toast.success("Login approved!");
-        //   setShowModal(false);
-        //   navigate("/dashboard");
-        // }
-
-        if (status === "REJECTED") {
-          toast.error("Login rejected");
-          setShowModal(false);
-        }
-
-        if (status === "EXPIRED") {
-          toast.warn("⏳ Request expired");
-          setShowModal(false);
-        }
-      });
+      );
 
       // socketInstance.on("nafath_status", (data: any) => {
       //   console.log("status received:", data);

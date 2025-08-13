@@ -126,6 +126,7 @@ const InvestmentRegistration: React.FC = () => {
     if (selectedRegistrationType)
       localStorage.setItem("selectedType", selectedRegistrationType);
   }, [selectedRegistrationType]);
+
   const { t } = useTranslation();
   const handleNext = async () => {
     if (currentStep === 0 && entityFormRef.current) {
@@ -160,6 +161,7 @@ const InvestmentRegistration: React.FC = () => {
           setSelected={setSelectedRegistrationType}
           entityFormRef={entityFormRef}
           onSuccess={() => setCurrentStep((prev) => prev + 1)}
+          onRefresh={() => {}}
         />
       )}
       {currentStep === 1 && <ShareholderStep />}
@@ -185,7 +187,9 @@ const InvestmentRegistration: React.FC = () => {
             }
           }}
         >
-          {currentStep == 0 ? t("investments.buttons.cancel") : t("investments.buttons.back")}
+          {currentStep == 0
+            ? t("investments.buttons.cancel")
+            : t("investments.buttons.back")}
         </Button>
         <Button variant="next" onClick={handleNext}>
           {t("investments.buttons.next")}
