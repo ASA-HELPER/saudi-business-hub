@@ -33,6 +33,8 @@ import { fetchTitlesRequest } from "../../store/actions/titleActions";
 import { selectShareholderIdTypes } from "../../store/selectors/shareHolderIdSelector";
 import { fetchShareholderIdTypesRequest } from "../../store/actions/shareHolderIdActions";
 import { selectContactPersonData } from "../../store/selectors/contactPersonSelectors";
+import { useTranslation } from "react-i18next";
+import { selectAppLang } from "../../store/slices/languageSlice";
 // Card Wrapper
 const Card = styled.div`
   background: #ffffff;
@@ -171,6 +173,7 @@ export const ContactPersonForm = forwardRef<
   const [idType, setIdType] = useState("National ID");
   const [isValidated, setIsValidated] = useState(false);
   const dispatch = useDispatch();
+  const selectedLanguage = useSelector(selectAppLang);
 
   const contactPersonList = useSelector(selectContactPersons);
   const contactPersonListLoading = useSelector(selectContactPersonsLoading);
@@ -191,6 +194,7 @@ export const ContactPersonForm = forwardRef<
   const titles = useSelector(selectTitleList);
 
   const [isContactEdit, setIsContactEdit] = useState(false);
+  const { t } = useTranslation();
 
   const defaultFormData: ContactPersonFormData = {
     nationality_id: "",
@@ -367,11 +371,13 @@ export const ContactPersonForm = forwardRef<
   };
 
   const handleValidate = () => {
-    if (
-      !formData.id_type ||
-      !formData.passport_number ||
-      !formData.date_of_birth
-    ) {
+    if (formData.id_type === "Passport") {
+      setIsValidated(true);
+      return;
+    }
+
+    // For other ID types, require number and DOB
+    if (!formData.passport_number || !formData.date_of_birth) {
       alert("Please fill all required fields");
       return;
     }
@@ -452,106 +458,110 @@ export const ContactPersonForm = forwardRef<
 
   return (
     <>
-      {contactPersonList.length == 0 && (
-        <FieldGroup>
-          <Field style={{ flex: 0.49 }}>
-            <Label> Contact Person</Label>
-            <Select value={selectedContact} onChange={handleContactChange}>
-              <option>Select</option>
-              {shareHolderPersonList.map((contact) => (
-                <option key={contact.id} value={contact.id}>
-                  {contact.full_name}
-                </option>
-              ))}
-              <option value={"Other Person"}>Others</option>
-            </Select>
-          </Field>
-        </FieldGroup>
-      )}
+      <FieldGroup>
+        <Field style={{ flex: 0.49 }}>
+          <Label>{t("contactForm.contactPerson")}</Label>
+          <Select value={selectedContact} onChange={handleContactChange}>
+            <option>{t("contactForm.selectOption")}</option>
+            {shareHolderPersonList.map((contact) => (
+              <option key={contact.id} value={contact.id}>
+                {contact.full_name}
+              </option>
+            ))}
+            <option value={"Other Person"}>
+              {t("contactForm.otherPerson")}
+            </option>
+          </Select>
+        </Field>
+      </FieldGroup>
 
       {showValidationFields && (
         <>
           <FieldGroup>
-            <Field>
-              <Label>Identity Type</Label>
+            <Field
+              style={{ flex: formData.id_type === "Passport" ? 0.5 : 0.5 }}
+            >
+              <Label>{t("contactForm.identityType")}</Label>
               <Select
                 value={formData.id_type}
-                onChange={(e) =>
-                  setFormData({ ...formData, id_type: e.target.value })
-                }
+                onChange={(e) => {
+                  setFormData({
+                    ...formData,
+                    id_type: e.target.value,
+                    passport_number: "",
+                  });
+                  if (e.target.value === "Passport") {
+                    setIsValidated(true);
+                  } else {
+                    setIsValidated(false);
+                  }
+                }}
                 disabled={!isOtherPerson}
               >
-                <option value="">Select</option>
+                <option value="">{t("contactForm.selectOption")}</option>
                 {shareholderIdTypes.map((idT) => (
-                  <option key={idT.id} value={idT.id}>
-                    {idT.name}
+                  <option key={idT.id} value={idT.name}>
+                    {selectedLanguage == "ar" ? idT.name_ar : idT.name_en}
                   </option>
                 ))}
               </Select>
             </Field>
-            <Field>
-              <Label>Identity Number</Label>
-              <Input
-                value={formData.passport_number}
-                onChange={(e) =>
-                  setFormData({
-                    ...formData,
-                    passport_number: e.target.value,
-                  })
-                }
-                readOnly={isReadOnly}
-                placeholder="Enter Identity Number"
-              />
-            </Field>
+
+            {formData.id_type === "Passport" ? (
+              <Field style={{ flex: 0.49, visibility: "hidden" }}></Field>
+            ) : (
+              <Field style={{ flex: 0.49 }}>
+                <Label>{t("contactForm.identityNumber")}</Label>
+                <Input
+                  value={formData.passport_number}
+                  onChange={(e) =>
+                    setFormData({
+                      ...formData,
+                      passport_number: e.target.value,
+                    })
+                  }
+                  readOnly={isReadOnly}
+                  placeholder={t("contactForm.enterIdentityNumber")}
+                />
+              </Field>
+            )}
           </FieldGroup>
 
           <FieldGroup>
-            <Field style={{ flex: 1 }}>
-              <Label>Date of Birth</Label>
-              <Input
-                type="date"
-                value={formData.date_of_birth}
-                onChange={(e) =>
-                  setFormData({
-                    ...formData,
-                    date_of_birth: e.target.value,
-                  })
-                }
-                readOnly={!isOtherPerson}
-              />
-            </Field>
-
-            {isOtherPerson && (
-              <Field
-                style={{
-                  display: "flex",
-                  alignItems: "flex-end",
-                  justifyContent: "flex-start",
-                  gap: "8px",
-                }}
-              >
-                {isValidated ? (
-                  <>
-                    <img
-                      src={success}
-                      alt="Validated"
-                      style={{ width: "24px" }}
-                    />
-                    <span
-                      style={{
-                        color: "#0891b2",
-                        fontWeight: 600,
-                        marginLeft: "4px",
-                      }}
-                    >
-                      Validated
-                    </span>
-                  </>
-                ) : (
-                  <Button onClick={handleValidate}>Validate</Button>
-                )}
+            {formData.id_type !== "Passport" && (
+              <Field style={{ flex: 0.49 }}>
+                <Label>{t("contactForm.dateOfBirth")}</Label>
+                <Input
+                  type="date"
+                  value={formData.date_of_birth}
+                  onChange={(e) =>
+                    setFormData({
+                      ...formData,
+                      date_of_birth: e.target.value,
+                    })
+                  }
+                  readOnly={!isOtherPerson}
+                />
               </Field>
             )}
+
+            {isOtherPerson &&
+              !isValidated &&
+              formData.id_type !== "Passport" && (
+                <Field
+                  style={{
+                    display: "flex",
+                    alignItems: "flex-end",
+                    justifyContent: "flex-start",
+                    gap: "8px",
+                    flex: formData.id_type === "Passport" ? 1 : 0.49,
+                  }}
+                >
+                  <Button onClick={handleValidate}>
+                    {t("contactForm.validate")}
+                  </Button>
+                </Field>
+              )}
           </FieldGroup>
         </>
       )}
@@ -560,7 +570,7 @@ export const ContactPersonForm = forwardRef<
         <>
           <FieldGroup>
             <Field>
-              <Label>Title</Label>
+              <Label>{t("contactForm.title")}</Label>
               <Select
                 name="title"
                 value={formData.title_id}
@@ -569,7 +579,7 @@ export const ContactPersonForm = forwardRef<
                 }
                 disabled={isReadOnly}
               >
-                <option value="">Select</option>
+                <option value="">{t("contactForm.selectOption")}</option>
                 {titles.map((title) => (
                   <option key={title.id} value={title.id}>
                     {title.token}
@@ -578,7 +588,7 @@ export const ContactPersonForm = forwardRef<
               </Select>
               {errors.title && (
                 <span style={{ color: "red", fontSize: 12 }}>
-                  {errors.title}
+                  {t("contactForm.requiredField")}
                 </span>
               )}
             </Field>
@@ -586,8 +596,7 @@ export const ContactPersonForm = forwardRef<
 
           <FieldGroup>
             <Field>
-              <Label> First/Last Name in Arabic</Label>
-
+              <Label>{t("contactForm.firstNameArabic")}</Label>
               <Input
                 value={formData.first_name_arabic}
                 onChange={(e) =>
@@ -600,12 +609,12 @@ export const ContactPersonForm = forwardRef<
               />
               {errors.first_name_arabic && (
                 <span style={{ color: "red", fontSize: 12 }}>
-                  {errors.first_name_arabic}
+                  {t("contactForm.requiredField")}
                 </span>
               )}
             </Field>
             <Field>
-              <Label> Last/Family Name in Arabic</Label>
+              <Label>{t("contactForm.lastNameArabic")}</Label>
               <Input
                 value={formData.last_name_arabic}
                 onChange={(e) =>
@@ -613,10 +622,9 @@ export const ContactPersonForm = forwardRef<
                 }
                 readOnly={isReadOnly}
               />
-
               {errors.last_name_arabic && (
                 <span style={{ color: "red", fontSize: 12 }}>
-                  {errors.last_name_arabic}
+                  {t("contactForm.requiredField")}
                 </span>
               )}
             </Field>
@@ -624,7 +632,7 @@ export const ContactPersonForm = forwardRef<
 
           <FieldGroup>
             <Field>
-              <Label> Full Name in English</Label>
+              <Label>{t("contactForm.fullNameEnglish")}</Label>
               <Input
                 value={formData.full_name}
                 onChange={(e) =>
@@ -634,12 +642,12 @@ export const ContactPersonForm = forwardRef<
               />
               {errors.full_name && (
                 <span style={{ color: "red", fontSize: 12 }}>
-                  {errors.full_name}
+                  {t("contactForm.requiredField")}
                 </span>
               )}
             </Field>
             <Field>
-              <Label>Current Nationality</Label>
+              <Label>{t("contactForm.currentNationality")}</Label>
               <Select
                 value={formData.nationality_id}
                 onChange={(e) =>
@@ -647,16 +655,18 @@ export const ContactPersonForm = forwardRef<
                 }
                 disabled={isReadOnly}
               >
-                <option value="">Select</option>
+                <option value="">{t("contactForm.selectOption")}</option>
                 {countries.map((country: Country) => (
                   <option key={country.id} value={country.id}>
-                    {country.name}
+                    {selectedLanguage == "ar"
+                      ? country.name_ar
+                      : country.name_en}
                   </option>
                 ))}
               </Select>
               {errors.nationality_id && (
                 <span style={{ color: "red", fontSize: 12 }}>
-                  {errors.nationality_id}
+                  {t("contactForm.requiredField")}
                 </span>
               )}
             </Field>
@@ -664,7 +674,7 @@ export const ContactPersonForm = forwardRef<
 
           <FieldGroup>
             <Field>
-              <Label>Date of Birth</Label>
+              <Label>{t("contactForm.dateOfBirth")}</Label>
               <Input
                 type="date"
                 value={formData.date_of_birth}
@@ -675,12 +685,12 @@ export const ContactPersonForm = forwardRef<
               />
               {errors.date_of_birth && (
                 <span style={{ color: "red", fontSize: 12 }}>
-                  {errors.date_of_birth}
+                  {t("contactForm.requiredField")}
                 </span>
               )}
             </Field>
             <Field>
-              <Label>Identity Number</Label>
+              <Label>{t("contactForm.identityNumber")}</Label>
               <Input
                 value={formData.passport_number}
                 onChange={(e) =>
@@ -690,14 +700,14 @@ export const ContactPersonForm = forwardRef<
               />
               {errors.passport_number && (
                 <span style={{ color: "red", fontSize: 12 }}>
-                  {errors.passport_number}
+                  {t("contactForm.requiredField")}
                 </span>
               )}
             </Field>
           </FieldGroup>
           <FieldGroup>
             <Field>
-              <Label>ID Issue Date</Label>
+              <Label>{t("contactForm.idIssueDate")}</Label>
               <Input
                 type="date"
                 value={formData.passport_issue_date}
@@ -711,13 +721,13 @@ export const ContactPersonForm = forwardRef<
               />
               {errors.passport_issue_date && (
                 <span style={{ color: "red", fontSize: 12 }}>
-                  {errors.passport_issue_date}
+                  {t("contactForm.requiredField")}
                 </span>
               )}
             </Field>
 
             <Field>
-              <Label>ID Expiry Date</Label>
+              <Label>{t("contactForm.idExpiryDate")}</Label>
               <Input
                 type="date"
                 value={formData.passport_expiry_date}
@@ -731,17 +741,17 @@ export const ContactPersonForm = forwardRef<
               />
               {errors.passport_expiry_date && (
                 <span style={{ color: "red", fontSize: 12 }}>
-                  {errors.passport_expiry_date}
+                  {t("contactForm.requiredField")}
                 </span>
               )}
             </Field>
           </FieldGroup>
 
-          <SectionTitle>Contact Information</SectionTitle>
+          <SectionTitle>{t("contactForm.contactInformation")}</SectionTitle>
 
           <FieldGroup>
             <Field>
-              <Label>Country</Label>
+              <Label>{t("contactForm.country")}</Label>
               <Select
                 value={formData.country_id}
                 onChange={(e) =>
@@ -749,23 +759,24 @@ export const ContactPersonForm = forwardRef<
                 }
                 disabled={isReadOnly}
               >
-                <option value="">Select Country</option>
+                <option value="">{t("contactForm.selectCountry")}</option>
                 {countries.map((country: Country) => (
                   <option key={country.id} value={country.id}>
-                    {country.name}
+                    {selectedLanguage == "ar"
+                      ? country.name_ar
+                      : country.name_en}
                   </option>
                 ))}
               </Select>
               {errors.country_id && (
                 <span style={{ color: "red", fontSize: 12 }}>
-                  {errors.country_id}
+                  {t("contactForm.requiredField")}
                 </span>
               )}
             </Field>
-
             <Field>
-              <Label>City</Label>
-              <Select
+              <Label>{t("contactForm.city")}</Label>
+              <Input
                 value={formData.contact_person_city}
                 onChange={(e) =>
                   setFormData({
@@ -773,18 +784,12 @@ export const ContactPersonForm = forwardRef<
                     contact_person_city: e.target.value,
                   })
                 }
-                disabled={isReadOnly}
-              >
-                <option value="">Select City</option>
-                {cities.map((city) => (
-                  <option key={city.id} value={city.name}>
-                    {city.name}
-                  </option>
-                ))}
-              </Select>
+                readOnly={isReadOnly}
+                placeholder={t("contactForm.enterCity")}
+              />
               {errors.contact_person_city && (
                 <span style={{ color: "red", fontSize: 12 }}>
-                  {errors.contact_person_city}
+                  {t("contactForm.requiredField")}
                 </span>
               )}
             </Field>
@@ -792,9 +797,9 @@ export const ContactPersonForm = forwardRef<
 
           <FieldGroup>
             <Field>
-              <Label>Mobile Number</Label>
+              <Label>{t("contactForm.mobileNumber")}</Label>
               <Input
-                placeholder="+966 Enter Mobile Number"
+                placeholder={t("contactForm.enterMobileNumber")}
                 value={formData.mobile_number}
                 onChange={(e) =>
                   setFormData({ ...formData, mobile_number: e.target.value })
@@ -803,15 +808,15 @@ export const ContactPersonForm = forwardRef<
               />
               {errors.mobile_number && (
                 <span style={{ color: "red", fontSize: 12 }}>
-                  {errors.mobile_number}
+                  {t("contactForm.requiredField")}
                 </span>
               )}
             </Field>
 
             <Field>
-              <Label>Email Address</Label>
+              <Label>{t("contactForm.emailAddress")}</Label>
               <Input
-                placeholder="Enter Email Address"
+                placeholder={t("contactForm.enterEmailAddress")}
                 value={formData.email}
                 onChange={(e) =>
                   setFormData({ ...formData, email: e.target.value })
@@ -820,7 +825,7 @@ export const ContactPersonForm = forwardRef<
               />
               {errors.email && (
                 <span style={{ color: "red", fontSize: 12 }}>
-                  {errors.email}
+                  {t("contactForm.requiredField")}
                 </span>
               )}
             </Field>
@@ -829,7 +834,13 @@ export const ContactPersonForm = forwardRef<
       )}
 
       {showModal && (
-        <AddShareholderModal isOpen={true} onClose={handleCloseModal} />
+        <AddShareholderModal
+          isOpen={true}
+          onClose={handleCloseModal}
+          shareHolderId={0}
+          customerId={0}
+          sharePercentage=""
+        />
       )}
     </>
   );

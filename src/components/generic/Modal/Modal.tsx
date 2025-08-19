@@ -1,5 +1,6 @@
 import React, { useState, useEffect, ReactNode } from 'react';
 import { useNavigate } from 'react-router-dom';
+import CloseIcon from "../../../assets/images/Close.svg";
 
 import {
   ModalOverlay,
@@ -65,14 +66,8 @@ const Modal: React.FC<ModalProps> = ({
     <ModalOverlay show={!animateOut}>
       <ModalContainer animateOut={animateOut}>
         <CloseButton onClick={onClose}>
-          <img
-            src="/assets/images/modal-close.png"
-            alt="Close"
-            width="23"
-            height="23"
-          />
+          <img src={CloseIcon} alt="Close" />
         </CloseButton>
-
         <ModalContent>
           {iconSrc && (
             <IconContainer>

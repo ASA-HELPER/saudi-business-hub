@@ -9,6 +9,8 @@ import {
   resetAfterClasses,
   setClasses,
 } from "../../../store/reducers/businessActivitySlice";
+import { selectAppLang } from "../../../store/slices/languageSlice";
+import { useTranslation } from "react-i18next";
 const Wrapper = styled.div`
   background-color: white;
   border-radius: 8px;
@@ -94,6 +96,7 @@ const CheckboxIcon = styled.img`
   width: 24px;
   height: 24px;
   margin-right: 15px;
+  margin-left: 15px;
 `;
 
 interface ClassSectionProps {
@@ -104,14 +107,29 @@ interface ClassSectionProps {
 
 const ClassSection: React.FC<ClassSectionProps> = ({ structureData }) => {
   const [searchTerm, setSearchTerm] = useState("");
-
+  const selectedLanguage = useSelector(selectAppLang);
+  const { t } = useTranslation();
   const dispatch = useDispatch();
+
   const selectedGroups = useSelector(
     (state: RootState) => state.businessActivity.groups
   );
   const selectedClasses = useSelector(
     (state: RootState) => state.businessActivity.classes
   );
+
+  // ✅ Shared filter logic for both count and list
+  const filterClasses = (cls: Class) => {
+    const matchesGroup = selectedGroups.some(
+      (group) => group.id === cls.group_id
+    );
+    const matchesSearch =
+      selectedLanguage === "ar"
+        ? cls.description_ar.toLowerCase().includes(searchTerm.toLowerCase())
+        : cls.description_en.toLowerCase().includes(searchTerm.toLowerCase());
+
+    return matchesGroup && matchesSearch;
+  };
 
   const handleToggle = (classItem: Class) => {
     const exists = selectedClasses.some((c) => c.id === classItem.id);
@@ -125,22 +143,17 @@ const ClassSection: React.FC<ClassSectionProps> = ({ structureData }) => {
     dispatch(resetAfterClasses());
   };
 
+  const totalFilteredCount = structureData.class.filter(filterClasses).length;
+
   return (
     <Wrapper>
       <Header>
         <Title>
-          Choose your Class ({selectedClasses.length}/
-          {
-            structureData.class.filter(
-              (cls) =>
-                selectedGroups.some((group) => group.id === cls.group_id) &&
-                cls.description.toLowerCase().includes(searchTerm.toLowerCase())
-            ).length
-          }
-          )
+          {t("businessActivity.chooseClass")} ({selectedClasses.length}/
+          {totalFilteredCount})
         </Title>
         <SearchInput
-          placeholder="Search"
+          placeholder={t("businessActivity.search")}
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
         />
@@ -149,13 +162,10 @@ const ClassSection: React.FC<ClassSectionProps> = ({ structureData }) => {
       <Content>
         {selectedGroups.map((group, index) => {
           const groupClasses = structureData.class.filter(
-            (cls) =>
-              cls.group_id === group.id &&
-              cls.description.toLowerCase().includes(searchTerm.toLowerCase())
+            (cls) => cls.group_id === group.id && filterClasses(cls)
           );
 
           if (groupClasses.length === 0) return null;
-
           const isLast = index === selectedGroups.length - 1;
 
           return (
@@ -177,7 +187,11 @@ const ClassSection: React.FC<ClassSectionProps> = ({ structureData }) => {
                         alt={isSelected ? "Selected" : "Not selected"}
                       />
                       <Label checked={isSelected}>
-                        {item.classid + " - " + item.description}
+                        {`${item.classid} - ${
+                          selectedLanguage === "ar"
+                            ? item.description_ar
+                            : item.description_en
+                        }`}
                       </Label>
                     </Card>
                   );

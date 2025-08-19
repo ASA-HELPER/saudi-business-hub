@@ -117,15 +117,17 @@ const HeroSection = () => {
   const [language, setLanguage] = useState<"en" | "ar">("en");
 
   useEffect(() => {
-      i18n.changeLanguage("en");
-      document.documentElement.dir = "ltr";
-    }, []);
-
+    const savedLang = (localStorage.getItem("appLang") as "en" | "ar") || "en";
+    setLanguage(savedLang);
+    i18n.changeLanguage(savedLang);
+    document.documentElement.dir = savedLang === "ar" ? "rtl" : "ltr";
+  }, []);
 
   const handleLanguageChange = (lang: "en" | "ar") => {
     setLanguage(lang);
     i18n.changeLanguage(lang);
-    document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
+    document.documentElement.dir = lang === "ar" ? "rtl" : "ltr";
+    localStorage.setItem("appLang", lang); // ✅ persist
   };
 
   return (

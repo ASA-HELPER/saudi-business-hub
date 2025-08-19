@@ -6,6 +6,12 @@ import InvestmentBanner from "./InvestmentBanner";
 import TermsModal2 from "./TermsModal2";
 import GccNationalModal from "../Investment/modal/GccNationalModal";
 import { useNavigate } from "react-router-dom";
+import BoxCurveSpan from "../../assets/images/box-corner.svg";
+import RegisterIcon from "../../assets/images/register-stepper-icon.svg";
+import FormIcon from "../../assets/images/form-stepper-icon.svg";
+import ApprovalIcon from "../../assets/images/approval-stepper-icon.svg";
+import ServicesIcon from "../../assets/images/services-stepper-icon.svg";
+
 import MisaInvIconSelected from "../../assets/images/applyfor/app_1_selected.svg";
 import MisaInvIconUnSelected from "../../assets/images/applyfor/app_1_unselected.svg";
 
@@ -37,19 +43,19 @@ const SectionContainer = styled.div<{ $isRTL?: boolean }>`
   padding: 2rem 5rem;
   animation: ${fadeInUp} 0.8s ease-out;
   background-color: #ffffff;
-  direction: ${({ $isRTL }) => ($isRTL ? 'rtl' : 'ltr')};
+  direction: ${({ $isRTL }) => ($isRTL ? "rtl" : "ltr")};
 `;
 
 const SectionHeader = styled.div<{ $isRTL?: boolean }>`
   margin-bottom: 28px;
   position: relative;
-  padding-${({ $isRTL }) => ($isRTL ? 'right' : 'left')}: 24px;
+  padding-${({ $isRTL }) => ($isRTL ? "right" : "left")}: 24px;
   margin-top: 20px;
 
   &::before {
     content: "";
     position: absolute;
-    ${({ $isRTL }) => ($isRTL ? 'right' : 'left')}: 0;
+    ${({ $isRTL }) => ($isRTL ? "right" : "left")}: 0;
     top: 0;
     bottom: 0;
     width: 4px;
@@ -59,13 +65,13 @@ const SectionHeader = styled.div<{ $isRTL?: boolean }>`
 `;
 
 const SectionTitle = styled.h1<{ $isRTL?: boolean }>`
-  font-family: ${({ $isRTL }) => 
-    $isRTL ? '"IBM Plex Sans Arabic", sans-serif' : 'inherit'};
+  font-family: ${({ $isRTL }) =>
+    $isRTL ? '"IBM Plex Sans Arabic", sans-serif' : "inherit"};
   font-size: 28px;
   font-weight: 700;
   color: #121212;
   margin-bottom: 8px;
-  text-align: ${({ $isRTL }) => ($isRTL ? 'right' : 'left')};
+  text-align: ${({ $isRTL }) => ($isRTL ? "right" : "left")};
 
   @media (max-width: 768px) {
     font-size: 32px;
@@ -73,17 +79,17 @@ const SectionTitle = styled.h1<{ $isRTL?: boolean }>`
 `;
 
 const SectionSubtitle = styled.p<{ $isRTL?: boolean }>`
-  font-family: ${({ $isRTL }) => 
-    $isRTL ? '"IBM Plex Sans Arabic", sans-serif' : 'inherit'};
+  font-family: ${({ $isRTL }) =>
+    $isRTL ? '"IBM Plex Sans Arabic", sans-serif' : "inherit"};
   font-size: 18px;
-  color: #555555;
+  color: #00778e;
   font-weight: 600;
-  text-align: ${({ $isRTL }) => ($isRTL ? 'right' : 'left')};
+  text-align: ${({ $isRTL }) => ($isRTL ? "right" : "left")};
 `;
 
 const ContentLayout = styled.div`
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 45% 55%;
   gap: 48px;
   align-items: start;
 
@@ -157,7 +163,8 @@ const OptionContent = styled.div`
 `;
 
 const OptionTitle = styled.h3`
-  font-size: 20px;
+  font-size: 18px;
+  font-family: '"IBM Plex Sans Arabic", sans-serif';
   font-weight: 600;
   margin-bottom: 8px;
   line-height: 1.3;
@@ -165,23 +172,24 @@ const OptionTitle = styled.h3`
 
 const OptionDescription = styled.p`
   font-size: 14px;
+  font-family: '"IBM Plex Sans Arabic", sans-serif';
   opacity: 0.8;
   line-height: 1.5;
 `;
 
-const TimelineConnector = styled.div`
+const TimelineConnector = styled.div<{ $activeIndex: number }>`
   position: absolute;
   right: -25px;
-  top: 50%;
-  transform: translateY(-50%);
+  top: 0;
   width: 2px;
-  height: 60px;
-  background: linear-gradient(135deg, #0891b2 0%, #7c3aed 100%);
+  height: 100%;
+  background: linear-gradient(135deg, #0891b2 0%, #00778e 100%);
 
   &::before {
     content: "";
     position: absolute;
-    top: -6px;
+    top: ${({ $activeIndex }) =>
+      `calc(${100 * $activeIndex + 10 * $activeIndex}px + 65px)`};
     left: 50%;
     transform: translateX(-50%);
     width: 12px;
@@ -189,6 +197,7 @@ const TimelineConnector = styled.div`
     border-radius: 50%;
     background: #0891b2;
     box-shadow: 0 0 0 4px white, 0 0 0 6px #0891b2;
+    transition: top 0.3s ease-in-out;
   }
 
   @media (max-width: 1024px) {
@@ -197,40 +206,51 @@ const TimelineConnector = styled.div`
 `;
 
 const DetailPanel = styled.div`
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  gap: 16px;
   position: relative;
-  background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
-  border-radius: 24px;
-  padding: 40px;
+  background: linear-gradient(
+      180deg,
+      rgba(103, 63, 136, 0) 0%,
+      rgba(103, 63, 136, 0.16) 100%
+    ),
+    url(${BoxCurveSpan});
+  background-repeat: no-repeat;
+  background-position: bottom right;
+  background-size: auto 130px;
+  border-radius: 16px;
+  padding: 34px;
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
   overflow: hidden;
-  //min-height: 500px;
+`;
 
-  &::before {
-    content: "";
-    position: absolute;
-    bottom: -100px;
-    right: -100px;
-    width: 300px;
-    height: 300px;
-    background: linear-gradient(135deg, #7c3aed 0%, #0891b2 100%);
-    border-radius: 50%;
-    opacity: 0.1;
-    filter: blur(40px);
-  }
+const DetailTopContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+  gap: 16px;
+`;
+
+const DetailBottomContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
+  margin-bottom: 15px;
 `;
 
 const DetailHeader = styled.div`
   display: flex;
-  align-items: center;
-  gap: 20px;
-  margin-bottom: 32px;
+  flex-direction: column;
+  gap: 16px;
   position: relative;
   z-index: 2;
 `;
 
 const DetailIconWrapper = styled.div`
-  width: 80px;
-  height: 80px;
+  width: 60px;
+  height: 60px;
   border-radius: 50%;
   //background: linear-gradient(135deg, #0891b2 0%, #7c3aed 100%);
   display: flex;
@@ -252,9 +272,12 @@ const DetailIconWrapper = styled.div`
 `;
 
 const DetailTitle = styled.h2`
-  font-size: 32px;
-  font-weight: 700;
-  color: #1a1a1a;
+  display: flex;
+  align-items: center;
+  font-size: 22px;
+  font-weight: 600;
+  font-family: '"IBM Plex Sans Arabic", sans-serif';
+  color: #121212;
   line-height: 1.2;
 
   @media (max-width: 768px) {
@@ -263,30 +286,110 @@ const DetailTitle = styled.h2`
 `;
 
 const DetailDescription = styled.p`
-  font-size: 16px;
-  color: #4b5563;
-  line-height: 1.7;
-  margin-bottom: 32px;
+  font-size: 18px;
+  font-weight: 400;
+  line-height: 28px;
+  font-family: '"IBM Plex Sans Arabic", sans-serif';
+  color: #555555;
+  @media (min-width: 1024px) and (max-width: 1455px) {
+    line-height: 21px;
+  }
+`;
+
+const QuestionLabel = styled.p`
+  font-size: 18px;
+  font-family: '"IBM Plex Sans Arabic", sans-serif';
+  color: #121212;
+  font-weight: 600;
+`;
+
+const Connector = styled.div`
+  position: absolute;
+  top: 50px;
+  left: 50%;
+  right: -50%;
+  height: 1px;
+  background-color: #00778e;
+  z-index: 0;
+`;
+
+const StepsContainer = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+`;
+
+const StepWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   position: relative;
-  z-index: 2;
+  flex: 1;
+  padding: 0 15px;
+`;
+
+const StepperLabelsWrapper = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  text-align: center;
+`;
+
+const StepIconWrapper = styled.div`
+  width: 105px;
+  height: 105px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  z-index: 1;
+`;
+
+const StepCircle = styled.div`
+  background-color: #fff;
+  border: 1px solid #00778e;
+  border-radius: 50%;
+  height: 60px;
+  width: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+`;
+
+const StepLabel = styled.p`
+  font-size: 14px;
+  font-family: '"IBM Plex Sans Arabic", sans-serif';
+  color: #555555;
+  text-align: center;
+`;
+
+const StepIndex = styled.p`
+  font-size: 16px;
+  font-family: '"IBM Plex Sans Arabic", sans-serif';
+  color: #00778e;
 `;
 
 const ApplyButton = styled.button`
   display: inline-flex;
-  align-items: center;
+  width: max-content;
   gap: 12px;
   background: linear-gradient(135deg, #0891b2 0%, #0e7490 100%);
   color: white;
   border: none;
-  padding: 16px 32px;
-  border-radius: 12px;
-  font-size: 16px;
-  font-weight: 600;
+  padding: 12px 34px;
+  border-radius: 4px;
+  font-size: 18px;
+  font-weight: 700;
+  font-family: '"IBM Plex Sans Arabic", sans-serif';
   cursor: pointer;
   transition: all 0.3s ease;
   position: relative;
   z-index: 2;
   overflow: hidden;
+  margin-left: 80px;
 
   &::before {
     content: "";
@@ -326,6 +429,11 @@ const ButtonIcon = styled.div`
   }
 `;
 
+interface stepType {
+  label: string;
+  icon: string;
+}
+
 interface Option {
   id: string;
   title: string;
@@ -333,7 +441,9 @@ interface Option {
   icon: React.ReactNode;
   iconActive: React.ReactNode;
   detailTitle: string;
-  detailDescription: string;
+  detailDescription: string | string[];
+  question?: string;
+  steps?: Array<stepType>;
 }
 
 const ApplyForSection: React.FC = () => {
@@ -351,7 +461,9 @@ const ApplyForSection: React.FC = () => {
       title: t("apply_for.misa.title"),
       description: t("apply_for.misa.description"),
       icon: <img src={MisaInvIconUnSelected} alt={t("apply_for.misa.alt")} />,
-      iconActive: <img src={MisaInvIconSelected} alt={t("apply_for.misa.alt")} />,
+      iconActive: (
+        <img src={MisaInvIconSelected} alt={t("apply_for.misa.alt")} />
+      ),
       detailTitle: t("apply_for.misa.detail_title"),
       detailDescription: t("apply_for.misa.detail_description"),
     },
@@ -362,30 +474,76 @@ const ApplyForSection: React.FC = () => {
       icon: <img src={RhqIconUnSelected} alt={t("apply_for.rhq.alt")} />,
       iconActive: <img src={RhqIconSelected} alt={t("apply_for.rhq.alt")} />,
       detailTitle: t("apply_for.rhq.detail_title"),
-      detailDescription: t("apply_for.rhq.detail_description"),
+      detailDescription: t("apply_for.rhq.detail_description", {
+        returnObjects: true,
+      }) as string[],
     },
     {
       id: "strategic",
       title: t("apply_for.strategic.title"),
       description: t("apply_for.strategic.description"),
-      icon: <img src={StrategyIconUnSelected} alt={t("apply_for.strategic.alt")} />,
-      iconActive: <img src={StrategyIconSelected} alt={t("apply_for.strategic.alt")} />,
+      icon: (
+        <img src={StrategyIconUnSelected} alt={t("apply_for.strategic.alt")} />
+      ),
+      iconActive: (
+        <img src={StrategyIconSelected} alt={t("apply_for.strategic.alt")} />
+      ),
       detailTitle: t("apply_for.strategic.detail_title"),
       detailDescription: t("apply_for.strategic.detail_description"),
+      question: t("apply_for.strategic.question"),
+      steps: [
+        {
+          label: "Register",
+          icon: RegisterIcon,
+        },
+        {
+          label: "Complete our Application Form",
+          icon: FormIcon,
+        },
+        {
+          label: "Waiting for the Approval",
+          icon: ApprovalIcon,
+        },
+        {
+          label: "Benefit from the value-added services and advantages",
+          icon: ServicesIcon,
+        },
+      ],
     },
     {
       id: "bidding",
       title: t("apply_for.bidding.title"),
       description: t("apply_for.bidding.description"),
-      icon: <img src={BindingIconUnSelected} alt={t("apply_for.bidding.alt")} />,
-      iconActive: <img src={BindingIconSelected} alt={t("apply_for.bidding.alt")} />,
+      icon: (
+        <img src={BindingIconUnSelected} alt={t("apply_for.bidding.alt")} />
+      ),
+      iconActive: (
+        <img src={BindingIconSelected} alt={t("apply_for.bidding.alt")} />
+      ),
       detailTitle: t("apply_for.bidding.detail_title"),
       detailDescription: t("apply_for.bidding.detail_description"),
+      question: t("apply_for.bidding.question"),
+      steps: [
+        {
+          label: "Register",
+          icon: RegisterIcon,
+        },
+        {
+          label: "Complete our Application Form",
+          icon: FormIcon,
+        },
+        {
+          label: "Waiting for the Approval",
+          icon: ApprovalIcon,
+        },
+      ],
     },
   ];
 
   const activeOptionData =
     options.find((option) => option.id === activeOption) || options[0];
+
+  const activeIndex = options.findIndex((option) => option.id === activeOption);
 
   return (
     <SectionContainer $isRTL={isRTL}>
@@ -418,23 +576,73 @@ const ApplyForSection: React.FC = () => {
             ))}
           </OptionsContainer>
 
-          <TimelineConnector />
+          <TimelineConnector $activeIndex={activeIndex} />
         </CardContainer>
 
         <DetailPanel>
-          <DetailHeader>
+          <DetailTopContainer>
             <DetailIconWrapper>{activeOptionData.icon}</DetailIconWrapper>
-            <DetailTitle>{activeOptionData.detailTitle}</DetailTitle>
-          </DetailHeader>
+            <DetailHeader>
+              <DetailTitle>{activeOptionData.detailTitle}</DetailTitle>
+              <DetailDescription>
+                {Array.isArray(activeOptionData.detailDescription)
+                  ? activeOptionData.detailDescription.map((desc, index) => (
+                      <div key={index}>{desc}</div>
+                    ))
+                  : activeOptionData.detailDescription}
+              </DetailDescription>
 
-          <DetailDescription>{activeOptionData.detailDescription}</DetailDescription>
-
-          <ApplyButton onClick={() => setIsModalOpen(true)}>
-            {t("apply_for.apply_button")}
-            <ButtonIcon>
-              <ArrowRight size={20} />
-            </ButtonIcon>
-          </ApplyButton>
+              {activeOptionData.question && (
+                <QuestionLabel>{activeOptionData.question}</QuestionLabel>
+              )}
+            </DetailHeader>
+          </DetailTopContainer>
+          <DetailBottomContainer>
+            <div>
+              {activeOptionData.steps && (
+                <StepsContainer>
+                  {activeOptionData.steps.map((step, index) => (
+                    <StepWrapper key={index}>
+                      <StepIconWrapper>
+                        <StepCircle>
+                          <img src={step.icon} />
+                        </StepCircle>
+                      </StepIconWrapper>
+                      {activeOptionData.steps &&
+                        index < activeOptionData?.steps?.length - 1 && (
+                          <Connector />
+                        )}
+                      <StepIndex>{`0${index + 1}`}</StepIndex>
+                    </StepWrapper>
+                  ))}
+                </StepsContainer>
+              )}
+              <StepperLabelsWrapper>
+                {activeOptionData.steps &&
+                  activeOptionData.steps.map((step, index) => (
+                    <StepWrapper key={index}>
+                      <StepLabel>{step.label}</StepLabel>
+                    </StepWrapper>
+                  ))}
+              </StepperLabelsWrapper>
+            </div>
+            <ApplyButton
+              onClick={() => {
+                if (activeOption === "bidding") {
+                  navigate("/bidcertificateReg");
+                } else if (activeOption === "strategic") {
+                  navigate("/strategicinvestorReg");
+                } else {
+                  setIsModalOpen(true);
+                }
+              }}
+            >
+              {t("apply_for.apply_button")}
+              <ButtonIcon>
+                <ArrowRight size={20} />
+              </ButtonIcon>
+            </ApplyButton>
+          </DetailBottomContainer>
         </DetailPanel>
       </ContentLayout>
 
@@ -453,9 +661,15 @@ const ApplyForSection: React.FC = () => {
         isOpen={isGccModalOpen}
         onClose={() => setGccModalOpen(false)}
         onSelect={(value: "yes" | "no") => {
+          sessionStorage.setItem("hasFetchedEntityList", "false");
           if (activeOption === "RHQ") {
             navigate("/RHQinvestmentReg");
+          } else if (activeOption === "strategic") {
+            navigate("/strategicinvestorReg");
+          } else if (activeOption === "bidding") {
+            navigate("/bidcertificateReg");
           } else {
+            sessionStorage.setItem("hasFetchedEntityList", "false");
             navigate("/investmentReg");
           }
         }}

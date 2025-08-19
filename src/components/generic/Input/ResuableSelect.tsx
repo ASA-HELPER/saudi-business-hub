@@ -42,6 +42,7 @@ const ReusableSelect: React.FC<Props> = ({
       </Label>
       <SelectWrapper hasError={!!error} $width={width}>
         <Select
+          // key={(typeof window !== "undefined" ? document?.documentElement?.lang : "") || ""}
           id={name}
           {...register(name, validationRules)}
           disabled={disabled}
@@ -88,7 +89,7 @@ const RequiredMark = styled.span`
   }
 `;
 
-const SelectWrapper = styled.div<{ hasError: boolean; $width?: string }>`
+const SelectWrapper = styled.div<{ hasError: boolean; $width?: string; $isRTL?: boolean }>`
   width: 100%;
   position: relative;
   padding: 10px 0px;
@@ -105,7 +106,16 @@ const SelectWrapper = styled.div<{ hasError: boolean; $width?: string }>`
   &::after {
     content: "";
     position: absolute;
-    right: 0;
+    ${({ $isRTL }) =>
+      $isRTL
+        ? `
+          left: 0;
+          right: unset;
+        `
+        : `
+          right: 0;
+          left: unset;
+        `}
     top: 50%;
     transform: translateY(-50%);
     width: clamp(12px, 1vw, 16px);

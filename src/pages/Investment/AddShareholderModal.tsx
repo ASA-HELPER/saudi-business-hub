@@ -19,6 +19,17 @@ import { Country } from "../../store/types/countryTypes";
 import { createShareholderRequest } from "../../store/actions/shareHolderCreateAction";
 import { ShareholderPersonPayload } from "../../store/types/shareHolderPersonTypes";
 import { selectCreateShareholderSuccess } from "../../store/selectors/shareHolderCreateSelector";
+import { useTranslation } from "react-i18next";
+import { fetchShareholderPersonsRequest } from "../../store/actions/shareholderPersonListActions";
+import { selectShareholderPersons } from "../../store/selectors/shareholderPersonListSelectors";
+import FileUpload from "./modal/FileUpload";
+import { getShareholderByIdRequest } from "../../store/actions/shareholderGetByIdActions";
+import { AppDispatch, RootState } from "../../store";
+import { selectShareholderByIdData } from "../../store/selectors/shareholderByIdSelectors";
+import { selectAppLang } from "../../store/slices/languageSlice";
+import { selectShareholderCountryList, selectShareholderCountryLoading } from "../../store/selectors/shareholderCountrySelectors";
+import { fetchShareholderCountriesRequest } from "../../store/actions/shareholderCountryActions";
+
 const ModalOverlay = styled.div`
   position: fixed;
   inset: 0;
@@ -167,6 +178,11 @@ const Label = styled.label`
   font-weight: 400;
   margin-bottom: 8px;
   color: #3e4448;
+
+  span {
+    color: red;
+    margin-left: 2px;
+  }
 `;
 
 const Input = styled.input`
@@ -326,23 +342,37 @@ const StyledDatePicker = styled(DatePicker)`
 export default function AddShareholderModal({
   isOpen,
   onClose,
+  shareHolderId = 0,
+  customerId = 0,
+  sharePercentage = "",
 }: {
   isOpen: boolean;
   onClose: () => void;
+  shareHolderId: number;
+  customerId: number;
+  sharePercentage: string;
 }) {
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
 
   const [shareholderType, setShareholderType] = useState("new");
   const [personOrOrg, setPersonOrOrg] = useState("person");
   const [isValidated, setIsValidated] = useState(false);
   const [isExistingValidated, setExistingIsValidated] = useState(false);
-
+  const { t } = useTranslation();
   const [orgCountry, setOrgCountry] = useState("");
   const [orgValidated, setOrgValidated] = useState(false);
   const [professionalLicense, setProfessionalLicense] = useState("");
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [identityType, setIdentityType] = useState("");
   const [fileError, setFileError] = useState<string>("");
+  const shareHolderPersonList = useSelector(selectShareholderPersons);
+  const [passportLicenseFile, setPassportLicenseFile] = useState<File | null>(
+    null
+  );
+  const [professionalLicenseFile, setProfessionalLicenseFile] = useState<File | null>(null);
+  const selectedLanguage = useSelector(selectAppLang);
+
+  const shareholderByIdData = useSelector(selectShareholderByIdData);
 
   const allowedTypes = [
     "application/pdf",
@@ -374,6 +404,13 @@ export default function AddShareholderModal({
     setFileError("");
   };
 
+  useEffect(() => {
+    if (shareHolderId != 0 && customerId != 0) {
+      //dispatch(fetchShareholderPersonsRequest(customerId));
+      dispatch(getShareholderByIdRequest(shareHolderId));
+    }
+  }, []);
+
   type FormDataType = {
     identityType: string;
     title: string;
@@ -393,6 +430,7 @@ export default function AddShareholderModal({
     passportIssueDate: string;
     passportExpiryDate: string;
     dateOfBirth: string;
+    professionalLicenseFile?: File;
   };
 
   const [formData, setFormData] = useState<FormDataType>({
@@ -416,6 +454,65 @@ export default function AddShareholderModal({
     dateOfBirth: "",
   });
 
+  // useEffect(() => {
+  //   const shareHolder = shareHolderPersonList.find(
+  //     (c) => c.id === shareHolderId
+  //   );
+  //   setIdentityType("passport");
+  //   setFormData({
+  //     identityType: shareHolder?.id_type.toString() ?? "",
+  //     title: shareHolder?.title_id?.toString() ?? "",
+  //     firstNameArabic: shareHolder?.first_name_arabic ?? "",
+  //     lastNameArabic: shareHolder?.last_name_arabic ?? "",
+  //     fullName: shareHolder?.full_name ?? "",
+  //     sharePercentage: sharePercentage,
+  //     identityNumber: shareHolder?.passport_number ?? "",
+  //     nationality: shareHolder?.nationality_id.toString() ?? "",
+  //     country: shareHolder?.country_id.toString() ?? "",
+  //     city: shareHolder?.contact_person_city.toString() ?? "",
+  //     professionalLicense: "",
+  //     mobile_code_country_id:
+  //       shareHolder?.mobile_code_country_id.toString() ?? "",
+  //     phoneNumber: shareHolder?.mobile_number.toString() ?? "",
+  //     email: shareHolder?.email.toString() ?? "",
+  //     placeOfBirth: "",
+  //     passportIssueDate: shareHolder?.passport_issue_date.toString() ?? "",
+  //     passportExpiryDate: shareHolder?.passport_expiry_date.toString() ?? "",
+  //     dateOfBirth: shareHolder?.date_of_birth.toString() ?? "",
+  //   });
+  // }, [shareHolderPersonList]);
+
+  useEffect(() => {
+    console.log("selectShareholderByIdState", shareholderByIdData);
+    const shareHolder = shareholderByIdData?.person;
+    console.log("shareHolder", JSON.stringify(shareHolder));
+    setIdentityType("passport");
+    if (shareHolder) {
+      setFormData({
+        identityType: shareHolder?.share_holder_id_type_id?.toString() ?? "",
+        title: shareHolder?.shareholder_title?.toString() ?? "",
+        firstNameArabic: shareHolder?.first_name_arabic ?? "",
+        lastNameArabic: shareHolder?.last_name_arabic ?? "",
+        fullName: shareHolder?.full_name ?? "",
+        sharePercentage: sharePercentage,
+        identityNumber: shareHolder?.passport_number ?? "",
+        nationality: shareHolder?.current_nationality_id?.toString() ?? "",
+        country: shareHolder?.country_id?.toString() ?? "",
+        city: shareHolder?.person_shareholder_city?.toString() ?? "",
+        professionalLicense:
+          shareHolder?.professional_license === true ? "yes" : "no",
+        mobile_code_country_id:
+          shareHolder?.mobile_country_code_id?.toString() ?? "",
+        phoneNumber: shareHolder?.mobile_number?.toString() ?? "",
+        email: shareHolder?.email?.toString() ?? "",
+        placeOfBirth: shareHolder?.place_of_birth?.toString() ?? "",
+        passportIssueDate: shareHolder?.passport_issue_date?.toString() ?? "",
+        passportExpiryDate: shareHolder?.passport_expiry_date?.toString() ?? "",
+        dateOfBirth: shareHolder?.date_of_birth?.toString() ?? "",
+      });
+    }
+  }, [shareholderByIdData]);
+
   const [startDate, setStartDate] = useState(new Date());
 
   const shareholderIdTypes = useSelector(selectShareholderIdTypes);
@@ -424,15 +521,18 @@ export default function AddShareholderModal({
   );
   const shareholderIdTypesError = useSelector(selectShareholderIdTypesError);
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const shareholderCountries = useSelector(selectShareholderCountryList);
+  const loadingShareholderCountries = useSelector(selectShareholderCountryLoading);
 
   const countries = useSelector(selectCountryList);
   const titles = useSelector(selectTitleList);
   const isAddedSuccessfully = useSelector(selectCreateShareholderSuccess);
 
   useEffect(() => {
-    dispatch(fetchCountriesRequest());
+    // dispatch(fetchCountriesRequest()); 
     dispatch(fetchTitlesRequest());
     dispatch(fetchShareholderIdTypesRequest());
+    dispatch(fetchShareholderCountriesRequest());
   }, [dispatch]);
 
   useEffect(() => {
@@ -457,6 +557,20 @@ export default function AddShareholderModal({
   ) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const extractFileNameFromUrl = (url?: string) => {
+    if (!url) return undefined;
+    try {
+
+      const urlObj = new URL(url);
+      const pathname = decodeURIComponent(urlObj.pathname);
+      return pathname.split('/').pop() || undefined;
+    } catch (e) {
+      console.error("Error parsing URL:", e);
+      const decoded = decodeURIComponent(url);
+      return decoded.split('/').pop() || undefined;
+    }
   };
 
   const validateForm = () => {
@@ -490,7 +604,14 @@ export default function AddShareholderModal({
     if (!formData.city) newErrors.city = "City is required.";
     if (!formData.professionalLicense)
       newErrors.professionalLicense = "Professional License is required.";
-
+    if (!passportLicenseFile && !extractFileNameFromUrl(shareholderByIdData?.person?.passport_id_copy)) {
+      newErrors.passportFile = "Passport/License copy is required";
+    }
+  if (formData.professionalLicense === "yes" && 
+      !professionalLicenseFile && 
+      !extractFileNameFromUrl(shareholderByIdData?.person?.professional_license_certificate)) {
+    newErrors.professionalLicenseFile = "Professional license certificate is required";
+  }
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -527,6 +648,8 @@ export default function AddShareholderModal({
       shares_percentage: formData.sharePercentage,
       place_of_birth: formData.placeOfBirth,
       code: "",
+      _method: "POST",
+      shareHolderId: 0,
       person: {
         current_nationality_id: parseInt(formData.nationality),
         previous_nationality_id: parseInt(formData.nationality),
@@ -550,15 +673,44 @@ export default function AddShareholderModal({
         passport_issue_date: formData.passportIssueDate,
         passport_expiry_date: formData.passportExpiryDate,
         professional_license: formData.professionalLicense === "yes" ? 1 : 0,
-        passport_id_copy: selectedFile!, // non-null asserted if validated
-        professional_license_certificate: selectedFile!, // dummy or another file if applicable
-      },
+      passport_id_copy: passportLicenseFile!,
+      ...(formData.professionalLicense === "yes" && professionalLicenseFile && {
+        professional_license_certificate: professionalLicenseFile
+      }),
+     },
     };
 
-    console.log("payload", JSON.stringify(payload));
-    dispatch(createShareholderRequest(payload));
+    if (shareHolderId) {
+      const updatePayload = {
+        ...payload,
+        _method: "PUT",
+        shareHolderId: shareHolderId,
+      };
+      dispatch(createShareholderRequest(updatePayload));
+    } else {
+      console.log("payload", JSON.stringify(payload));
+      dispatch(createShareholderRequest(payload));
+    }
 
     //onClose();
+  };
+
+  const extractMediaIdFromUrl = (url?: string) => {
+    if (!url) return undefined;
+    const parts = url.split("/");
+    const id = parts[parts.length - 2];
+    return Number(id);
+  };
+
+
+  const refreshData = () => {
+    if (shareHolderId) {
+      dispatch(getShareholderByIdRequest(shareHolderId));
+    }
+  };
+
+  const onAttachmentDeleted = () => {
+    refreshData();
   };
 
   if (!isOpen) return null;
@@ -567,7 +719,7 @@ export default function AddShareholderModal({
     <ModalOverlay>
       <ModalContainer>
         <ModalHeader>
-          <ModalTitle>Add Shareholders</ModalTitle>
+          <ModalTitle>{t("shareholderModal.title")}</ModalTitle>
           <CloseButton onClick={onClose}>✕</CloseButton>
         </ModalHeader>
 
@@ -580,7 +732,7 @@ export default function AddShareholderModal({
               <Circle active={shareholderType === "new"}>
                 <InnerCircle active={shareholderType === "new"} />
               </Circle>
-              New Shareholder
+              {t("shareholderModal.newShareholder")}
             </RadioButton>
 
             <RadioButton
@@ -590,14 +742,16 @@ export default function AddShareholderModal({
               <Circle active={shareholderType === "existing"}>
                 <InnerCircle active={shareholderType === "existing"} />
               </Circle>
-              Existing Shareholder
+              {t("shareholderModal.existingShareholder")}
             </RadioButton>
           </RadioGroup>
 
           {shareholderType == "new" && (
             <>
               <ShareholderTypeWrapper>
-                <SectionTitle>Shareholder Type</SectionTitle>
+                <SectionTitle>
+                  {t("shareholderModal.shareholderType")}
+                </SectionTitle>
               </ShareholderTypeWrapper>
 
               <RadioGroup>
@@ -608,7 +762,7 @@ export default function AddShareholderModal({
                   <Circle active={personOrOrg === "person"}>
                     <InnerCircle active={personOrOrg === "person"} />
                   </Circle>
-                  Person
+                  {t("shareholderModal.person")}
                 </RadioButton>
                 <RadioButton
                   active={personOrOrg === "organization"}
@@ -617,17 +771,17 @@ export default function AddShareholderModal({
                   <Circle active={personOrOrg === "organization"}>
                     <InnerCircle active={personOrOrg === "organization"} />
                   </Circle>
-                  Organization
+                  {t("shareholderModal.organizations")}
                 </RadioButton>
               </RadioGroup>
 
               {personOrOrg === "person" && (
                 <>
-                  <Title>Identity Information</Title>
+                  <Title>{t("shareholderModal.identityInformation")}</Title>
                   <InputsRow>
                     <InputsRow>
                       <InputGroup>
-                        <Label>* Identity Type</Label>
+                        <Label><span>*</span> {t("shareholderModal.identityType")} </Label>
                         <Select
                           name="identityType"
                           value={formData.identityType}
@@ -639,10 +793,14 @@ export default function AddShareholderModal({
                             //setIsValidated(e.target.value === "passport");
                           }}
                         >
-                          <option value="">Select</option>
+                          <option value="">
+                            {t("shareholderModal.select")}{" "}
+                          </option>
                           {shareholderIdTypes.map((idT) => (
-                            <option key={idT.id} value={idT.name}>
-                              {idT.name}
+                            <option key={idT.id} value={idT.id}>
+                              {selectedLanguage == "ar"
+                                ? idT.name_ar
+                                : idT.name_en}
                             </option>
                           ))}
                         </Select>
@@ -655,7 +813,7 @@ export default function AddShareholderModal({
                     {identityType !== "passport" ? (
                       <>
                         <InputGroup>
-                          <Label>* Current Nationality</Label>
+                          <Label><span>*</span> {t("shareholderModal.nationality")}</Label>
                           <Select>
                             <option value="">Select</option>
                             <option value="saudi_arabia">Saudi Arabia</option>
@@ -664,12 +822,14 @@ export default function AddShareholderModal({
                         </InputGroup>
 
                         <InputGroup>
-                          <Label>* Identity Number</Label>
+                          <Label>
+                            <span>*</span> {t("shareholderModal.identityNumber")}
+                          </Label>
                           <Input placeholder="1 0234 56789" />
                         </InputGroup>
 
                         <InputGroup>
-                          <Label>* Date of Birth</Label>
+                          <Label>* {t("shareholderModal.dateOfBirth")}</Label>
                           <Input type="date" />
                         </InputGroup>
                       </>
@@ -682,18 +842,18 @@ export default function AddShareholderModal({
                   {identityType !== "passport" && !isValidated && (
                     <ValidateButtonWrapper>
                       <ValidateButton onClick={() => setIsValidated(true)}>
-                        Validate
+                        {t("shareholderModal.validate")}
                       </ValidateButton>
                     </ValidateButtonWrapper>
                   )}
 
                   {(isValidated || identityType === "passport") && (
                     <>
-                      <Title>Personal Details</Title>
+                      <Title>{t("shareholderModal.personalDetails")}</Title>
                       <InputsRow>
                         {identityType === "passport" && (
                           <InputGroup>
-                            <Label>* Title</Label>
+                            <Label><span>*</span> {t("shareholderModal.titles")}</Label>
                             <Select
                               name="title"
                               value={formData.title}
@@ -713,7 +873,9 @@ export default function AddShareholderModal({
                         )}
 
                         <InputGroup>
-                          <Label>* First Name in Arabic</Label>
+                          <Label>
+                            <span>*</span> {t("shareholderModal.firstNameArabic")}
+                          </Label>
                           <>
                             <Input
                               name="firstNameArabic"
@@ -727,7 +889,9 @@ export default function AddShareholderModal({
                         </InputGroup>
 
                         <InputGroup>
-                          <Label>* Last Name in Arabic</Label>
+                          <Label>
+                            <span>*</span> {t("shareholderModal.lastNameArabic")}
+                          </Label>
                           <Input
                             name="lastNameArabic"
                             value={formData.lastNameArabic}
@@ -739,7 +903,7 @@ export default function AddShareholderModal({
                         </InputGroup>
 
                         <InputGroup>
-                          <Label>* Full Name in English</Label>
+                          <Label><span>*</span> {t("shareholderModal.fullName")}</Label>
                           <Input
                             name="fullName"
                             value={formData.fullName}
@@ -756,7 +920,9 @@ export default function AddShareholderModal({
                           {/* Additional passport-specific fields */}
                           <InputsRow>
                             <InputGroup>
-                              <Label>* Share Percentage</Label>
+                              <Label>
+                                <span>*</span> {t("shareholderModal.sharePercentage")}
+                              </Label>
                               <Input
                                 name="sharePercentage"
                                 value={formData.sharePercentage}
@@ -768,7 +934,9 @@ export default function AddShareholderModal({
                             </InputGroup>
 
                             <InputGroup>
-                              <Label>* Date of Birth</Label>
+                              <Label>
+                                <span>*</span> {t("shareholderModal.dateOfBirth")}
+                              </Label>
                               <Input
                                 type="date"
                                 name="dateOfBirth"
@@ -781,7 +949,9 @@ export default function AddShareholderModal({
                             </InputGroup>
 
                             <InputGroup>
-                              <Label>* Identity Number</Label>
+                              <Label>
+                                <span>*</span> {t("shareholderModal.identityNumber")}
+                              </Label>
                               <Input
                                 name="identityNumber"
                                 value={formData.identityNumber}
@@ -791,18 +961,23 @@ export default function AddShareholderModal({
                                 <ErrorText>{errors.identityNumber}</ErrorText>
                               )}
                             </InputGroup>
-
                             <InputGroup>
-                              <Label>*Current Nationality</Label>
+                              <Label>
+                                <span>*</span> {t("shareholderModal.nationality")}
+                              </Label>
                               <Select
                                 name="nationality"
                                 value={formData.nationality}
                                 onChange={handleChange}
                               >
-                                <option value="">Select</option>
-                                {countries.map((c: Country) => (
+                                <option value="">
+                                  {t("shareholderModal.select")}
+                                </option>
+                                {shareholderCountries.map((c: Country) => (
                                   <option key={c.id} value={c.id}>
-                                    {c.name}
+                                    {selectedLanguage == "ar"
+                                      ? c.name_ar
+                                      : c.name_en}
                                   </option>
                                 ))}
                               </Select>
@@ -814,16 +989,20 @@ export default function AddShareholderModal({
 
                           <InputsRow>
                             <InputGroup>
-                              <Label>* Country</Label>
+                              <Label><span>*</span> {t("shareholderModal.country")}</Label>
                               <Select
                                 name="country"
                                 value={formData.country}
                                 onChange={handleChange}
                               >
-                                <option value="">Select</option>
-                                {countries.map((c: Country) => (
+                                <option value="">
+                                  {t("shareholderModal.select")}
+                                </option>
+                                {shareholderCountries.map((c: Country) => (
                                   <option key={c.id} value={c.id}>
-                                    {c.name}
+                                    {selectedLanguage == "ar"
+                                      ? c.name_ar
+                                      : c.name_en}
                                   </option>
                                 ))}
                               </Select>
@@ -833,7 +1012,7 @@ export default function AddShareholderModal({
                             </InputGroup>
 
                             <InputGroup>
-                              <Label>* City</Label>
+                              <Label><span>*</span> {t("shareholderModal.city")}</Label>
                               <Input
                                 name="city"
                                 value={formData.city}
@@ -845,7 +1024,9 @@ export default function AddShareholderModal({
                             </InputGroup>
 
                             <InputGroup>
-                              <Label>Professional License</Label>
+                              <Label>
+                                {t("shareholderModal.professionalLicense")}
+                              </Label>
 
                               <Select
                                 name="professionalLicense"
@@ -865,7 +1046,9 @@ export default function AddShareholderModal({
                             </InputGroup>
 
                             <InputGroup>
-                              <Label>Mobile Number</Label>
+                              <Label>
+                                {t("shareholderModal.mobileNumber")}
+                              </Label>
                               <div style={{ display: "flex", gap: "10px" }}>
                                 <Select
                                   name="mobile_code_country_id"
@@ -874,7 +1057,7 @@ export default function AddShareholderModal({
                                   style={{ width: "25%" }}
                                 >
                                   <option value="" disabled hidden>
-                                    + Code
+                                    Select
                                   </option>
                                   {countries.map((country: Country) => (
                                     <option key={country.id} value={country.id}>
@@ -892,7 +1075,9 @@ export default function AddShareholderModal({
                                 />
                               </div>
                               {errors.mobile_code_country_id && (
-                                <ErrorText>{errors.mobile_code_country_id}</ErrorText>
+                                <ErrorText>
+                                  {errors.mobile_code_country_id}
+                                </ErrorText>
                               )}
                               {errors.phoneNumber && (
                                 <ErrorText>{errors.phoneNumber}</ErrorText>
@@ -902,7 +1087,7 @@ export default function AddShareholderModal({
 
                           <InputsRow>
                             <InputGroup>
-                              <Label>* Email</Label>
+                              <Label><span>*</span> {t("shareholderModal.email")}</Label>
                               <Input
                                 name="email"
                                 type="email"
@@ -915,7 +1100,9 @@ export default function AddShareholderModal({
                             </InputGroup>
 
                             <InputGroup>
-                              <Label>* Place of Birth</Label>
+                              <Label>
+                                <span>*</span> {t("shareholderModal.placeOfBirth")}
+                              </Label>
                               <Input
                                 name="placeOfBirth"
                                 value={formData.placeOfBirth}
@@ -928,13 +1115,13 @@ export default function AddShareholderModal({
                           </InputsRow>
                         </>
                       )}
-
-                      <Title>Document Data</Title>
+                      <Title>{t("shareholderModal.documentData")}</Title>
                       <InputsRow>
                         <InputGroup>
                           <Label>
-                            {identityType === "passport" ? "Passport" : "ID"}{" "}
-                            Issue Date
+                            {identityType === "passport"
+                              ? t("shareholderModal.passportIssueDate")
+                              : t("shareholderModal.idIssueDate")}
                           </Label>
                           <Input
                             type="date"
@@ -949,8 +1136,9 @@ export default function AddShareholderModal({
 
                         <InputGroup>
                           <Label>
-                            {identityType === "passport" ? "Passport" : "ID"}{" "}
-                            Expiry Date
+                            {identityType === "passport"
+                              ? t("shareholderModal.passportExpiryDate")
+                              : t("shareholderModal.idExpiryDate")}
                           </Label>
                           <Input
                             type="date"
@@ -963,86 +1151,35 @@ export default function AddShareholderModal({
                           )}
                         </InputGroup>
                       </InputsRow>
-
-                      <Title>Attachments</Title>
-                      <UploadBox
-                        onClick={() =>
-                          document.getElementById("fileInput")?.click()
-                        }
-                        onDragOver={(e) => e.preventDefault()}
-                        onDrop={(e) => {
-                          e.preventDefault();
-                          if (
-                            e.dataTransfer.files &&
-                            e.dataTransfer.files.length > 0
-                          ) {
-                            handleFile(e.dataTransfer.files[0]);
-                          }
-                        }}
-                      >
-                        <UploadIcon>⤓</UploadIcon>
-                        <UploadText>
-                          <strong>Drag and drop files here to upload</strong>
-                          <br />
-                          Maximum file size allowed is 2MB, supported formats:
-                          .pdf, .doc, .docx, .jpg, .jpeg, .png.
-                        </UploadText>
-                        <UploadButton>Browse Files</UploadButton>
-                        <input
-                          id="fileInput"
-                          type="file"
-                          accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
-                          style={{ display: "none" }}
-                          onChange={(e) => {
-                            if (e.target.files && e.target.files.length > 0) {
-                              handleFile(e.target.files[0]);
-                            }
-                          }}
-                        />
-                      </UploadBox>
-
-                      {fileError && <ErrorText>{fileError}</ErrorText>}
-
-                      {selectedFile && !fileError && (
-                        <SelectedFilePreview>
-                          ✅ Selected: {selectedFile.name} (
-                          {(selectedFile.size / 1024).toFixed(1)} KB)
-                        </SelectedFilePreview>
+                      {/* Passport/License Copy */}
+                      <FileUpload 
+                        file={passportLicenseFile} 
+                        setFile={setPassportLicenseFile} 
+                        label="Passport/License Copy" 
+                        mediaId={extractMediaIdFromUrl(shareholderByIdData?.person?.passport_id_copy)}
+                        fileName={extractFileNameFromUrl(shareholderByIdData?.person?.passport_id_copy)}
+                        onDeleteSuccess={onAttachmentDeleted} 
+                      />
+                      {errors.passportFile && (
+                        <ErrorText>{errors.passportFile}</ErrorText>
                       )}
-                      {/* <UploadBox
-                        onClick={() =>
-                          document.getElementById("fileInput")?.click()
-                        }
-                        onDragOver={(e) => e.preventDefault()}
-                        onDrop={(e) => {
-                          e.preventDefault();
-                          if (
-                            e.dataTransfer.files &&
-                            e.dataTransfer.files.length > 0
-                          ) {
-                            setSelectedFile(e.dataTransfer.files[0]);
-                          }
-                        }}
-                      >
-                        <UploadIcon>⤓</UploadIcon>
-                        <UploadText>
-                          <strong>Drag and drop files here to upload</strong>
-                          <br />
-                          Maximum file size allowed is 2MB, supported formats:
-                          .jpg, .png, .pdf.
-                        </UploadText>
-                        <UploadButton>Browse Files</UploadButton>
-                        <input
-                          id="fileInput"
-                          type="file"
-                          style={{ display: "none" }}
-                          onChange={(e) => {
-                            if (e.target.files && e.target.files.length > 0) {
-                              setSelectedFile(e.target.files[0]);
-                            }
-                          }}
+                      {/* Professional License Certificate - conditionally shown */}
+                      {formData.professionalLicense === "yes" && (
+                        <>
+                        <FileUpload 
+                          file={professionalLicenseFile} 
+                          setFile={setProfessionalLicenseFile} 
+                          label="Professional License Certificate" 
+                          required={formData.professionalLicense === "yes"}
+                          mediaId={extractMediaIdFromUrl(shareholderByIdData?.person?.professional_license_certificate)} 
+                          fileName={extractFileNameFromUrl(shareholderByIdData?.person?.professional_license_certificate)}  
+                          onDeleteSuccess={onAttachmentDeleted} 
                         />
-                      </UploadBox> */}
+                          {errors.professionalLicenseFile && (
+                            <ErrorText>{errors.professionalLicenseFile}</ErrorText>
+                          )}
+                        </>
+                      )}
                     </>
                   )}
                 </>
@@ -1050,15 +1187,21 @@ export default function AddShareholderModal({
 
               {personOrOrg === "organization" && (
                 <>
-                  <Title>Shareholder Details</Title>
+                  <Title>
+                    {t("shareholderModal.organization.sectionTitle")}
+                  </Title>
                   <InputsRow>
                     <InputGroup>
-                      <Label>* Country</Label>
+                      <Label>
+                        <span>*</span> {t("shareholderModal.organization.country")}
+                      </Label>
                       <Select
                         value={orgCountry}
                         onChange={(e) => setOrgCountry(e.target.value)}
                       >
-                        <option value="">Select Country</option>
+                        <option value="">
+                          {t("shareholderModal.organization.selectCountry")}
+                        </option>
                         <option value="Riyadh">Riyadh</option>
                         <option value="Jeddah">Jeddah</option>
                       </Select>
@@ -1066,33 +1209,57 @@ export default function AddShareholderModal({
                     {orgCountry && (
                       <>
                         <InputGroup>
-                          <Label>* Unified Number</Label>
+                          <Label>
+                            <span>*</span> {t("shareholderModal.organization.unifiedNumber")}
+                          </Label>
                           <Input placeholder="1 0234 56789" />
                         </InputGroup>
-
                         <PrimaryButton onClick={() => setOrgValidated(true)}>
-                          Validate
+                          {t("shareholderModal.organization.validate")}
                         </PrimaryButton>
                       </>
                     )}
                   </InputsRow>
+
                   {orgCountry && orgValidated && (
                     <>
                       <InputsRow>
                         <InputGroup>
-                          <Label>* Organization Name in English</Label>
-                          <Input placeholder="Enter Organization Name in English" />
+                          <Label>
+                            <span>*</span> {t("shareholderModal.organization.orgNameEn")}
+                          </Label>
+                          <Input
+                            placeholder={t(
+                              "shareholderModal.organization.orgNameEn"
+                            )}
+                          />
                         </InputGroup>
                         <InputGroup>
-                          <Label>* Organization Name in Arabic</Label>
-                          <Input placeholder="Enter Organization Name in Arabic" />
+                          <Label>
+                            <span>*</span> {t("shareholderModal.organization.orgNameAr")}
+                          </Label>
+                          <Input
+                            placeholder={t(
+                              "shareholderModal.organization.orgNameAr"
+                            )}
+                          />
                         </InputGroup>
                         <InputGroup>
-                          <Label>* Legal Status</Label>
+                          <Label>
+                            <span>*</span> {t("shareholderModal.organization.legalStatus")}
+                          </Label>
                           <Select>
-                            <option>Select Legal Status</option>
-                            <option>LLC</option>
-                            <option>Joint Stock</option>
+                            <option>
+                              {t(
+                                "shareholderModal.organization.selectLegalStatus"
+                              )}
+                            </option>
+                            <option>
+                              {t("shareholderModal.organization.llc")}
+                            </option>
+                            <option>
+                              {t("shareholderModal.organization.jointStock")}
+                            </option>
                           </Select>
                         </InputGroup>
                       </InputsRow>
@@ -1100,60 +1267,110 @@ export default function AddShareholderModal({
                       <InputsRow>
                         <InputGroup>
                           <Label>
-                            * Number of Years Established in Country of Origin
+                            <span>*</span> {" "}
+                            {t(
+                              "shareholderModal.organization.yearsEstablished"
+                            )}
                           </Label>
                           <Select>
-                            <option>Select Number of Years</option>
-                            <option>1-5</option>
-                            <option>5-10</option>
-                            <option>10+</option>
+                            <option>
+                              {t("shareholderModal.organization.selectYears")}
+                            </option>
+                            <option>
+                              {t("shareholderModal.organization.1_5")}
+                            </option>
+                            <option>
+                              {t("shareholderModal.organization.5_10")}
+                            </option>
+                            <option>
+                              {t("shareholderModal.organization.10_plus")}
+                            </option>
                           </Select>
                         </InputGroup>
 
                         <InputGroup>
-                          <Label>Mobile Number</Label>
+                          <Label>
+                            {t("shareholderModal.organization.mobile")}
+                          </Label>
                           <Input placeholder="+966 Enter Mobile Number" />
                         </InputGroup>
 
                         <InputGroup>
-                          <Label>* Share Percentage</Label>
-                          <Input placeholder="Enter Share Percentage" />
+                          <Label>
+                            <span>*</span>{" "}
+                            {t("shareholderModal.organization.sharePercentage")}
+                          </Label>
+                          <Input
+                            placeholder={t(
+                              "shareholderModal.organization.sharePercentage"
+                            )}
+                          />
                         </InputGroup>
                       </InputsRow>
 
-                      <InputsRow>
-                        <InputGroup>
-                          <Label>Email Address</Label>
-                          <Input placeholder="Enter Email Address" />
-                        </InputGroup>
-
-                        <InputGroup>
-                          <Label>Website</Label>
-                          <Input placeholder="Enter Website" />
-                        </InputGroup>
-                      </InputsRow>
-                      <Title>Attachments</Title>
                       <InputsRow>
                         <InputGroup>
                           <Label>
-                            * Commercial Registration Copy (Home Country)
+                            {t("shareholderModal.organization.email")}
+                          </Label>
+                          <Input
+                            placeholder={t(
+                              "shareholderModal.organization.email"
+                            )}
+                          />
+                        </InputGroup>
+
+                        <InputGroup>
+                          <Label>
+                            {t("shareholderModal.organization.website")}
+                          </Label>
+                          <Input
+                            placeholder={t(
+                              "shareholderModal.organization.website"
+                            )}
+                          />
+                        </InputGroup>
+                      </InputsRow>
+
+                      <Title>
+                        {t("shareholderModal.organization.attachmentsTitle")}
+                      </Title>
+                      <InputsRow>
+                        <InputGroup>
+                          <Label>
+                            <span>*</span> {t("shareholderModal.organization.commercialReg")}
                           </Label>
                           <Input placeholder="Attach file..." type="file" />
                         </InputGroup>
 
                         <InputGroup>
-                          <Label>* Last Year Financial Statement</Label>
+                          <Label>
+                            <span>*</span>{" "}
+                            {t(
+                              "shareholderModal.organization.financialStatement"
+                            )}
+                          </Label>
                           <Input placeholder="Attach file..." type="file" />
                         </InputGroup>
                       </InputsRow>
                       <InputsRow>
                         <InputGroup>
-                          <Label>* Other Attachment 1</Label>
+                          <Label>
+                            <span>*</span>{" "}
+                            {t(
+                              "shareholderModal.organization.otherAttachment1"
+                            )}
+                          </Label>
                           <Input placeholder="Attach file..." type="file" />
                         </InputGroup>
 
                         <InputGroup>
-                          <Label>* Other Attachment 2</Label>
+                          <Label>
+                            <span>*</span>{" "}
+                            {t(
+                              "shareholderModal.organization.otherAttachment2"
+                            )}
+                          </Label>
                           <Input placeholder="Attach file..." type="file" />
                         </InputGroup>
                       </InputsRow>
@@ -1168,19 +1385,21 @@ export default function AddShareholderModal({
             <>
               <InputsRow>
                 <InputGroup>
-                  <Label>* Enter Shareholder Entity Number</Label>
+                  <Label><span>*</span> {t("shareholderModal.enterEntityNumber")}</Label>
                   <Input placeholder="1 0234 56789" />
                 </InputGroup>
 
                 <InputGroup>
-                  <Label>Name</Label>
+                  <Label>{t("shareholderModal.name")}</Label>
                   <Input placeholder="Omar Majid" />
                 </InputGroup>
 
                 <InputGroup>
-                  <Label>Parent Company Country</Label>
+                  <Label>{t("shareholderModal.parentCompanyCountry")}</Label>
                   <Select>
-                    <option value="">Select Country</option>
+                    <option value="">
+                      {t("shareholderModal.selectCountry")}
+                    </option>
                     <option value="Riyadh">Riyadh</option>
                     <option value="Jeddah">Jeddah</option>
                   </Select>
@@ -1189,24 +1408,29 @@ export default function AddShareholderModal({
 
               <InputsRow>
                 <InputGroup>
-                  <Label>* Share Percentage</Label>
+                  <Label><span>*</span> {t("shareholderModal.sharePercentage")}</Label>
                   <Input placeholder="50%" type="number" />
                 </InputGroup>
                 <InputGroup>
-                  <Label>* Professional License</Label>
+                  <Label><span>*</span> {t("shareholderModal.professionalLicense")}</Label>
                   <Select
                     value={professionalLicense}
                     onChange={(e) => setProfessionalLicense(e.target.value)}
                   >
-                    <option value="">Select</option>
-                    <option value="yes">Yes</option>
-                    <option value="no">No</option>
+                    <option value="">{t("shareholderModal.select")}</option>
+                    <option value="yes">{t("shareholderModal.yes")}</option>
+                    <option value="no">{t("shareholderModal.no")}</option>
                   </Select>
                 </InputGroup>
               </InputsRow>
+
               {professionalLicense === "yes" && (
                 <InputGroup>
-                  {!selectedFile && <Label>Upload Professional License</Label>}
+                  {!selectedFile && (
+                    <Label>
+                      {t("shareholderModal.uploadProfessionalLicense")}
+                    </Label>
+                  )}
                   {!selectedFile && (
                     <UploadBox
                       onClick={() =>
@@ -1225,12 +1449,13 @@ export default function AddShareholderModal({
                     >
                       <UploadIcon>⤓</UploadIcon>
                       <UploadText>
-                        <strong>Drag and drop files here to upload</strong>
+                        <strong>{t("shareholderModal.upload.dragDrop")}</strong>
                         <br />
-                        Maximum file size allowed is 2MB, supported formats:
-                        .jpg, .png, .pdf.
+                        {t("shareholderModal.upload.requirements")}
                       </UploadText>
-                      <UploadButton>Browse Files</UploadButton>
+                      <UploadButton>
+                        {t("shareholderModal.upload.browse")}
+                      </UploadButton>
                       <input
                         id="fileInput"
                         type="file"
@@ -1245,7 +1470,7 @@ export default function AddShareholderModal({
                   )}
                   {selectedFile && (
                     <InputGroup>
-                      <Label>Professional License</Label>
+                      <Label>{t("shareholderModal.professionalLicense")}</Label>
                       <UploadedFileBox>
                         <CheckIcon>✔️</CheckIcon>
                         <FileName>{selectedFile.name}</FileName>
@@ -1262,74 +1487,79 @@ export default function AddShareholderModal({
                 <>
                   <InputsRow>
                     <InputGroup>
-                      <Label>* Organization Name in English</Label>
-                      <Input placeholder="Enter Organization Name in English" />
+                      <Label>
+                        <span>*</span> {t("shareholderModal.organizationNameEnglish")}
+                      </Label>
+                      <Input
+                        placeholder={t(
+                          "shareholderModal.organizationNameEnglish"
+                        )}
+                      />
                     </InputGroup>
                     <InputGroup>
-                      <Label>* Organization Name in Arabic</Label>
-                      <Input placeholder="Enter Organization Name in Arabic" />
+                      <Label>
+                        <span>*</span> {t("shareholderModal.organizationNameArabic")}
+                      </Label>
+                      <Input
+                        placeholder={t(
+                          "shareholderModal.organizationNameArabic"
+                        )}
+                      />
                     </InputGroup>
                     <InputGroup>
-                      <Label>* Legal Status</Label>
+                      <Label><span>*</span> {t("shareholderModal.selectLegalStatus")}</Label>
                       <Select>
-                        <option>Select Legal Status</option>
-                        <option>LLC</option>
-                        <option>Joint Stock</option>
+                        <option>
+                          {t("shareholderModal.selectLegalStatus")}
+                        </option>
+                        <option>{t("shareholderModal.llc")}</option>
+                        <option>{t("shareholderModal.jointStock")}</option>
                       </Select>
                     </InputGroup>
                   </InputsRow>
 
                   <InputsRow>
                     <InputGroup>
-                      <Label>
-                        * Number of Years Established in Country of Origin
-                      </Label>
+                      <Label><span>*</span> {t("shareholderModal.selectYears")}</Label>
                       <Select>
-                        <option>Select Number of Years</option>
-                        <option>1-5</option>
-                        <option>5-10</option>
-                        <option>10+</option>
+                        <option>{t("shareholderModal.selectYears")}</option>
+                        <option>{t("shareholderModal.years_1_5")}</option>
+                        <option>{t("shareholderModal.years_5_10")}</option>
+                        <option>{t("shareholderModal.years_10_plus")}</option>
                       </Select>
                     </InputGroup>
-
                     <InputGroup>
-                      <Label>Mobile Number</Label>
+                      <Label>{t("shareholderModal.mobileNumber")}</Label>
                       <Input placeholder="+966 Enter Mobile Number" />
                     </InputGroup>
-
                     <InputGroup>
-                      <Label>* Share Percentage</Label>
+                      <Label><span>*</span> {t("shareholderModal.sharePercentage")}</Label>
                       <Input placeholder="Enter Share Percentage" />
                     </InputGroup>
                   </InputsRow>
 
                   <InputsRow>
                     <InputGroup>
-                      <Label>Email Address</Label>
+                      <Label>{t("shareholderModal.email")}</Label>
                       <Input placeholder="Enter Email Address" />
                     </InputGroup>
-
                     <InputGroup>
-                      <Label>Website</Label>
+                      <Label>{t("shareholderModal.website")}</Label>
                       <Input placeholder="Enter Website" />
                     </InputGroup>
                   </InputsRow>
 
                   <InputsRow>
                     <InputGroup>
-                      <Label>
-                        * Commercial Registration Copy (Home Country)
-                      </Label>
+                      <Label><span>*</span> {t("shareholderModal.commercialRegCopy")}</Label>
                       <Input placeholder="Attach file..." type="file" />
                     </InputGroup>
-
                     <InputGroup>
-                      <Label>* Last Year Financial Statement</Label>
+                      <Label><span>*</span> {t("shareholderModal.lastYearFinancial")}</Label>
                       <Input placeholder="Attach file..." type="file" />
                     </InputGroup>
-
                     <InputGroup>
-                      <Label>* Other Attachment 1</Label>
+                      <Label><span>*</span> {t("shareholderModal.otherAttachment1")}</Label>
                       <Input placeholder="Attach file..." type="file" />
                     </InputGroup>
                   </InputsRow>
@@ -1338,7 +1568,7 @@ export default function AddShareholderModal({
 
               <ValidateButtonWrapper>
                 <ValidateButton onClick={() => setExistingIsValidated(true)}>
-                  Validate
+                  {t("shareholderModal.validate")}
                 </ValidateButton>
               </ValidateButtonWrapper>
             </>
@@ -1346,9 +1576,11 @@ export default function AddShareholderModal({
         </ModalBody>
 
         <ModalFooter>
-          <SecondaryButton onClick={onClose}>Cancel</SecondaryButton>
+          <SecondaryButton onClick={onClose}>
+            {t("shareholderModal.cancel")}
+          </SecondaryButton>
           <PrimaryButton onClick={handleSubmit}>
-            Save New Shareholder
+            {t("shareholderModal.saveNewShareholder")}
           </PrimaryButton>
         </ModalFooter>
       </ModalContainer>

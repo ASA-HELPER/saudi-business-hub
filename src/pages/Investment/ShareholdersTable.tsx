@@ -3,6 +3,9 @@ import styled from "styled-components";
 import { Search } from "lucide-react";
 import editIcon from "../../assets/images/investment/edit_icon.svg";
 import deleteIcon from "../../assets/images/investment/delete_icon.svg";
+import SectionTitle from "../../components/common/SectionTitle";
+import { useTranslation } from "react-i18next";
+
 
 interface Shareholder {
   id: number;
@@ -18,10 +21,11 @@ interface ShareholdersTableProps {
   shareholders?: Shareholder[];
   onEdit?: (id: number) => void;
   onDelete?: (id: number) => void;
+  dir?: "ltr" | "rtl";
 }
 
 // Styled Components
-const TableContainer = styled.div`
+const TableContainer = styled.div<{ dir?: "rtl" | "ltr" }>`
   width: 100%;
   margin: 0;
   background-color: white;
@@ -29,21 +33,27 @@ const TableContainer = styled.div`
   overflow: hidden;
   border-left: none;
   border-right: none;
+  direction: ${(props) => props.dir || "ltr"};
+
 `;
 
 const SearchContainer = styled.div`
   padding: 20px 0;
+  display: flex;
+  justify-content: flex-start;
 `;
 
-const SearchInputWrapper = styled.div`
+const SearchInputWrapper = styled.div<{ dir?: "rtl" | "ltr" }>`
   position: relative;
   width: 100%;
   max-width: 400px;
+  direction: ${(props) => props.dir || "ltr"};
 `;
 
-const SearchInput = styled.input`
+const SearchInput = styled.input<{ dir?: "rtl" | "ltr" }>`
   width: 100%;
-  padding: 12px 16px 12px 44px;
+  padding: ${(props) =>
+    props.dir === "rtl" ? "12px 44px 12px 16px" : "12px 16px 12px 44px"};
   border: 1px solid #d1d5db;
   border-radius: 6px;
   font-size: 14px;
@@ -61,8 +71,9 @@ const SearchInput = styled.input`
   }
 `;
 
-const SearchIcon = styled(Search)`
+const SearchIcon = styled(Search)<{ dir?: "rtl" | "ltr" }>`
   position: absolute;
+  ${(props) => (props.dir === "rtl" ? "right: 14px;" : "left: 14px;")}
   left: 14px;
   top: 50%;
   transform: translateY(-50%);
@@ -71,11 +82,12 @@ const SearchIcon = styled(Search)`
   color: #6b7280;
 `;
 
-const Table = styled.table`
+const Table = styled.table<{ dir?: "rtl" | "ltr" }>`
   width: 100%;
   border-collapse: collapse;
   border-left: none;
   border-right: none;
+  direction: ${(props) => props.dir || "ltr"};
 `;
 
 const TableHeader = styled.thead`
@@ -84,9 +96,9 @@ const TableHeader = styled.thead`
 
 const TableHeaderRow = styled.tr``;
 
-const TableHeaderCell = styled.th`
+const TableHeaderCell = styled.th<{ dir?: "rtl" | "ltr" }>`
   padding: 16px 20px;
-  text-align: left;
+  text-align: ${(props) => (props.dir === "rtl" ? "right" : "left")};
   font-size: 14px;
   font-weight: 600;
   color: #475569;
@@ -117,12 +129,13 @@ const TableRow = styled.tr`
   }
 `;
 
-const TableCell = styled.td`
+const TableCell = styled.td<{ dir?: "rtl" | "ltr" }>`
   padding: 16px 20px;
   font-size: 14px;
   color: #334155;
   font-family: "29LT_Bukra-Regular", Helvetica, sans-serif;
   border-bottom: 1px solid rgba(121, 116, 126, 0.16);
+  text-align: ${(props) => (props.dir === "rtl" ? "right" : "left")};
 
   /* Add vertical lines between columns */
   border-right: 1px solid #f1f5f9;
@@ -146,8 +159,8 @@ const ActionsCell = styled(TableCell)`
 `;
 
 const ActionImage = styled.img`
-  width: 24px;
-  height: 24px;
+  width: 32px;
+  height: 32px;
   cursor: pointer;
   transition: transform 0.2s ease;
 
@@ -217,6 +230,9 @@ export const ShareholdersTable: React.FC<ShareholdersTableProps> = ({
   onDelete,
 }) => {
   const [searchTerm, setSearchTerm] = useState("");
+  const { t, i18n } = useTranslation();
+  const isArabic = i18n.language === "ar";
+  const dir: "rtl" | "ltr" = isArabic ? "rtl" : "ltr";
 
   const filteredShareholders = shareholders.filter(
     (shareholder) =>
@@ -242,68 +258,80 @@ export const ShareholdersTable: React.FC<ShareholdersTableProps> = ({
   };
 
   return (
-    <TableContainer>
-      <SearchContainer>
-        <SearchInputWrapper>
-          <SearchIcon />
-          <SearchInput
-            type="text"
-            placeholder="Shareholder name, Nationality"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
-        </SearchInputWrapper>
-      </SearchContainer>
+    <>
+      <SectionTitle>
+        {t("preview.shareholder.title")}
+      </SectionTitle>  
+      <TableContainer dir={dir}>
+        <SearchContainer>
+          <SearchInputWrapper>
+            <SearchIcon />
+            <SearchInput
+              type="text"
+              placeholder={t("preview.shareholder.searchPlaceholder")}
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              dir={dir}
+            />
+          </SearchInputWrapper>
+        </SearchContainer>
 
-      <Table>
-        <TableHeader>
-          <TableHeaderRow>
-            <TableHeaderCell>#</TableHeaderCell>
-            <TableHeaderCell>Shareholder Name</TableHeaderCell>
-            <TableHeaderCell>Type</TableHeaderCell>
-            <TableHeaderCell>Percentage</TableHeaderCell>
-            <TableHeaderCell>Nationality</TableHeaderCell>
-            <TableHeaderCell>Legal Status</TableHeaderCell>
-            <TableHeaderCell>Identity Number</TableHeaderCell>
-            <TableHeaderCell>Actions</TableHeaderCell>
-          </TableHeaderRow>
-        </TableHeader>
-        <TableBody>
-          {filteredShareholders.length > 0 ? (
-            filteredShareholders.map((shareholder, index) => (
-              <TableRow key={shareholder.id}>
-                <TableCell>{index + 1}</TableCell>
-                <TableCell>{shareholder.name}</TableCell>
-                <TableCell>{shareholder.type}</TableCell>
-                <TableCell>{shareholder.percentage}</TableCell>
-                <TableCell>{shareholder.nationality}</TableCell>
-                <TableCell>{shareholder.legalStatus}</TableCell>
-                <TableCell>{shareholder.identityNumber || "—"}</TableCell>
-                <ActionsCell>
-                  <ActionImage 
-                    src={editIcon} 
-                    alt="Edit" 
-                    onClick={() => handleEdit(shareholder.id)} 
-                  />
-                  <ActionImage 
-                    src={deleteIcon} 
-                    alt="Delete" 
-                    onClick={() => handleDelete(shareholder.id)} 
-                  />
-                </ActionsCell>
+        <Table dir={dir}>
+          <TableHeader>
+            <TableHeaderRow>
+              <TableHeaderCell>{t("preview.shareholder.columns.number")}</TableHeaderCell>
+              <TableHeaderCell>{t("preview.shareholder.columns.name")}</TableHeaderCell>
+              <TableHeaderCell>{t("preview.shareholder.columns.type")}</TableHeaderCell>
+              <TableHeaderCell>{t("preview.shareholder.columns.percentage")}</TableHeaderCell>
+              <TableHeaderCell>{t("preview.shareholder.columns.nationality")}</TableHeaderCell>
+              <TableHeaderCell>{t("preview.shareholder.columns.legalStatus")}</TableHeaderCell>
+              <TableHeaderCell>{t("preview.shareholder.columns.identityNumber")}</TableHeaderCell>
+              <TableHeaderCell>{t("preview.shareholder.columns.actions")}</TableHeaderCell>
+            </TableHeaderRow>
+          </TableHeader>
+          <TableBody>
+            {filteredShareholders.length > 0 ? (
+              filteredShareholders.map((shareholder, index) => (
+                <TableRow key={shareholder.id}>
+                  <TableCell>{index + 1}</TableCell>
+                  <TableCell>{shareholder.name}</TableCell>
+                  <TableCell>
+                    {shareholder.type === "Person" 
+                      ? t("preview.shareholder.types.person") 
+                      : t("preview.shareholder.types.organization")}
+                  </TableCell>
+                  <TableCell>{shareholder.percentage}</TableCell>
+                  <TableCell>{shareholder.nationality}</TableCell>
+                  <TableCell>{shareholder.legalStatus}</TableCell>
+                  <TableCell>{shareholder.identityNumber || "—"}</TableCell>
+                  <ActionsCell>
+                    <ActionImage 
+                      src={editIcon} 
+                      alt={t("preview.shareholder.edit")} 
+                      onClick={() => handleEdit(shareholder.id)} 
+                    />
+                    <ActionImage 
+                      src={deleteIcon} 
+                      alt={t("preview.shareholder.delete")} 
+                      onClick={() => handleDelete(shareholder.id)} 
+                    />
+                  </ActionsCell>
+                </TableRow>
+              ))
+            ) : (
+              <TableRow>
+                <TableCell colSpan={8}>
+                  <EmptyState>
+                    {t("preview.shareholder.emptyState")}
+                  </EmptyState>
+                </TableCell>
               </TableRow>
-            ))
-          ) : (
-            <TableRow>
-              <TableCell colSpan={8}>
-                <EmptyState>
-                  No shareholders found matching your search criteria.
-                </EmptyState>
-              </TableCell>
-            </TableRow>
-          )}
-        </TableBody>
-      </Table>
-    </TableContainer>
+            )}
+          </TableBody>
+        </Table>
+      </TableContainer>
+    </>
   );
 };
+
+

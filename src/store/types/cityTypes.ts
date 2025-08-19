@@ -3,6 +3,8 @@ export interface City {
   region_id: number;
   code: string;
   name: string;
+  name_en: string;
+  name_ar: string;
   created_at: string;
   updated_at: string;
 }

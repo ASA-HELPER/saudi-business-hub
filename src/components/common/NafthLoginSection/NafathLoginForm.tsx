@@ -17,12 +17,13 @@ import {
   selectNafathLoginUser,
 } from "../../../store/selectors/nafathLoginSelector";
 import googleicon from "../../../assets/images/googleplay.svg";
-import playstore from "../../../assets/images/appgalary.svg";
+import playstore from "../../../assets/images/appstore-1.svg";
 import appstore from "../../../assets/images/appstore.svg";
 import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
 import { useLoading } from "../../generic/Loader/LoadingContext";
 import userIcon from "../../../assets/images/user.png";
 import Modal from "../../generic/Modal/Modal";
+import { useTranslation } from "react-i18next";
 
 const NafathLoginForm = () => {
   const {
@@ -45,6 +46,8 @@ const NafathLoginForm = () => {
     null
   );
   const [showUserSelectModal, setShowUserSelectModal] = useState(false);
+  const { t } = useTranslation();
+
 
   // Fetch reCAPTCHA token on mount
   useEffect(() => {
@@ -63,7 +66,7 @@ const NafathLoginForm = () => {
 
     setIsLoading(false);
     if (nafathLoginError) {
-      toast.error("Nafath Login failed: " + nafathLoginError); // Replace with toast if preferred
+      toast.error(t("nafath_login.toast_login_failed", { error: nafathLoginError })); // Replace with toast if preferred
     }
   }, [nafathLoginError]);
 
@@ -88,55 +91,64 @@ const NafathLoginForm = () => {
       });
 
       socketInstance.onAny((event, data) => {
-        console.log("Received event:", event, data);
+        console.log("Received event:", event);
+        console.log("Received Data:", data);
+        console.log("Received Data Json Stringify:", JSON.stringify(data));
+        console.log("Received Data Status:", data?.status);
+        console.log("Received Data PersonId:", data?.person?.Id);
       });
 
-      socketInstance.on("nafath_status", async (data: any) => {
-        console.log("status received:", data);
-        setSocketResponse(data);
+      socketInstance.on(
+        "invest_saudi_database_callback-channel",
+        async (data: any) => {
+          console.log("status received:", JSON.stringify(data));
+          console.log("Data Status:", data?.status);
+          console.log("Data PersonId:", data?.person?.Id);
+          setSocketResponse(data);
 
-        const status = data?.data?.status || data?.status;
+          const status = data?.data?.status || data?.status;
 
-        if (status === "COMPLETED" && data?.data?.person?.Id) {
-          try {
-            const personId = data.data.person.Id;
+          if (status === "COMPLETED" && data?.person?.Id) {
+            try {
+              const personId =  data?.person?.Id || data?.data?.person?.Id;
 
-            const response = await fetch(
-              `https://eservices.deenzprojects.com/auth/nafath/users/by-nid/${personId}`
-            );
-            const json = await response.json();
+              const response = await fetch(
+                `https://eservices.deenzprojects.com/auth/nafath/users/by-nid/${personId}`
+              );
+              const json = await response.json();
 
-            if (json.success && Array.isArray(json.data)) {
-              setNafathUsers(json.data);
+              if (json.success && Array.isArray(json.data)) {
+                setNafathUsers(json.data);
 
-              // Close Nafath modal and open user selection modal
-              setShowModal(false);
-              setShowUserSelectModal(true);
-            } else {
-              toast.error("Failed to retrieve users.");
+                // Close Nafath modal and open user selection modal
+                setShowModal(false);
+                setShowUserSelectModal(true);
+              } else {
+                toast.error(t("nafath_login.toast_fetch_users_failed"));
+              }
+            } catch (err) {
+              console.error(err);
+              toast.error(t("nafath_login.toast_fetch_users_error"));
             }
-          } catch (err) {
-            console.error(err);
-            toast.error("Error fetching users.");
+          }
+
+          // if (status === "APPROVED") {
+          //   toast.success("Login approved!");
+          //   setShowModal(false);
+          //   navigate("/dashboard");
+          // }
+
+          if (status === "REJECTED") {
+            toast.error(t("nafath_login.toast_login_rejected"));
+            setShowModal(false);
+          }
+
+          if (status === "EXPIRED") {
+            toast.warn(t("nafath_login.toast_login_expired"));
+            setShowModal(false);
           }
         }
-
-        // if (status === "APPROVED") {
-        //   toast.success("Login approved!");
-        //   setShowModal(false);
-        //   navigate("/dashboard");
-        // }
-
-        if (status === "REJECTED") {
-          toast.error("Login rejected");
-          setShowModal(false);
-        }
-
-        if (status === "EXPIRED") {
-          toast.warn("⏳ Request expired");
-          setShowModal(false);
-        }
-      });
+      );
 
       // socketInstance.on("nafath_status", (data: any) => {
       //   console.log("status received:", data);
@@ -186,52 +198,52 @@ const NafathLoginForm = () => {
         </CenteredField>
 
         <ReusableInput
-          label="National ID / IQAMA ID"
+          label={t("nafath_login.nafath_id_label")}
           name="nafthID"
-          placeholder="Enter National ID / IQAMA ID"
+          placeholder={t("nafath_login.nafath_id_placeholder")}
           icon={userIcon}
           register={register}
           validationRules={{
-            required: "Please enter your Nafath ID",
+            required: t("nafath_login.nafath_id_required"),
             pattern: {
               value: /^\d{10}$/,
-              message: "Nafath ID must be 10 digits",
+              message: t("nafath_login.nafath_id_invalid")
             },
           }}
           error={errors["nafthID"]}
         />
 
-        <Button text="Login" disabled={!recaptchaToken} />
+        <Button text={t("nafath_login.login_button")} disabled={!recaptchaToken} />
 
         {/* Divider */}
-        <OrDivider>or</OrDivider>
+        <OrDivider>{t("nafath_login.or")}</OrDivider>
 
         <InvestorLoginButton
-          text="Login with Investor ID"
+          text={t("nafath_login.investor_login")}
           showLogo={false}
           onClick={() => navigate("/login")}
         />
 
-        <CenteredField>
+        {/* <CenteredField>
           <BackButton
-            text="Back"
+            text={t("nafath_login.back")}
             color="#0c3957"
             onClick={() => navigate(-1)}
           />
-        </CenteredField>
+        </CenteredField> */}
         <CenteredField>
-          <Footer linkName="Register" linkPath="/register" />
+          <Footer linkName={t("nafath_login.register")} linkPath="/register" />
         </CenteredField>
       </StyledForm>
 
       <Modal
         show={showUserSelectModal}
         onClose={() => setShowUserSelectModal(false)}
-        title="Select Your Account"
+        title={t("nafath_login.modal_user_select_title")}
         description={
           <ModalContent>
             <InstructionText>
-              Please select your account to continue:
+              {t("nafath_login.modal_user_select_instruction")}
             </InstructionText>
             <UserRadioList>
               {nafathUsers.map((item) => {
@@ -258,7 +270,7 @@ const NafathLoginForm = () => {
                             "mobile_number",
                             user?.mobile_number
                           );
-                          toast.success(`Logged in as ${displayName}`);
+                          toast.success(t("nafath_login.toast_logged_in_as", { name: displayName }));
                           setShowUserSelectModal(false);
                           navigate("/dashboard");
                         }}
@@ -279,26 +291,29 @@ const NafathLoginForm = () => {
       <Modal
         show={showModal}
         onClose={() => setShowModal(false)}
-        title="Verify Through Nafath"
+        title={t("nafath_login.modal_verify_title")}
         description={
           <ModalContent>
             <InstructionText>
-              Please open Nafath Mobile App and approve the request by selecting
-              verification number.
+             {t("nafath_login.modal_verify_instruction")}
             </InstructionText>
 
             <NumberWrapper>
               <VerificationNumber>{user?.random}</VerificationNumber>
             </NumberWrapper>
 
-            <DownloadText>To download nafath app</DownloadText>
+            <DownloadText>{t("nafath_login.download_app")}</DownloadText>
 
             <AppButtonsContainer>
               <AppButton href="#">
                 <AppIcon src={googleicon} alt="Google Play" />
               </AppButton>
               <AppButton href="#">
-                <AppIcon src={appstore} alt="App Store" />
+                <AppIcon 
+                  src={appstore} 
+                  alt="App Store" 
+                  style={{ width: "135px", height: "40px", objectFit: "contain" }} 
+                />
               </AppButton>
               <AppButton href="#">
                 <AppIcon src={playstore} alt="AppGallery" />
@@ -401,7 +416,7 @@ const Title = styled.h1`
 `;
 
 const CenteredField = styled.div`
-  margin: 0 auto;
+  margin-top:50px;
 `;
 
 const OrDivider = styled.div`

@@ -53,6 +53,7 @@ import termsPdf from "../../../assets/pdf/terms_condition.pdf";
 import privacyPdf from "../../../assets/pdf/privacy_policy.pdf";
 import { RESET_VERIFY_MAIL_OTP_STATE } from "../../../store/types/emailOtpTypes";
 import { useTranslation, Trans } from "react-i18next";
+import { selectAppLang } from "../../../store/slices/languageSlice";
 
 const FormWrapper = styled.div`
   margin: 0;
@@ -85,7 +86,7 @@ const SetpTwoButtonRow = styled.div`
   flex-wrap: nowrap; /* <-- prevent line break */
   justify-content: space-between;
   align-items: center;
-  margin-top: 24px;
+  margin-top: 14px;
 `;
 
 const Row = styled.div`
@@ -145,7 +146,8 @@ interface RegisterFormProps {
 }
 
 const RegisterForm: React.FC<RegisterFormProps> = ({ onSubmitSuccess }) => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const lang = i18n.language?.startsWith("ar") ? "ar" : "en";
   const navigate = useNavigate();
   const { setIsLoading } = useLoading();
   const [direction, setDirection] = useState(1);
@@ -168,21 +170,33 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onSubmitSuccess }) => {
   }, [dispatch]);
 
   const [otpRequestCount, setOtpRequestCount] = useState(0);
+  const selectedLanguage = useSelector(selectAppLang);
 
-  const countryOptions = countries.map((country: Country) => country.name);
-  const sectorOptions = sectors.map((sector: Sector) => sector.name);
+  const countryOptions = React.useMemo(
+    () => countries.map((country: Country) => (lang === "ar" ? country.name_ar :country.name_en)),
+    [countries, lang]
+  );
+
+  const sectorOptions = React.useMemo(
+    () => sectors.map((sector: Sector) => (lang === "ar" ? sector.name_ar :sector.name_en)),
+    [sectors, lang]
+  );
+  
   // const titleOptions = titles.map((title) => ({
   //   label: title.identifier,
   //   value: title.id,
   // }));
-
-  const titleOptions = [
-    { label: t("register.title"), value: "" }, // this is important
-    ...titles.map((title) => ({
-      label: title.identifier,
-      value: String(title.id),
-    })),
-  ];
+  
+  const titleOptions = React.useMemo(
+    () => [
+      { label: t("register.title"), value: "" },
+      ...titles.map((title: Title) => ({
+        label: lang === "ar" ? title.identifier_ar : title.identifier_en,
+        value: String(title.id),
+      })),
+    ],
+    [titles, lang]
+  );
 
   const registerLoading = useSelector(selectRegisterLoading);
   const registerSuccess = useSelector(selectRegisterSuccess);
@@ -203,6 +217,7 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onSubmitSuccess }) => {
   const [showPrivacyModal, setShowPrivacyModal] = useState(false);
 
   const [emailValue, setEmailValue] = useState("");
+  const isRTL = selectedLanguage === 'ar';
 
   const handleTermsClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault();
@@ -523,6 +538,8 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onSubmitSuccess }) => {
                     placeholder={t("register.mobile_number_placeholder")}
                     register={register}
                     setValue={setValue}
+                    // key={isRTL ? "rtl" : "ltr"}
+                    isRTL={isRTL}
                     validationRules={{
                       required: t("register.validation.mobile_required"),
                     }}

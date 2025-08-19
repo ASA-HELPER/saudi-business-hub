@@ -2,6 +2,8 @@ export interface Section {
   id: number;
   section_id: string;
   description: string;
+  description_en: string;
+  description_ar: string;
   sectionid: string;
   pivot: {
     investment_registration_type_id: number;
@@ -15,6 +17,8 @@ export interface Division {
   section_id: number;
   description: string;
   divisionid: string;
+  description_en: string;
+  description_ar: string;
   pivot: {
     investment_registration_type_id: number;
     division_id: number;
@@ -26,6 +30,8 @@ export interface Group {
   group_id: string;
   division_id: number;
   description: string;
+  description_en: string;
+  description_ar: string;
   groupid: string;
   pivot: {
     investment_registration_type_id: number;
@@ -38,6 +44,8 @@ export interface Class {
   class_id: string;
   group_id: number;
   description: string;
+  description_en: string;
+  description_ar: string;
   classid: string;
   pivot: {
     investment_registration_type_id: number;
@@ -50,6 +58,8 @@ export interface Branch {
   branch_id: string;
   class_id: number;
   description: string;
+  description_en: string;
+  description_ar: string;
   branchid: string;
   pivot: {
     investment_registration_type_id: number;
@@ -66,6 +76,8 @@ export interface Activity {
   class_id: number;
   division_id: number;
   description: string;
+  description_en: string;
+  description_ar: string;
   activityid: string;
   isic_master_rule: {
     classification: string;

@@ -95,7 +95,7 @@ const StepCircle = styled.div`
 
 const StepLabel = styled.div<{ active: boolean; $isRTL?: boolean }>`
   margin-top: 8px;
-  font-size: 14px;
+  font-size: 18px;
   color: ${({ active }) => (active ? "white" : "#ccc")};
   font-family: ${(props) => props.$isRTL && "'IBM Plex Sans Arabic', sans-serif"};
 `;

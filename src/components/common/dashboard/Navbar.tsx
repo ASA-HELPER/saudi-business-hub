@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import headerLogo from "../../../assets/images/header-logo.svg";
 import headerLogoWhite from "../../../assets/images/header-logo-white.svg";
@@ -17,6 +17,8 @@ import {
   LanguageButton,
   LanguageSwitch,
 } from "../../../pages/Login/LoginComponent.styles";
+import { useDispatch } from "react-redux";
+import { setAppLanguage } from "../../../store/slices/languageSlice";
 
 const NavbarWrapper = styled.nav<{ backgroundColor?: string }>`
   display: flex;
@@ -142,12 +144,25 @@ const Navbar: React.FC<Props> = ({
 }) => {
   const [activeTab, setActiveTab] = useState("home");
   const { t, i18n } = useTranslation();
+  const dispatch = useDispatch();
 
   const handleLanguageChange = (lang: "en" | "ar") => {
     setLanguage(lang);
+    dispatch(setAppLanguage(lang)); // update redux store
+    localStorage.setItem("appLang", lang); // persist to local storage
+    i18n.changeLanguage(lang); // change translation
+    document.documentElement.dir = lang === "ar" ? "rtl" : "ltr"; // set text direction
+  };
+
+  useEffect(() => {
+    const savedLang = localStorage.getItem("appLang") as "en" | "ar" | null;
+    const lang = savedLang || "en"; // fallback to English if nothing saved
+
+    setLanguage(lang);
+    dispatch(setAppLanguage(lang));
     i18n.changeLanguage(lang);
     document.documentElement.dir = lang === "ar" ? "rtl" : "ltr";
-  };
+  }, []);
 
   return (
     <NavbarWrapper backgroundColor={backgroundColor}>

@@ -4,23 +4,11 @@ import styled from "styled-components";
 import fileUpload from "../../../assets/images/investment/file-upload.svg";
 import { useTranslation } from "react-i18next";
 
-const Section = styled.div<{ $isArabic?: boolean }>`
-  margin-top: 2.5rem;
-  direction: ${(props) => (props.$isArabic ? "rtl" : "ltr")};
-`;
-
-const Row = styled.div`
-  display: flex;
-  flex-wrap: wrap;
-  gap: 2rem;
-  padding: 2rem;
-  border-radius: 0 0 8px 8px;
-`;
-
 const AttachmentLabel = styled.div`
-  font-size: 14px;
+  font-size: 10px;
+  font-family: '"IBM Plex Sans Arabic", sans-serif';
   font-weight: 400;
-  margin-bottom: 16px;
+  margin-bottom: 10px;
   color: #121212;
   text-align: "left";
 
@@ -31,42 +19,37 @@ const AttachmentLabel = styled.div`
 `;
 
 const DropZoneCard = styled.div`
-  border: 1.5px dashed #d1d5db;
-  border-radius: 16px;
-  background-color: #f9fafb;
-  padding: 2rem;
+  border: 1.5px dashed #eceef1;
+  border-radius: 5px;
+  background-color: #f3f4f6;
+  padding: 1rem 2rem;
   text-align: center;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  min-height: 200px;
-  cursor: pointer;
   transition: border-color 0.3s ease, box-shadow 0.3s ease;
-
-  &:hover {
-    border-color: #00778e;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-  }
+  border-color: #e0e2e7;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
 `;
-
 
 const UploadIcon = styled.img`
   width: 32px;
-  height: 32px;
+  height: 16px;
   margin-bottom: 0.75rem;
 `;
 
-
 const PrimaryText = styled.div`
-  font-size: 16px;
-  font-weight: 500;
+  font-size: 10px;
+  font-family: '"IBM Plex Sans Arabic", sans-serif';
+  font-weight: 600;
   color: #1f2a37;
   margin-bottom: 0.5rem;
 `;
 
 const SecondaryText = styled.div`
-  font-size: 12px;
+  font-size: 8px;
+  font-family: '"IBM Plex Sans Arabic", sans-serif';
   color: #384250;
   margin-bottom: 0.75rem;
   text-align: center;
@@ -77,15 +60,22 @@ const SecondaryText = styled.div`
 `;
 
 const BrowseText = styled.div`
-  font-size: 14px;
-  font-weight: 500;
+  font-size: 9px;
+  font-family: '"IBM Plex Sans Arabic", sans-serif';
+  font-weight: 600;
   color: #161616;
   cursor: pointer;
+  padding: 4px;
+  border-radius: 2px;
+  &:hover {
+    background-color: #16161620;
+  }
 `;
 
 const FileName = styled.div`
   margin-top: 1rem;
   font-size: 14px;
+  font-family: '"IBM Plex Sans Arabic", sans-serif';
   color: #00778e;
   font-weight: 500;
 `;
@@ -134,8 +124,7 @@ const FileAttachment: React.FC<FileAttachmentProps> = ({
   return (
     <div style={{ flex: 1, minWidth: "280px" }}>
       <AttachmentLabel>
-        <span>*</span>
-        {`${labelKey}`}
+        <span>*</span> {`${labelKey}`}
       </AttachmentLabel>
       <DropZoneCard {...dropzone.getRootProps()}>
         <input {...dropzone.getInputProps()} />

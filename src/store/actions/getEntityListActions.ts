@@ -2,6 +2,7 @@ import {
   GET_ENTITY_LIST_FAILURE,
   GET_ENTITY_LIST_REQUEST,
   GET_ENTITY_LIST_SUCCESS,
+  RESET_ENTITY_LIST,
 } from "../types/getEntityList";
 
 export const getEntityListRequest = () => ({
@@ -16,4 +17,7 @@ export const getEntityListSuccess = (data: any) => ({
 export const getEntityListFailure = (error: any) => ({
   type: GET_ENTITY_LIST_FAILURE,
   payload: error,
+});
+export const resetEntityList = () => ({
+  type: RESET_ENTITY_LIST,
 });

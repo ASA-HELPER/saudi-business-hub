@@ -205,13 +205,13 @@ const LoginForm = () => {
         />
 
         {/* Back Button */}
-        <CenteredField>
+        {/* <CenteredField>
           <BackButton
             text={t("login.back")}
             color="#0c3957"
             onClick={() => navigate(-1)}
           />
-        </CenteredField>
+        </CenteredField> */}
         <CenteredField>
           <Footer linkName={t("login.register")} linkPath="/register" />
         </CenteredField>
@@ -252,6 +252,7 @@ const Title = styled.h1`
 
 const CenteredField = styled.div`
   margin: 0 auto;
+  padding-top: 10px;
 `;
 
 const LoginExtrasWrapper = styled.div`

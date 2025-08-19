@@ -2,7 +2,6 @@ import React from "react";
 import styled from "styled-components";
 import { useDispatch, useSelector } from "react-redux";
 import deleteIcon from "../../assets/images/investment/delete_icon.svg";
-import editIcon from "../../assets/images/investment/edit_icon.svg";
 import { BusinessActivityRowItem } from "../../store/types/businessActivity";
 import { RootState } from "../../store";
 import {
@@ -12,17 +11,21 @@ import {
 } from "../../store/reducers/businessActivitySlice";
 import { useNavigate } from "react-router-dom";
 import { selectSelectedRegistrationType } from "../../store/selectors/registrationTypeSelectors";
+import { useTranslation } from "react-i18next";
+import { selectAppLang } from "../../store/slices/languageSlice";
 
+// Styled Components
 const TableWrapper = styled.div`
   margin-top: 1rem;
 `;
 
-const Table = styled.table`
+const Table = styled.table<{ $isRTL: boolean }>`
   width: 100%;
   border-collapse: collapse;
   font-size: 0.95rem;
   border-radius: 12px;
   overflow: hidden;
+  direction: ${({ $isRTL }) => ($isRTL ? "rtl" : "ltr")};
 
   thead {
     background-color: #f3f4f6;
@@ -33,7 +36,7 @@ const Table = styled.table`
   th,
   td {
     padding: 1rem;
-    text-align: left;
+    text-align: ${({ $isRTL }) => ($isRTL ? "right" : "left")};
     border-bottom: 1px solid #e5e7eb;
   }
 
@@ -45,6 +48,12 @@ const Table = styled.table`
 const ActionImage = styled.img`
   width: 32px;
   height: 32px;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+
+  &:hover {
+    transform: scale(1.1);
+  }
 `;
 
 const AddButton = styled.button`
@@ -55,11 +64,27 @@ const AddButton = styled.button`
   border: none;
   cursor: pointer;
   margin-top: 20px;
+  transition: background-color 0.3s ease;
+
+  &:hover {
+    background-color: #00647a;
+  }
+`;
+
+const ButtonContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 `;
 
 export default function BusinessActivityRow() {
+  const { t, i18n } = useTranslation();
+  const isRTL = i18n.language === "ar";
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const selectedLanguage = useSelector(selectAppLang);
+
   const activityRows: BusinessActivityRowItem[] = useSelector(
     (state: RootState) => state.businessActivity.activityRows
   );
@@ -71,14 +96,14 @@ export default function BusinessActivityRow() {
   return (
     <>
       <TableWrapper>
-        <Table>
+        <Table $isRTL={isRTL}>
           <thead>
             <tr>
-              <th>#</th>
-              <th>ISIC Code</th>
-              <th>Registration Business Activity</th>
-              <th>Classification</th>
-              <th>Actions</th>
+              <th>{t("businessActivity.tableHeaders.number")}</th>
+              <th>{t("businessActivity.tableHeaders.isicCode")}</th>
+              <th>{t("businessActivity.tableHeaders.activity")}</th>
+              <th>{t("businessActivity.tableHeaders.classification")}</th>
+              <th>{t("businessActivity.tableHeaders.actions")}</th>
             </tr>
           </thead>
           <tbody>
@@ -86,21 +111,16 @@ export default function BusinessActivityRow() {
               <tr key={row.activity.id}>
                 <td>{String(index + 1).padStart(2, "0")}</td>
                 <td>{row.activity.activityid}</td>
-                <td>{row.activity.description}</td>
+                <td>
+                  {selectedLanguage == "ar"
+                    ? row.activity.description_ar
+                    : row.activity.description_en}
+                </td>
                 <td>{row.activity.isic_master_rule?.classification}</td>
                 <td>
-                  {/* <ActionImage
-                  src={editIcon}
-                  alt="edit"
-                  style={{ marginRight: 10 }}
-                  onClick={() => {
-                    dispatch(loadBusinessActivityRow(row));
-                    navigate("/businessReg");
-                  }}
-                /> */}
                   <ActionImage
                     src={deleteIcon}
-                    alt="delete"
+                    alt={t("action.delete")}
                     onClick={() => dispatch(deleteActivityRow(index))}
                   />
                 </td>
@@ -109,14 +129,7 @@ export default function BusinessActivityRow() {
           </tbody>
         </Table>
       </TableWrapper>
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "center",
-          alignItems: "center",
-        }}
-      >
+      <ButtonContainer>
         <AddButton
           onClick={() => {
             dispatch(resetBusinessActivity());
@@ -125,9 +138,9 @@ export default function BusinessActivityRow() {
             });
           }}
         >
-          + Add Business Activities
+          {t("businessActivity.addButton")}
         </AddButton>
-      </div>
+      </ButtonContainer>
     </>
   );
 }

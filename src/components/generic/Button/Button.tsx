@@ -80,7 +80,7 @@ const Button: React.FC<ButtonProps> = ({
   onClick,
   color = '#007C92',
   variant = 'filled',
-  height = '40px',
+  height = '45px',
   disabled = false,
 }) => {
   return (

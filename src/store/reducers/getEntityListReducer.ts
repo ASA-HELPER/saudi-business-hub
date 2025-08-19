@@ -2,6 +2,7 @@ import {
   GET_ENTITY_LIST_REQUEST,
   GET_ENTITY_LIST_SUCCESS,
   GET_ENTITY_LIST_FAILURE,
+  RESET_ENTITY_LIST,
   EntityInformation,
 } from "../types/getEntityList";
 
@@ -30,6 +31,9 @@ const getEntityListReducer = (
 
     case GET_ENTITY_LIST_FAILURE:
       return { ...state, loading: false, error: action.payload };
+
+    case RESET_ENTITY_LIST:
+      return { ...state, data: [] };
 
     default:
       return state;

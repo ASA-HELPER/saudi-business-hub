@@ -1,16 +1,16 @@
 import styled from 'styled-components';
 
 export const FooterContainer = styled.div`
-    margin-top: 40px;
+    margin-top: 70px;
 `;
 
 export const FooterSection = styled.div`
-  margin-top: 20px;
   display: flex;
   flex-direction: row;
   width: 100%;
   gap: 4px;
   justify-content: center;
+  padding-bottom: 6px;
 `;
 
 export const StyledLink = styled.a`

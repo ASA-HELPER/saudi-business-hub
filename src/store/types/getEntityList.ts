@@ -3,6 +3,7 @@ import { n } from "framer-motion/dist/types.d-B_QPEvFK";
 export const GET_ENTITY_LIST_REQUEST = "GET_ENTITY_LIST_REQUEST";
 export const GET_ENTITY_LIST_SUCCESS = "GET_ENTITY_LIST_SUCCESS";
 export const GET_ENTITY_LIST_FAILURE = "GET_ENTITY_LIST_FAILURE";
+export const RESET_ENTITY_LIST = "RESET_ENTITY_LIST";
 
 export interface EntityActivity {
   id: number;
@@ -14,6 +15,8 @@ export interface EntityActivity {
   division_id: number;
   isic_master_rule_id: number;
   description: string;
+  description_en: string;
+  description_ar: string;
   spl_requirement_id: string;
   qeemah_channel: string;
   active: number;

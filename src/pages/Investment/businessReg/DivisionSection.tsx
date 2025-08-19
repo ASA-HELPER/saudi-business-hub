@@ -10,6 +10,8 @@ import {
 } from "../../../store/reducers/businessActivitySlice";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../../store";
+import { selectAppLang } from "../../../store/slices/languageSlice";
+import { useTranslation } from "react-i18next";
 
 // Types
 interface Section {
@@ -17,6 +19,8 @@ interface Section {
   sectionid: string;
   section_id: string;
   description: string;
+  description_en: string;
+  description_ar: string;
 }
 
 interface StructureData {
@@ -82,6 +86,7 @@ const CheckboxIcon = styled.img`
   width: 24px;
   height: 24px;
   margin-right: 15px;
+  margin-left: 15px;
 `;
 
 const Label = styled.span<{ checked: boolean }>`
@@ -100,6 +105,8 @@ const DivisionSection: React.FC<DivisionSectionProps> = ({
   structureData,
 }) => {
   const [searchTerm, setSearchTerm] = useState("");
+  const selectedLanguage = useSelector(selectAppLang);
+  const { t } = useTranslation();
 
   const dispatch = useDispatch();
   const selectedDivisions = useSelector(
@@ -134,12 +141,12 @@ const DivisionSection: React.FC<DivisionSectionProps> = ({
     <Wrapper>
       <Header>
         <Title>
-          Choose your Division ({selectedDivisions.length}/
+          {t("businessActivity.chooseDivision")} ({selectedDivisions.length}/
           {filteredDivisions?.length})
         </Title>
         <SearchInput
           type="text"
-          placeholder="Search"
+          placeholder={t("businessActivity.search")}
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
         />
@@ -147,21 +154,38 @@ const DivisionSection: React.FC<DivisionSectionProps> = ({
 
       <SubTitle>
         {selectedSection
-          ? `${selectedSection.sectionid} - ${selectedSection.description}`
+          ? `${selectedSection.sectionid} - ${
+              selectedLanguage === "en"
+                ? selectedSection.description_en
+                : selectedSection.description_ar
+            }`
           : "Select a Section"}
       </SubTitle>
 
       <Grid>
         {filteredDivisions &&
           filteredDivisions
-            .filter((div) =>
-              div.description.toLowerCase().includes(searchTerm.toLowerCase())
-            )
+            .filter((div) => {
+              const description =
+                selectedLanguage === "en"
+                  ? div.description_en
+                  : div.description_ar;
+
+              return description
+                ?.toLowerCase()
+                .includes(searchTerm.toLowerCase());
+            })
             .map((div) => {
-              const fullLabel = `${div.divisionid} - ${div.description}`;
+              const description =
+                selectedLanguage === "en"
+                  ? div.description_en
+                  : div.description_ar;
+
+              const fullLabel = `${div.divisionid} - ${description}`;
               const isSelected = selectedDivisions.some(
                 (d) => d.divisionid === div.divisionid
               );
+
               return (
                 <Card
                   key={div.id}
@@ -180,5 +204,92 @@ const DivisionSection: React.FC<DivisionSectionProps> = ({
     </Wrapper>
   );
 };
+
+// const DivisionSection: React.FC<DivisionSectionProps> = ({
+//   selectedSection,
+//   structureData,
+// }) => {
+//   const [searchTerm, setSearchTerm] = useState("");
+//   const selectedLanguage = useSelector(selectAppLang);
+
+//   const dispatch = useDispatch();
+//   const selectedDivisions = useSelector(
+//     (state: RootState) => state.businessActivity.divisions
+//   );
+
+//   const filteredDivisions = useMemo(() => {
+//     if (!selectedSection) return [];
+//     return structureData?.divisions.filter(
+//       (d) => d.section_id === selectedSection.id
+//     );
+//   }, [structureData?.divisions, selectedSection]);
+
+//   const handleToggle = (division: Division) => {
+//     const isSelected = selectedDivisions.some(
+//       (d) => d.divisionid === division.divisionid
+//     );
+
+//     if (isSelected) {
+//       dispatch(
+//         setDivisions(
+//           selectedDivisions.filter((d) => d.divisionid !== division.divisionid)
+//         )
+//       );
+//     } else if (selectedDivisions.length < 10) {
+//       dispatch(setDivisions([...selectedDivisions, division]));
+//     }
+//     dispatch(resetAfterDivision());
+//   };
+
+//   return (
+//     <Wrapper>
+//       <Header>
+//         <Title>
+//           Choose your Division ({selectedDivisions.length}/
+//           {filteredDivisions?.length})
+//         </Title>
+//         <SearchInput
+//           type="text"
+//           placeholder="Search"
+//           value={searchTerm}
+//           onChange={(e) => setSearchTerm(e.target.value)}
+//         />
+//       </Header>
+
+//       <SubTitle>
+//         {selectedSection
+//           ? `${selectedSection.sectionid} - ${selectedSection.description}`
+//           : "Select a Section"}
+//       </SubTitle>
+
+//       <Grid>
+//         {filteredDivisions &&
+//           filteredDivisions
+//             .filter((div) =>
+//               div.description.toLowerCase().includes(searchTerm.toLowerCase())
+//             )
+//             .map((div) => {
+//               const fullLabel = `${div.divisionid} - ${div.description}`;
+//               const isSelected = selectedDivisions.some(
+//                 (d) => d.divisionid === div.divisionid
+//               );
+//               return (
+//                 <Card
+//                   key={div.id}
+//                   selected={isSelected}
+//                   onClick={() => handleToggle(div)}
+//                 >
+//                   <CheckboxIcon
+//                     src={isSelected ? checkOn : checkOff}
+//                     alt={isSelected ? "Checked" : "Unchecked"}
+//                   />
+//                   <Label checked={isSelected}>{fullLabel}</Label>
+//                 </Card>
+//               );
+//             })}
+//       </Grid>
+//     </Wrapper>
+//   );
+// };
 
 export default DivisionSection;

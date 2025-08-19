@@ -26,7 +26,9 @@ export const registerEntity = async (payload: EntityRegistrationPayload) => {
     if (value === undefined || value === null) return;
 
     if (key === "board_resolution_file" || key === "letter_of_support_file") {
-      formData.append(key, value); // File object
+      if (value instanceof File) {
+        formData.append(key, value);
+      }
     } else if (Array.isArray(value)) {
       value.forEach((item) => formData.append(`${key}[]`, item));
     } else {
@@ -48,6 +50,7 @@ export const registerEntity = async (payload: EntityRegistrationPayload) => {
 
   return response.data;
 };
+
 
 // export const registerEntity = async (payload: EntityRegistrationPayload) => {
 //   const formData = new FormData();

@@ -49,20 +49,24 @@ import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Attachment from "./modal/Attachment";
 import { useTranslation } from "react-i18next";
+import { selectAppLang } from "../../store/slices/languageSlice";
+import { City } from "../../store/types/cityTypes";
 
 type EntityInformationFormProps = {
   registrationTypeId: number | null;
   onSuccess?: () => void;
+  onRefresh?: () => void;
   entityInfo: EntityInformation | null;
 };
 
 export const EntityInformationForm = forwardRef<
   { submit: () => void },
   EntityInformationFormProps
->(({ registrationTypeId, onSuccess, entityInfo }, ref) => {
+>(({ registrationTypeId, onSuccess, onRefresh, entityInfo }, ref) => {
   const { t, i18n } = useTranslation();
   const isRTL = i18n.language === "ar";
   const [showModal, setShowModal] = useState(false);
+  const selectedLanguage = useSelector(selectAppLang);
 
   const [formData, setFormData] = useState({
     entity_name: "",
@@ -104,6 +108,7 @@ export const EntityInformationForm = forwardRef<
   const registrationSuccess = useSelector(selectEntityRegistrationLoading);
 
   useEffect(() => {
+    console.log("entityInfo", entityInfo);
     if (entityInfo) {
       setFormData({
         entity_name: entityInfo.entity_name ?? "",
@@ -122,6 +127,42 @@ export const EntityInformationForm = forwardRef<
         list_of_rhq_corporate_activties: [],
         activity_ids: entityInfo.activities?.map((a) => a.id) ?? [],
       });
+      if (entityInfo.board_resolution_file) {
+        const boardResolutionFile = {
+          name:
+            entityInfo.board_resolution_file.split("/").pop() ||
+            "board_resolution.pdf",
+        } as unknown as File;
+        setBoardResolutionFile(boardResolutionFile);
+      }
+
+      if (entityInfo.letter_of_support_file) {
+        const letterOfSupportFile = {
+          name:
+            entityInfo.letter_of_support_file.split("/").pop() ||
+            "letter_of_support.pdf",
+        } as unknown as File;
+        setLetterOfSupportFile(letterOfSupportFile);
+      }
+    } else {
+      setFormData({
+        entity_name: "",
+        entity_name_arabic: "",
+        legal_status_id: "",
+        capital: "",
+        country_id: "",
+        region_id: "",
+        email: "",
+        mobile_country_code_id: "",
+        mobile_phone: "",
+        city_id: "",
+        license_duration: "1",
+        investment_id: "",
+        list_of_rhq_corporate_activties: [],
+        activity_ids: [],
+      });
+      setBoardResolutionFile(null);
+      setLetterOfSupportFile(null);
     }
   }, [entityInfo]);
 
@@ -213,6 +254,19 @@ export const EntityInformationForm = forwardRef<
     }
   };
 
+  const extractMediaIdFromUrl = (url?: string) => {
+    if (!url) return undefined;
+    const parts = url.split("/");
+    const id = parts[parts.length - 2];
+    return Number(id);
+  };
+
+  const onAttachementDeleted = () => {
+    onRefresh?.();
+  };
+
+  console.log("selectedLanguage", selectedLanguage);
+
   return (
     <>
       <OuterCard $isRTL={isRTL}>
@@ -255,7 +309,7 @@ export const EntityInformationForm = forwardRef<
                 name="entity_name"
                 value={formData.entity_name}
                 onChange={handleChange}
-                placeholder={t("entityInformation.enterPlaceholder", {
+                placeholder={t("entityInformation.enterEntityNameEn", {
                   field: t("entityInformation.entityNameEn"),
                 })}
                 $isRTL={isRTL}
@@ -273,7 +327,7 @@ export const EntityInformationForm = forwardRef<
                 name="entity_name_arabic"
                 value={formData.entity_name_arabic}
                 onChange={handleChange}
-                placeholder={t("entityInformation.enterPlaceholder", {
+                placeholder={t("entityInformation.enterEntityNameAr", {
                   field: t("entityInformation.entityNameAr"),
                 })}
                 $isRTL={isRTL}
@@ -296,13 +350,13 @@ export const EntityInformationForm = forwardRef<
                 $isRTL={isRTL}
               >
                 <option value="" disabled hidden>
-                  {t("entityInformation.selectPlaceholder", {
+                  {t("entityInformation.selectLegalStatus", {
                     field: t("entityInformation.legalStatus"),
                   })}
                 </option>
                 {legalStatuses.map((legal) => (
                   <option key={legal.id} value={legal.id}>
-                    {legal.name}
+                    {selectedLanguage == "ar" ? legal.name_ar : legal.name_en}
                   </option>
                 ))}
               </Select>
@@ -321,7 +375,7 @@ export const EntityInformationForm = forwardRef<
                   name="capital"
                   value={formData.capital}
                   onChange={handleChange}
-                  placeholder={t("entityInformation.enterPlaceholder", {
+                  placeholder={t("entityInformation.enterCapital", {
                     field: t("entityInformation.capital"),
                   })}
                   $isRTL={isRTL}
@@ -341,7 +395,7 @@ export const EntityInformationForm = forwardRef<
                 type="email"
                 value={formData.email}
                 onChange={handleChange}
-                placeholder={t("entityInformation.enterPlaceholder", {
+                placeholder={t("entityInformation.enterEmail", {
                   field: t("entityInformation.email"),
                 })}
                 $isRTL={isRTL}
@@ -361,11 +415,15 @@ export const EntityInformationForm = forwardRef<
                   style={{ width: "25%" }}
                 >
                   <option value="" disabled hidden>
-                    + Code
+                    Select
                   </option>
                   {countries.map((country: Country) => (
                     <option key={country.id} value={country.id}>
-                      +{country.phone_prefix} ({country.name})
+                      +{country.phone_prefix} (
+                      {selectedLanguage == "en"
+                        ? country.name_en
+                        : country.name_ar}
+                      )
                     </option>
                   ))}
                 </Select>
@@ -375,7 +433,7 @@ export const EntityInformationForm = forwardRef<
                   type="tel"
                   value={formData.mobile_phone}
                   onChange={handleChange}
-                  placeholder={t("entityInformation.enterPlaceholder", {
+                  placeholder={t("entityInformation.enterMobileNumber", {
                     field: t("entityInformation.mobileNumber"),
                   })}
                   $isRTL={isRTL}
@@ -402,13 +460,15 @@ export const EntityInformationForm = forwardRef<
                 $isRTL={isRTL}
               >
                 <option value="" disabled hidden>
-                  {t("entityInformation.selectPlaceholder", {
+                  {t("entityInformation.selectCountry", {
                     field: t("entityInformation.country"),
                   })}
                 </option>
                 {countries.map((country: Country) => (
                   <option key={country.id} value={country.id}>
-                    {country.name}
+                    {selectedLanguage == "en"
+                      ? country.name_en
+                      : country.name_ar}
                   </option>
                 ))}
               </Select>
@@ -426,13 +486,13 @@ export const EntityInformationForm = forwardRef<
                 $isRTL={isRTL}
               >
                 <option value="" disabled hidden>
-                  {t("entityInformation.selectPlaceholder", {
+                  {t("entityInformation.selectRegion", {
                     field: t("entityInformation.region"),
                   })}
                 </option>
-                {regions.map((region) => (
+                {regions.map((region: Region) => (
                   <option key={region.id} value={region.id}>
-                    {region.name}
+                    {selectedLanguage == "en" ? region.name_en : region.name_ar}
                   </option>
                 ))}
               </Select>
@@ -452,13 +512,13 @@ export const EntityInformationForm = forwardRef<
                 $isRTL={isRTL}
               >
                 <option value="" disabled hidden>
-                  {t("entityInformation.selectPlaceholder", {
+                  {t("entityInformation.selectCity", {
                     field: t("entityInformation.city"),
                   })}
                 </option>
-                {cities.map((city) => (
+                {cities.map((city: City) => (
                   <option key={city.id} value={city.id}>
-                    {city.name}
+                    {selectedLanguage == "en" ? city.name_en : city.name_ar}
                   </option>
                 ))}
               </Select>
@@ -476,13 +536,13 @@ export const EntityInformationForm = forwardRef<
                 $isRTL={isRTL}
               >
                 <option value="" disabled hidden>
-                  {t("entityInformation.selectPlaceholder", {
+                  {t("entityInformation.selectInvestmentSpending", {
                     field: t("entityInformation.investmentSpending"),
                   })}
                 </option>
                 {expectedInvestments.map((item) => (
                   <option key={item.id} value={item.id}>
-                    {item.name}
+                    {selectedLanguage == "en" ? item.name_en : item.name_ar}
                   </option>
                 ))}
               </Select>
@@ -506,7 +566,7 @@ export const EntityInformationForm = forwardRef<
               $isRTL={isRTL}
             >
               <option value="" disabled hidden>
-                {t("entityInformation.selectPlaceholder", {
+                {t("entityInformation.selectLicenseDuration", {
                   field: t("entityInformation.licenseDuration"),
                 })}
               </option>
@@ -527,6 +587,13 @@ export const EntityInformationForm = forwardRef<
           setBoardResolutionFile={setBoardResolutionFile}
           letterOfSupportFile={letterOfSupportFile}
           setLetterOfSupportFile={setLetterOfSupportFile}
+          boardResolutionId={extractMediaIdFromUrl(
+            entityInfo?.board_resolution_file
+          )}
+          letterOfSupportId={extractMediaIdFromUrl(
+            entityInfo?.letter_of_support_file
+          )}
+          onDeleteSuccess={onAttachementDeleted}
         />
       </OuterCard>
 

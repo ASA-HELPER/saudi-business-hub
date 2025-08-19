@@ -12,7 +12,10 @@ import {
   selectShareholderList,
   selectShareholderLoading,
 } from "../../store/selectors/shareHolderSelector";
-
+import { useTranslation } from "react-i18next";
+import { deleteShareholderRequest } from "../../store/actions/shareholderDeleteActions";
+import { selectDeletedShareholderIds } from "../../store/selectors/shareholderDeleteSelectors";
+import BaseConfirmationModal from "../../components/generic/Modal/BaseConfirmationModal";
 const PageWrapper = styled.div`
   background: #f5f5f5;
   min-height: 100vh;
@@ -43,17 +46,17 @@ const Title = styled.h2`
 `;
 
 const Note = styled.div`
-  background: #EDF3F2;
+  background: #edf3f2;
   color: #161616;
   padding: 8px 16px;
   border-radius: 8px;
   font-size: 14px;
   margin-right: 16px;
-  font weight: 400;
+  font-weight: 400;
 `;
 
 const AddButton = styled.button`
-  background-color: #00778E;
+  background-color: #00778e;
   color: #fff;
   border: none;
   padding: 8px 14px;
@@ -65,7 +68,6 @@ const AddButton = styled.button`
     background-color: #005f70;
   }
 `;
-
 
 const Divider = styled.div`
   height: 2px;
@@ -80,9 +82,11 @@ const Divider = styled.div`
   );
 `;
 
-const EmptyState = styled.div`
+const EmptyState = styled.div<{ isRTL?: boolean }>`
   text-align: center;
   padding: 40px;
+  flex-direction: ${({ isRTL }) => (isRTL ? "column-reverse" : "column")};
+  display: flex;
 `;
 
 const Icon = styled.div`
@@ -102,8 +106,8 @@ const Table = styled.table`
   margin-top: 24px;
 `;
 
-const Th = styled.th`
-  text-align: left;
+const Th = styled.th<{ isRTL?: boolean }>`
+  text-align: ${({ isRTL }) => (isRTL ? "right" : "left")};
   padding: 12px;
   background: #f1f5f9;
   color: #333;
@@ -138,7 +142,6 @@ const ActionImage = styled.img`
   height: 32px;
 `;
 
-
 const HeaderRow = styled.div`
   display: flex;
   justify-content: space-between;
@@ -159,27 +162,6 @@ const SectionHeaderWrapper = styled.div`
   margin-bottom: 24px;
 `;
 
-const SectionTitleText = styled.div`
-  display: inline-block;
-  border-bottom: 2px solid #884699;
-  font-size: 20px;
-  font-weight: 600;
-  color: #161616;
-  padding-bottom: 15px;
-  position: relative;
-  z-index: 1;
-  margin-left: -12px;
-`;
-
-const SectionUnderline = styled.div`
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  height: 2px;
-  width: 100%;
-  background: linear-gradient(to right, #884699 0 140px, #d1d5db 140px 100%);
-  z-index: 0;
-`;
 
 interface Shareholder {
   id: number;
@@ -192,32 +174,56 @@ interface Shareholder {
 
 const ShareholderStep: React.FC = () => {
   const [showModal, setShowModal] = useState(false);
+  const [selectedShareHolderId, setSelectedShareHolderId] = useState(0);
+  const [selectedCustomerId, setSelectedCustomerId] = useState(0);
+  const [sharePercentage, setSharePercentage] = useState("0");
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+
   const [shareholders, setShareholders] = useState<Shareholder[]>([]);
   const dispatch = useDispatch();
+  const { t } = useTranslation();
 
   const shareholderList = useSelector(selectShareholderList);
   const shareholderLoading = useSelector(selectShareholderLoading);
   const shareholderError = useSelector(selectShareholderError);
 
+  const deletedShareholderIds = useSelector(selectDeletedShareholderIds);
+
   useEffect(() => {
+    setShowDeleteModal(false);
     dispatch(fetchShareholdersRequest());
-  }, []);
+  }, [dispatch, deletedShareholderIds]);
 
   useEffect(() => {
     console.log(shareholderList);
   }, [shareholderList]);
 
+  const handleEdit = (
+    id: number,
+    shareHolderId: number,
+    sharePercentage: string
+  ) => {
+    console.log("handleEdit", id, shareHolderId);
+    setSelectedCustomerId(id);
+    setSelectedShareHolderId(shareHolderId);
+    setSharePercentage(sharePercentage);
+    setShowModal(true);
+  };
+
+  const handleDelete = () => {
+    dispatch(deleteShareholderRequest(selectedShareHolderId));
+  };
+
   const handleAddShareholder = () => {
-    // For now, add a sample shareholder when modal is closed
     setShareholders((prev) => [
       ...prev,
       {
         id: prev.length + 1,
         name: "Omar",
-        type: "Person",
+        type: t("shareholderTypes.person"),
         percentage: "70%",
         nationality: "Burundi",
-        legalStatus: "Restricted",
+        legalStatus: t("legalStatus.restricted"),
       },
     ]);
     setShowModal(false);
@@ -238,35 +244,39 @@ const ShareholderStep: React.FC = () => {
     <PageWrapper>
       <Card>
         <SectionHeaderWrapper>
-        <HeaderRow>
-          <SectionTitleText>Shareholders List</SectionTitleText>
-          {shareholderList?.length !== 0 && (
-            <RightActions>
-              <Note>
-                Note: Only {remainingPercentage}% is available for adding shareholders.
-              </Note>
-              <AddButton onClick={() => setShowModal(true)}>
-                + Add Shareholder
-              </AddButton>
-            </RightActions>
-          )}
-        </HeaderRow>
-        <SectionUnderline />
-      </SectionHeaderWrapper>
-
+          <HeaderRow>
+            <SectionTitle>{t("shareholderList.title")}</SectionTitle>
+            {shareholderList?.length !== 0 && (
+              <RightActions>
+                <Note>
+                  {t("shareholderList.note", {
+                    percentage: parseInt(remainingPercentage),
+                  })}
+                </Note>
+                <AddButton onClick={() => setShowModal(true)}>
+                  {t("shareholderList.addButton")}
+                </AddButton>
+              </RightActions>
+            )}
+          </HeaderRow>
+          {/* <SectionUnderline /> */}
+        </SectionHeaderWrapper>
 
         {shareholderList?.length === 0 ? (
-          <EmptyState>
+          <EmptyState isRTL={false}>
             <Icon>
-              <img src={businessActivityLogo} alt="Business Activity Logo" />
+              <img
+                src={businessActivityLogo}
+                alt={t("altText.businessActivityLogo")}
+              />
             </Icon>
             <EmptyText>
-              There is no records to display.
+              {t("shareholderList.emptyState.title")}
               <br />
-              Add your shareholder to get started.
+              {t("shareholderList.emptyState.subtitle")}
             </EmptyText>
             <AddButton onClick={() => setShowModal(true)}>
-              + Add Shareholder
+              {t("shareholderList.addButton")}
             </AddButton>
           </EmptyState>
         ) : (
@@ -274,13 +284,19 @@ const ShareholderStep: React.FC = () => {
             <Table>
               <thead>
                 <tr>
-                  <Th>#</Th>
-                  <Th>Name</Th>
-                  <Th>Type</Th>
-                  <Th>Percentage</Th>
-                  {/* <Th>Nationality</Th>
-                  <Th>Legal Status</Th> */}
-                  <Th>Actions</Th>
+                  <Th isRTL={false}>{t("shareholderList.tableHeaders.id")}</Th>
+                  <Th isRTL={false}>
+                    {t("shareholderList.tableHeaders.name")}
+                  </Th>
+                  <Th isRTL={false}>
+                    {t("shareholderList.tableHeaders.type")}
+                  </Th>
+                  <Th isRTL={false}>
+                    {t("shareholderList.tableHeaders.percentage")}
+                  </Th>
+                  <Th isRTL={false}>
+                    {t("shareholderList.tableHeaders.actions")}
+                  </Th>
                 </tr>
               </thead>
               <tbody>
@@ -290,36 +306,54 @@ const ShareholderStep: React.FC = () => {
                     <Td>{s?.full_name}</Td>
                     <Td>{s?.type}</Td>
                     <Td>{s.shares_percentage}</Td>
-                    {/* <Td>{"s.nationality"}</Td>
-                    <Td>{"s.legalStatus"}</Td> */}
                     <Td>
                       <Actions>
-                        <ActionImage src={editIcon} alt="editIcon" />
-                        <ActionImage src={deleteIcon} alt="deleteIcon" />
+                        <ActionImage
+                          src={editIcon}
+                          alt={t("actions.edit")}
+                          onClick={() =>
+                            handleEdit(s.customer_id, s.id, s.shares_percentage)
+                          }
+                        />
+                        <ActionImage
+                          src={deleteIcon}
+                          alt={t("actions.delete")}
+                          onClick={() => {
+                            setSelectedShareHolderId(s.id);
+                            setShowDeleteModal(true);
+                          }}
+                        />
                       </Actions>
                     </Td>
                   </tr>
                 ))}
               </tbody>
             </Table>
-            {/* <div
-              style={{
-                display: "flex",
-                justifyContent: "center",
-                marginTop: 20,
-              }}
-            >
-              <AddButton onClick={() => setShowModal(true)}>
-                + Add Shareholder
-              </AddButton>
-            </div> */}
           </>
         )}
       </Card>
 
       {showModal && (
-        <AddShareholderModal isOpen={true} onClose={handleAddShareholder} />
+        <AddShareholderModal
+          isOpen={true}
+          onClose={handleAddShareholder}
+          shareHolderId={selectedShareHolderId}
+          customerId={selectedCustomerId}
+          sharePercentage={sharePercentage}
+        />
       )}
+
+      <BaseConfirmationModal
+        isOpen={showDeleteModal}
+        icon={deleteIcon}
+        iconAlt={t("preview.contactdetail.delete")}
+        title={"Are you sure want to delete?"}
+        yesLabel={"Yes"}
+        noLabel={"Cancel"}
+        onYes={() => handleDelete()}
+        onNo={() => setShowDeleteModal(false)}
+        onClose={() => setShowDeleteModal(false)}
+      />
     </PageWrapper>
   );
 };

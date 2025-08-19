@@ -84,7 +84,7 @@ const businessActivitySlice = createSlice({
     resetBusinessActivity: (state) => {
       return {
         ...initialState,
-        activityRows: state.activityRows, // keep current table rows
+        //activityRows: state.activityRows, // keep current table rows
       };
     },
     resetAfterSection: (state) => {

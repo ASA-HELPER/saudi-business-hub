@@ -3,6 +3,7 @@ import styled from "styled-components";
 import AddShareholderModal from "./AddShareholderModal";
 import ContactPersonForm from "./ContactPersonForm";
 import SectionTitle from "../../components/common/SectionTitle";
+import { useTranslation } from 'react-i18next';
 
 const PageWrapper = styled.div`
   background: #fafafa;
@@ -134,11 +135,14 @@ type ContactStepProps = {
 const ContactPersonStep: React.FC<ContactStepProps> = ({
   contactFormRef,
   onSuccess,
+  
 }) => {
+const { t } = useTranslation();
+
   return (
     <PageWrapper>
       <Card>
-        <SectionTitle>Contact Person</SectionTitle>
+        <SectionTitle>{t('contactForm.contactPerson')}</SectionTitle>
 
         <ContactPersonForm ref={contactFormRef} onSuccess={onSuccess} />
       </Card>

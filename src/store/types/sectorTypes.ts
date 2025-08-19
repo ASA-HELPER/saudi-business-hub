@@ -1,4 +1,6 @@
 export interface Sector {
+  name_en: string;
+  name_ar: string;
   id: number;
   code: string;
   name: string;

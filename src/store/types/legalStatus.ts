@@ -2,6 +2,8 @@ export interface LegalStatus {
   id: number;
   code: string;
   name: string;
+  name_en: string;
+  name_ar: string;
   investment_registration_type_id: number;
   is_active: number;
   created_at: string | null;

@@ -3,6 +3,8 @@ export interface Section {
   sectionid: string;
   section_id: string;
   description: string;
+  description_en: string;
+  description_ar: string;
 }
 
 export interface Division {
@@ -11,6 +13,8 @@ export interface Division {
   divisionid: string;
   division_id: string;
   description: string;
+  description_en: string;
+  description_ar: string;
 }
 
 export interface Group {
@@ -19,6 +23,8 @@ export interface Group {
   groupid: string;
   division_id: number;
   description: string;
+  description_en: string;
+  description_ar: string;
 }
 
 export interface Class {
@@ -27,6 +33,8 @@ export interface Class {
   classid: string;
   group_id: number;
   description: string;
+  description_en: string;
+  description_ar: string;
 }
 
 export interface Branch {
@@ -35,6 +43,8 @@ export interface Branch {
   branch_id: string;
   class_id: number;
   description: string;
+  description_en: string;
+  description_ar: string;
 }
 
 export interface Activity {
@@ -47,6 +57,8 @@ export interface Activity {
   section_id: number;
   division_id: number;
   description: string;
+  description_en: string;
+  description_ar: string;
   isic_master_rule: {
     classification: string;
   };

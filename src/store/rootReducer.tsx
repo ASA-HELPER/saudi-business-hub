@@ -29,6 +29,11 @@ import contactPersonListReducer from "./reducers/contactPersonListReducer";
 import { shareholderPersonListReducer } from "./reducers/shareholderPersonListReducer";
 import previewReducer from "./reducers/previewReducer";
 import deleteContactPersonReducer from "./reducers/contactDeleteReducer";
+import shareholderDeleteReducer from "./reducers/shareholderDeleteReducer";
+import deleteAttachmentReducer from "./reducers/attachmentDeleteReducer";
+import { shareholderByIdReducer } from "./reducers/shareholderGetByIdReducer";
+import languageReducer from "./slices/languageSlice";
+import shareholderCountryReducer from "./reducers/shareholderCountryReducer";
 
 export const rootReducer = combineReducers({
   user: userReducer,
@@ -61,6 +66,12 @@ export const rootReducer = combineReducers({
   shareholderPersons: shareholderPersonListReducer,
   preview: previewReducer,
   deleteContactPerson: deleteContactPersonReducer,
+  shareholder: shareholderDeleteReducer,
+  deleteAttachment: deleteAttachmentReducer,
+
+  shareholderById: shareholderByIdReducer,
+  language: languageReducer,
+  shareholderCountry: shareholderCountryReducer,
 });
 
 export type RootState = ReturnType<typeof rootReducer>;

@@ -6,8 +6,10 @@ import {
 } from './styles/Layout.styles';
 import OTPForm from './OTPForm';
 import Footer from '../LoginSection/Footer';
+import { useTranslation } from 'react-i18next';
 
 const OTPFormComponent: React.FC = () => {
+    const { t } = useTranslation();
   return (
     <LayoutContainer>
       <motion.div
@@ -18,7 +20,7 @@ const OTPFormComponent: React.FC = () => {
       >
       <Content>
         <OTPForm />
-        <Footer linkName="Register" linkPath="/register"/>
+        <Footer linkName={t("twofactor.register")} linkPath="/register"/>
       </Content>
       </motion.div>
     </LayoutContainer>

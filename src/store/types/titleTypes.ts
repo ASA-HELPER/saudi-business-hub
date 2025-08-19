@@ -1,4 +1,6 @@
 export interface Title {
+  identifier_en: string;
+  identifier_ar: string;
   id: number;
   token: string;
   identifier: string;

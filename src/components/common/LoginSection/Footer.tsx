@@ -18,7 +18,7 @@ const Footer: React.FC<FooterProps> = ({
   linkName,
   linkPath,
   showFacingIssue = false,
-}) => {
+}) => { 
   const navigate = useNavigate();
   const { t } = useTranslation();
 

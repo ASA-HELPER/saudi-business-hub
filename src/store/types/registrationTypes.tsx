@@ -1,7 +1,8 @@
 export interface RegistrationType {
   id: number;
   code: string;
-  name: string;
+  name_en: string;
+  name_ar: string;
   is_active: boolean;
   created_at: string;
   updated_at: string;
