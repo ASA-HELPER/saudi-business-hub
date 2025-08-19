@@ -15,6 +15,7 @@ import {
 } from "../../../store/selectors/loginSelectors";
 import { LoginOtpRequest } from "../../../store/actions/LoginOtpVerifyAction";
 import { useLoading } from "../../generic/Loader/LoadingContext";
+import { useTranslation } from 'react-i18next';
 
 const Wrapper = styled.div`
   display: flex;
@@ -53,6 +54,10 @@ const StyledText = styled.div`
   overflow-wrap: break-word;
   flex-shrink: 1;
   flex-grow: 0;
+  .ltr-text {
+  direction: ltr;
+  unicode-bidi: embed;
+}
 `;
 
 
@@ -116,6 +121,8 @@ const OTPVerification: React.FC<OTPVerificationProps> = ({ identifiers, onComple
 
   const email = user?.email ? maskEmail(user.email) : '';
   const phone = user?.phone ? maskPhone(user.phone) : '';
+  const { t, i18n } = useTranslation();
+  const isRTL = i18n.language === "ar";
 
   useEffect(() => {
     register("otp", { required: "OTP is required", minLength: 6, maxLength: 6 });
@@ -131,7 +138,7 @@ const OTPVerification: React.FC<OTPVerificationProps> = ({ identifiers, onComple
   useEffect(() => {
     if (userOtp?.token) {
       setIsLoading(false);
-      toast.success("Login successful!");
+      toast.success(t("twofactor.login_success"));
       navigate('/dashboard');
     }
   }, [userOtp, setIsLoading, navigate]);
@@ -152,33 +159,37 @@ const OTPVerification: React.FC<OTPVerificationProps> = ({ identifiers, onComple
   };
 
         return (
-        <FormWrapper>
-        <StyledForm onSubmit={handleSubmit(onSubmit)}>
-          <Title>Two Factor Authentication</Title>
+    <FormWrapper dir={isRTL ? "rtl" : "ltr"}>
+      <StyledForm onSubmit={handleSubmit(onSubmit)}>
+        <Title>{t("twofactor.title")}</Title>
           <StyledText>
-            We have sent a verification code to your registered email and mobile&nbsp;
-            <strong>{email} & {phone}</strong>
+            {email && phone
+              ? t("twofactor.instructions_both", { email, phone })
+              : email
+              ? t("twofactor.instructions_email", { email })
+              : phone
+              ? t("twofactor.instructions_phone", { phone })
+              : ""}
           </StyledText>
+        <ReusableOTPBox
+          identifier={identifiers[0].value}
+          identifierType={identifiers[0].type}
+          onComplete={(value: string) => {
+            setOtp(value);
+            setValue("otp", value);
+            clearErrors("otp");
+          }}
+        />
 
-          <ReusableOTPBox
-            identifier={identifiers[0].value}
-            identifierType={identifiers[0].type}
-            onComplete={(value: string) => {
-              setOtp(value);
-              setValue("otp", value);
-              clearErrors("otp");
-            }}
+        <ButtonGroup>
+          <Button text={t("twofactor.submit")} />
+          <Button
+            text={t("twofactor.back")}
+            onClick={() => navigate('/login')}
+            variant="outlined"
+            color="#007C92"
           />
-
-    <ButtonGroup>
-      <Button text="Submit" />
-      <Button
-        text="Back"
-        onClick={() => navigate('/login')}
-        variant="outlined"
-        color="#007C92"
-      />
-    </ButtonGroup>
+        </ButtonGroup>
       </StyledForm>
     </FormWrapper>
   );

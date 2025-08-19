@@ -108,6 +108,7 @@ export const EntityInformationForm = forwardRef<
   const registrationSuccess = useSelector(selectEntityRegistrationLoading);
 
   useEffect(() => {
+    console.log("entityInfo", entityInfo);
     if (entityInfo) {
       setFormData({
         entity_name: entityInfo.entity_name ?? "",
@@ -143,6 +144,25 @@ export const EntityInformationForm = forwardRef<
         } as unknown as File;
         setLetterOfSupportFile(letterOfSupportFile);
       }
+    } else {
+      setFormData({
+        entity_name: "",
+        entity_name_arabic: "",
+        legal_status_id: "",
+        capital: "",
+        country_id: "",
+        region_id: "",
+        email: "",
+        mobile_country_code_id: "",
+        mobile_phone: "",
+        city_id: "",
+        license_duration: "1",
+        investment_id: "",
+        list_of_rhq_corporate_activties: [],
+        activity_ids: [],
+      });
+      setBoardResolutionFile(null);
+      setLetterOfSupportFile(null);
     }
   }, [entityInfo]);
 
@@ -395,7 +415,7 @@ export const EntityInformationForm = forwardRef<
                   style={{ width: "25%" }}
                 >
                   <option value="" disabled hidden>
-                    +code
+                    Select
                   </option>
                   {countries.map((country: Country) => (
                     <option key={country.id} value={country.id}>

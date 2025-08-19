@@ -56,9 +56,9 @@ const StyledTable = styled.table`
   border-collapse: collapse;
 `;
 
-export const StyledTableCell = styled.td<{ $isArabic?: boolean }>`
-  text-align: ${({ $isArabic }) => ($isArabic ? "right" : "left")};
-  direction: ${({ $isArabic }) => ($isArabic ? "rtl" : "ltr")};
+export const StyledTableCell = styled.td<{ dir?: "rtl" | "ltr" }>`
+  text-align: ${({ dir }) => (dir === "rtl" ? "right" : "left")};
+  direction: ${({ dir }) => dir || "ltr"};
   padding: 16px;
   vertical-align: top;
   border-bottom: 1px solid #d1d5db;
@@ -97,15 +97,16 @@ const CellLabel = styled.div`
   font-family: "29LT_Bukra-SmBd", Helvetica, sans-serif;
 `;
 
-const CellValue = styled.div<{ $isArabic?: boolean }>`
+const CellValue = styled.div<{ dir?: "rtl" | "ltr" }>`
   font-size: 18px;
   font-weight: 500;
   color: #161616;
   font-family: "29LT_Bukra-SmBd", Helvetica, sans-serif;
-  direction: ${(props) => (props.$isArabic ? "rtl" : "ltr")};
+  direction: ${(props) => props.dir || "ltr"};
+  text-align: ${(props) => (props.dir === "rtl" ? "right" : "left")};
 `;
 
-const BusinessActivitiesSection = styled.div`
+const BusinessActivitiesSection = styled.div<{ dir?: "rtl" | "ltr" }>`
   padding: 24px;
   background-color: #fff;
 `;
@@ -118,13 +119,16 @@ const BusinessActivitiesLabel = styled.div`
   font-family: "29LT_Bukra-Medium", Helvetica, sans-serif;
 `;
 
-const ActivitiesContainer = styled.div`
+const ActivitiesContainer = styled.div<{ dir?: "rtl" | "ltr" }>`
   display: flex;
   flex-wrap: wrap;
   gap: 12px;
+  direction: ${(props) => props.dir || "ltr"};
+  justify-content: ${(props) => (props.dir === "rtl" ? "flex-end" : "flex-start")};
+  flex-direction: ${(props) => (props.dir === "rtl" ? "row-reverse" : "row")};
 `;
 
-const ActivityTag = styled.div`
+const ActivityTag = styled.div<{ dir?: "rtl" | "ltr" }>`
   display: inline-flex;
   align-items: center;
   padding: 8px 16px;
@@ -136,6 +140,7 @@ const ActivityTag = styled.div`
   color: #161616;
   font-family: "29LT_Bukra-Medium", Helvetica, sans-serif;
   transition: all 0.2s ease;
+  direction: ${(props) => props.dir || "ltr"};
 
   &:hover {
     background-color: #99f6e4;
@@ -180,8 +185,8 @@ const EditButton = styled.div<{ dir?: "rtl" | "ltr" }>`
   flex-direction: ${props => props.dir === "rtl" ? "row-reverse" : "row"};
   
   img {
-    width: 24px;
-    height: 24px;
+    width: 32px;
+    height: 32px;
   }
 `;
 
@@ -246,10 +251,10 @@ export const RegistrationDetails: React.FC<RegistrationDetailsProps> = ({
     value: string;
     isArabic?: boolean;
   }> = ({ label, value, isArabic = false }) => (
-    <StyledTableCell $isArabic={isArabic} dir={dir}>
+    <StyledTableCell dir={dir}>
       <CellContainer>
         <CellLabel>{label}</CellLabel>
-        <CellValue $isArabic={isArabic} dir={dir}>
+        <CellValue dir={dir}>
           {value}
         </CellValue>
       </CellContainer>

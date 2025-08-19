@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import { EntityInformationForm } from "./EntityInformationForm";
 import RegistrationPill from "./RegistrationPill";
@@ -26,16 +26,22 @@ import {
   selectSelectedRegistrationType,
 } from "../../store/selectors/registrationTypeSelectors";
 import { selectEntityList } from "../../store/selectors/getEntityListSelectors";
-import { getEntityListRequest } from "../../store/actions/getEntityListActions";
+import {
+  getEntityListRequest,
+  resetEntityList,
+} from "../../store/actions/getEntityListActions";
 import { assembleBusinessActivityRows } from "./businessReg/assembleActivityRows";
 import {
   EntityActivity,
   EntityInformation,
 } from "../../store/types/getEntityList";
 import { Activity } from "./businessReg/types";
-import { addActivityRows } from "../../store/reducers/businessActivitySlice";
+import {
+  addActivityRows,
+  resetBusinessActivity,
+} from "../../store/reducers/businessActivitySlice";
 import { BusinessActivityRowItem } from "../../store/types/businessActivity";
-import { store } from "../../store";
+import { RootState, store } from "../../store";
 
 const PageWrapper = styled.div<{ $isRTL?: boolean }>`
   background: #f5f5f5;
@@ -298,40 +304,91 @@ const RegistrationTypeStep: React.FC<RegistrationTypeStepProps> = ({
 
   const entityData = useSelector(selectEntityList);
   const storedLang = localStorage.getItem("appLang") || "en";
+  const [defaultRegistrationTypeId, setDefaultRegistrationTypeId] = useState<
+    number | null
+  >(null);
+  const [hasSelectedDefault, setHasSelectedDefault] = useState(false);
+  const didFetchRef = useRef(false);
 
   const refreshEntityList = useCallback(() => {
     dispatch(getEntityListRequest());
   }, [dispatch]);
 
   useEffect(() => {
-    refreshEntityList();
-  }, [refreshEntityList]);
+    const storedDefaultId = sessionStorage.getItem("defaultRegistrationTypeId");
+    if (storedDefaultId) {
+      setDefaultRegistrationTypeId(Number(storedDefaultId));
+      console.log("rsssss", entityData.length);
+      //setHasSelectedDefault(true); // We already had a default before
+    }
+  }, []);
 
   useEffect(() => {
-    dispatch(getEntityListRequest());
+    const hasFetchedBefore =
+      sessionStorage.getItem("hasFetchedEntityList") === "true";
+    console.log("hasFetchedBefore", hasFetchedBefore);
+    if (hasFetchedBefore == false) {
+      console.log("entity api called");
+
+      dispatch(getEntityListRequest());
+      sessionStorage.setItem("hasFetchedEntityList", "true");
+    }
   }, [dispatch]);
 
   useEffect(() => {
-    console.log("entityData", JSON.stringify(entityData));
+    const handleBeforeUnload = () => {
+      // Mark so that on reload it will fetch again
+      sessionStorage.setItem("hasFetchedEntityList", "false");
+    };
+
+    window.addEventListener("beforeunload", handleBeforeUnload);
+
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+    };
+  }, []);
+
+  useEffect(() => {
     dispatch(fetchRegistrationTypesRequest());
+    // if (entityData.length > 0) {
+    //   setHasSelectedDefault(true);
+    // }
   }, [entityData]);
 
   useEffect(() => {
     if (entityData.length > 0) {
-      handleSelect(
-        entityData[entityData.length - 1].investment_registration_type_id
-      );
-      const activities = mapEntityActivitiesToActivities(
-        entityData[entityData.length - 1].activities
-      );
+      setHasSelectedDefault(true);
     }
-  }, [registrationTypes]);
+  }, []);
+
+  useEffect(() => {
+    if (
+      registrationTypes.length > 0 &&
+      entityData.length > 0 &&
+      !hasSelectedDefault
+    ) {
+      const lastEntity = entityData[entityData.length - 1];
+      //setDefaultRegistrationTypeId(lastEntity.investment_registration_type_id);
+      const id = lastEntity.investment_registration_type_id;
+
+      console.log("setDefaultRegistrationTypeId", id);
+
+      setDefaultRegistrationTypeId(id);
+
+      sessionStorage.setItem("defaultRegistrationTypeId", String(id));
+
+      handleSelect(lastEntity.investment_registration_type_id);
+      setHasSelectedDefault(true);
+    }
+  }, [registrationTypes, entityData, hasSelectedDefault]);
 
   useEffect(() => {
     if (
       entityData.length > 0 &&
       entityData[entityData.length - 1]?.activities?.length > 0
     ) {
+      const lastEntity = entityData[entityData.length - 1];
+      setDefaultRegistrationTypeId(lastEntity.investment_registration_type_id);
       const activities = mapEntityActivitiesToActivities(
         entityData[entityData.length - 1].activities
       );
@@ -379,19 +436,57 @@ const RegistrationTypeStep: React.FC<RegistrationTypeStepProps> = ({
         investment_registration_type_id: item.pivot.entity_information_id,
         activity_id: item.pivot.activity_id,
       },
-      //isic_master_rule: item.isic_master_rule,
-      //pivot: item.pivot,
     }));
   };
 
-  const handleSelect = (typeId: number) => {
-    console.log("registrationTypes", JSON.stringify(registrationTypes), typeId);
-    const selected = registrationTypes.find((t) => t.id === typeId);
-    //setSelected(selected)
-    if (selected) {
-      dispatch(selectRegistrationType(selected));
-    }
-  };
+  const handleSelect = useCallback(
+    (typeId: number, restoring = false) => {
+      const selected = registrationTypes.find((t) => t.id === typeId);
+
+      if (!selected) return;
+
+      if (typeId === defaultRegistrationTypeId) {
+        console.log("refresh called");
+        dispatch(selectRegistrationType(selected));
+        if (!restoring) refreshEntityList();
+        return;
+      }
+
+      if (!restoring) {
+        console.log("reset called");
+        dispatch(selectRegistrationType(selected));
+        dispatch(resetEntityList());
+        dispatch(resetBusinessActivity());
+      } else {
+        // Restoring selection without resetting
+        dispatch(selectRegistrationType(selected));
+      }
+    },
+    [dispatch, registrationTypes, defaultRegistrationTypeId, refreshEntityList]
+  );
+
+  // const handleSelect = useCallback(
+  //   (typeId: number) => {
+  //     const selected = registrationTypes.find((t) => t.id === typeId);
+
+  //     console.log("typeId-->", typeId, defaultRegistrationTypeId);
+
+  //     if (selected && typeId === defaultRegistrationTypeId) {
+  //       console.log("refresh called");
+  //       dispatch(selectRegistrationType(selected));
+  //       refreshEntityList();
+  //       return;
+  //     }
+
+  //     if (selected) {
+  //       console.log("reset called");
+  //       dispatch(selectRegistrationType(selected));
+  //       dispatch(resetEntityList());
+  //       dispatch(resetBusinessActivity());
+  //     }
+  //   },
+  //   [dispatch, registrationTypes, defaultRegistrationTypeId, refreshEntityList]
+  // );
 
   const iconMap: Record<string, string> = {
     "Regular Investment Registration": regularIcon,
@@ -459,8 +554,15 @@ const RegistrationTypeStep: React.FC<RegistrationTypeStepProps> = ({
               ref={entityFormRef}
               onSuccess={onSuccess}
               entityInfo={
-                entityData.length > 0 ? entityData[entityData.length - 1] : null
+                entityData.length > 0 &&
+                entityData[entityData.length - 1]
+                  .investment_registration_type_id === selectedType.id
+                  ? entityData[entityData.length - 1]
+                  : entityData.length > 0
+                  ? entityData[entityData.length - 1]
+                  : null
               }
+              //entityInfo={entityData ?? null}
               onRefresh={refreshEntityList}
             />
           </>
@@ -469,5 +571,158 @@ const RegistrationTypeStep: React.FC<RegistrationTypeStepProps> = ({
     </PageWrapper>
   );
 };
+
+// type RegistrationTypeStepProps = {
+//   selected: string | null;
+//   setSelected: (type: string) => void;
+//   entityFormRef: React.Ref<{ submit: () => void }>;
+//   onSuccess: () => void;
+//   onRefresh: () => void;
+// };
+
+// const RegistrationTypeStep: React.FC<RegistrationTypeStepProps> = ({
+//   selected,
+//   setSelected,
+//   entityFormRef,
+//   onSuccess,
+//   onRefresh,
+// }) => {
+//   const dispatch = useDispatch();
+//   const { t, i18n } = useTranslation();
+//   const isRTL = i18n.language === "ar";
+
+//   const registrationTypes = useSelector(selectRegistrationTypes);
+//   const selectedType = useSelector(selectSelectedRegistrationType);
+//   const loading = useSelector(selectRegistrationTypesLoading);
+//   const error = useSelector(selectRegistrationTypesError);
+//   const entityData = useSelector(selectEntityList);
+
+//   const storedLang = localStorage.getItem("appLang") || "en";
+
+//   const [hasSelectedDefault, setHasSelectedDefault] = useState(false);
+
+//   // Always fetch fresh data when the page reloads
+//   useEffect(() => {
+//     dispatch(getEntityListRequest());
+//     dispatch(fetchRegistrationTypesRequest());
+//   }, [dispatch]);
+
+//   // Restore selected type from localStorage when data is ready
+//   useEffect(() => {
+//     if (registrationTypes.length === 0) return;
+
+//     const storedTypeId = localStorage.getItem("selectedRegistrationTypeId");
+//     if (storedTypeId) {
+//       const typeId = Number(storedTypeId);
+//       const selected = registrationTypes.find((t) => t.id === typeId);
+
+//       if (selected) {
+//         dispatch(selectRegistrationType(selected));
+//         dispatch(getBusinessActivitiesRequest(typeId));
+//         setHasSelectedDefault(true);
+//       }
+//     }
+//   }, [registrationTypes, dispatch]);
+
+//   // If no stored selection, pick from last entity record
+//   useEffect(() => {
+//     if (hasSelectedDefault || registrationTypes.length === 0 || entityData.length === 0) {
+//       return;
+//     }
+
+//     const lastEntity = entityData[entityData.length - 1];
+//     if (lastEntity) {
+//       handleSelect(lastEntity.investment_registration_type_id);
+//       setHasSelectedDefault(true);
+//     }
+//   }, [entityData, registrationTypes, hasSelectedDefault]);
+
+//   // Handle user selection
+//   const handleSelect = useCallback(
+//     (typeId: number) => {
+//       const selected = registrationTypes.find((t) => t.id === typeId);
+//       if (selected) {
+//         dispatch(selectRegistrationType(selected));
+//         localStorage.setItem("selectedRegistrationTypeId", typeId.toString());
+//         dispatch(getBusinessActivitiesRequest(typeId));
+//       }
+//     },
+//     [dispatch, registrationTypes]
+//   );
+
+//   const iconMap: Record<string, string> = {
+//     "Regular Investment Registration": regularIcon,
+//     Entrepreneur: entrepreneurIcon,
+//     "Scientific and Technical office": scientificIcon,
+//     "Economic Office": economicIcon,
+//     "Temporary Registration for Government Contract": temporaryIcon,
+//   };
+
+//   return (
+//     <PageWrapper $isRTL={isRTL}>
+//       <Card $isRTL={isRTL}>
+//         <SectionTitle $isRTL={isRTL}>
+//           {t("registrationTypes.title")}
+//         </SectionTitle>
+
+//         {loading && <p>{t("common.loading")}</p>}
+//         {error && <p style={{ color: "red" }}>{t("common.error")}: {error}</p>}
+
+//         <OptionsGrid>
+//           {registrationTypes
+//             .filter(
+//               (type) =>
+//                 (storedLang === "ar" ? type.name_ar : type.name_en) !== "RHQ"
+//             )
+//             .map((type) => (
+//               <OptionCard
+//                 key={type.id}
+//                 selected={selectedType?.id === type.id}
+//                 onClick={() => handleSelect(type.id)}
+//                 $isRTL={isRTL}
+//               >
+//                 <OptionContent $isRTL={isRTL}>
+//                   <OptionImage
+//                     src={iconMap[type.name_en] || "/images/default-reg-type.svg"}
+//                     alt={storedLang === "ar" ? type.name_ar : type.name_en}
+//                   />
+//                   <OptionLabel $isRTL={isRTL}>
+//                     {storedLang === "ar" ? type.name_ar : type.name_en}
+//                   </OptionLabel>
+//                 </OptionContent>
+//                 <CheckboxIcon
+//                   src={selectedType?.id === type.id ? checkOn : checkOff}
+//                   alt={
+//                     selectedType?.id === type.id
+//                       ? t("common.selected")
+//                       : t("common.notSelected")
+//                   }
+//                 />
+//               </OptionCard>
+//             ))}
+//         </OptionsGrid>
+
+//         {selectedType && (
+//           <>
+//             <BusinessActivityRow />
+//             <EntityInformationForm
+//               registrationTypeId={selectedType.id}
+//               ref={entityFormRef}
+//               onSuccess={onSuccess}
+//               entityInfo={
+//                 entityData.length > 0 &&
+//                 entityData[entityData.length - 1]
+//                   .investment_registration_type_id === selectedType.id
+//                   ? entityData[entityData.length - 1]
+//                   : null
+//               }
+//               onRefresh={() => dispatch(getEntityListRequest())}
+//             />
+//           </>
+//         )}
+//       </Card>
+//     </PageWrapper>
+//   );
+// };
 
 export default RegistrationTypeStep;

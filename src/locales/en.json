@@ -69,6 +69,7 @@
     "next": "Next",
     "back": "Back",
     "register_button": "Register",
+    "otp_sent": "OTP has been sent to your email.",
     "validation": {
       "first_name_required": "First Name is required",
       "last_name_required": "Last Name is required",
@@ -95,7 +96,7 @@
 
   "forgot_password": {
     "title": "Forgot Password",
-    "instructions": "Please enter the Email address used during your account registration on E-Services to complete your reset password.",
+    "instructions": "Please enter the Email address used during your account registration on\nE-Services to complete your reset password.",
     "success_message": "Password reset instructions have been sent to your e-mail address. Please contact customer support if you require additional assistance.",
     "email_label": "Email Address",
     "email_placeholder": "Enter Email Address",
@@ -303,6 +304,7 @@
 
   "termsModal": {
     "download": "Download",
+    "downloadterm": "Download Terms & Condition",
     "downloadPrivacyPolicy": "Download Privacy Policy",
     "previousPage": "Previous page",
     "nextPage": "Next page",
@@ -388,7 +390,7 @@
     "selectLicenseDuration": "Select License Duration",
     "selectInvestmentSpending": "Excepeted Investment Spending",
     "enterEntityNameEn": "Enter Entity Name in English",
-    "enterEntityNameAr": "Enter Entity Name in Arabic", 
+    "enterEntityNameAr": "Enter Entity Name in Arabic",
     "enterCapital": "Enter Capital",
     "enterEmail": "Enter Email",
     "enterMobileNumber": "Enter Mobile Number",
@@ -439,13 +441,13 @@
     },
     "dropzone": {
       "primaryText": "Drag and drop files here to upload",
-      "secondaryText": "Maximum file size allowed is 5MB, supported file formats include {formats}.",
+      "secondaryText": "Maximum file size allowed is 5MB, supported file formats include {{formats}}.",
       "formats": ".jpg, .png, and .pdf",
       "browseButton": "Browse Files"
     },
     "validation": {
       "fileSizeExceeded": "File size exceeds 5MB.",
-      "invalidFileType": "Invalid file type. Supported formats: {formats}",
+      "invalidFileType": "Invalid file type. Supported formats: {{formats}}",
       "required": "This file is required."
     },
     "registrationAttachments": {
@@ -484,10 +486,10 @@
     "fillRequiredFields": "Please fill all required fields",
     "enterCity": "Enter City"
   },
-  
+
   "shareholderList": {
     "title": "Shareholders List",
-     "note": "Note: Only {{percentage}}% is available for adding shareholders.",
+    "note": "Note: Only {{percentage}}% is available for adding shareholders.",
     "addButton": "+ Add Shareholder",
     "emptyState": {
       "title": "There is no records to display.",
@@ -516,7 +518,7 @@
   "altText": {
     "businessActivityLogo": "Business Activity Logo"
   },
-   "businessActivity": {
+  "businessActivity": {
     "tableHeaders": {
       "number": "#",
       "isicCode": "ISIC Code",
@@ -524,7 +526,25 @@
       "classification": "Classification",
       "actions": "Actions"
     },
-    "addButton": "+ Add Business Activities"
+    "addButton": "+ Add Business Activities",
+    "search": "Search",
+    "section": "Section",
+    "chooseSection": "Choose your Section",
+    "chooseDivision": "Choose your Division",
+    "chooseGroup": "Choose your Group",
+    "chooseBranch": "Choose your Branch",
+    "chooseClass": "Choose your Class",
+    "chooseActivity": "Choose your Activity",
+    "noActivityTitle": "There is no records to display",
+    "getStartSection": "Select your section to get started",
+    "activity": "Activity",
+    "branch": "Branch",
+    "class": "Class",
+    "group": "Group",
+    "division": "Division",
+    "next": "Next",
+    "back": "Back",
+    "cancel": "Cancel"
   },
   "action": {
     "delete": "Delete"
@@ -545,6 +565,7 @@
     "fullName": "Full Name in English",
     "sharePercentage": "Share Percentage",
     "identityNumber": "Identity Number",
+    "personalDetails": "Personal Details",
     "nationality": "Current Nationality",
     "country": "Country",
     "city": "City",
@@ -570,7 +591,7 @@
     "documentData": "Document Data",
     "idIssueDate": "ID Issue Date",
     "idExpiryDate": "ID Expiry Date",
-        "enterEntityNumber": "Enter Shareholder Entity Number",
+    "enterEntityNumber": "Enter Shareholder Entity Number",
     "name": "Name",
     "yes": "Yes",
     "no": "No",
@@ -598,46 +619,47 @@
       "browse": "Browse Files"
     },
     "organization": {
-    "sectionTitle": "Shareholder Details",
-    "country": "Country",
-    "selectCountry": "Select Country",
-    "unifiedNumber": "Unified Number",
-    "validate": "Validate",
+      "sectionTitle": "Shareholder Details",
+      "country": "Country",
+      "selectCountry": "Select Country",
+      "unifiedNumber": "Unified Number",
+      "validate": "Validate",
 
-    "orgNameEn": "Organization Name in English",
-    "orgNameAr": "Organization Name in Arabic",
-    "legalStatus": "Legal Status",
-    "selectLegalStatus": "Select Legal Status",
-    "llc": "LLC",
-    "jointStock": "Joint Stock",
+      "orgNameEn": "Organization Name in English",
+      "orgNameAr": "Organization Name in Arabic",
+      "legalStatus": "Legal Status",
+      "selectLegalStatus": "Select Legal Status",
+      "llc": "LLC",
+      "jointStock": "Joint Stock",
 
-    "yearsEstablished": "Number of Years Established in Country of Origin",
-    "selectYears": "Select Number of Years",
-    "1_5": "1-5",
-    "5_10": "5-10",
-    "10_plus": "10+",
+      "yearsEstablished": "Number of Years Established in Country of Origin",
+      "selectYears": "Select Number of Years",
+      "1_5": "1-5",
+      "5_10": "5-10",
+      "10_plus": "10+",
 
-    "mobile": "Mobile Number",
-    "sharePercentage": "Share Percentage",
-    "email": "Email Address",
-    "website": "Website",
+      "mobile": "Mobile Number",
+      "sharePercentage": "Share Percentage",
+      "email": "Email Address",
+      "website": "Website",
 
-    "attachmentsTitle": "Attachments",
-    "commercialReg": "Commercial Registration Copy (Home Country)",
-    "financialStatement": "Last Year Financial Statement",
-    "otherAttachment1": "Other Attachment 1",
-    "otherAttachment2": "Other Attachment 2"
-  }
+      "attachmentsTitle": "Attachments",
+      "commercialReg": "Commercial Registration Copy (Home Country)",
+      "financialStatement": "Last Year Financial Statement",
+      "otherAttachment1": "Other Attachment 1",
+      "otherAttachment2": "Other Attachment 2"
+    }
   },
   "errors": {
     "required": "This field is required",
     "invalidFileType": "Unsupported file type",
     "fileSizeExceeded": "File size exceeds 2MB"
   },
-    "preview": {
+  "preview": {
     "registration": {
       "entityInformation": "Entity Information",
       "edit": "Edit",
+      "add": "+ Add",
       "registrationType": "Registration Type",
       "yearsRequired": "Years Required",
       "entityName": "Entity Name (English)",
@@ -652,7 +674,7 @@
       "expectedInvestment": "Expected Investment",
       "businessActivities": "Business Activities"
     },
-        "shareholder": {
+    "shareholder": {
       "title": "Shareholders List",
       "searchPlaceholder": "Shareholder name, Nationality",
       "columns": {
@@ -673,7 +695,7 @@
       "edit": "Edit",
       "delete": "Delete"
     },
-        "contactdetail": {
+    "contactdetail": {
       "title": "Contact Information",
       "fields": {
         "name": "Name",
@@ -695,21 +717,53 @@
       "edit": "Edit",
       "delete": "Delete"
     },
-      "terms": {
+    "terms": {
       "acknowledgment": "I acknowledge reading and agreeing to the",
-      "termsConditions": "terms & conditions",
+      "and": "and",
+      "termsConditions": "Terms & conditions",
       "privacyPolicy": "Privacy Policy",
-      "validationText": ", the validity and accuracy of the data entered, and the Ministry's right to process it in a way that serves the public interest and facilitates the provision of investment services.",
+      "validationText": "the validity and accuracy of the data entered, and the Ministrys right to process it in a way that serves the public interest and facilitates the provision of investment services.",
       "checkboxLabel": "Acknowledge terms and conditions"
     }
   },
-    "investments": {
+  "investments": {
     "buttons": {
       "cancel": "Cancel",
       "back": "Back",
       "next": "Next"
     }
+  },
+  "nafath_login": {
+    "nafath_id_label": "National ID / IQAMA ID",
+    "nafath_id_placeholder": "Enter National ID / IQAMA ID",
+    "nafath_id_required": "Please enter your Nafath ID",
+    "nafath_id_invalid": "Nafath ID must be 10 digits",
+    "login_button": "Login",
+    "or": "or",
+    "investor_login": "Login with Investor ID",
+    "back": "Back",
+    "register": "Register",
+    "modal_user_select_title": "Select Your Account",
+    "modal_user_select_instruction": "Please select your account to continue:",
+    "modal_verify_title": "Verify Through Nafath",
+    "modal_verify_instruction": "Please open Nafath Mobile App and approve the request by selecting verification number.",
+    "download_app": "To download Nafath app",
+    "toast_login_failed": "Nafath Login failed: {{error}}",
+    "toast_fetch_users_failed": "Failed to retrieve users.",
+    "toast_fetch_users_error": "Error fetching users.",
+    "toast_login_rejected": "Login rejected",
+    "toast_login_expired": "⏳ Request expired",
+    "toast_logged_in_as": "Logged in as {{name}}",
+    "heading_citizens": "For Citizens/ Resident Individuals, Login through Nafath"
+  },
+  "twofactor": {
+    "title": "Two Factor Authentication",
+    "instructions_email": "We have sent a verification code to your registered email {{email}}",
+    "instructions_phone": "We have sent a verification code to your registered mobile {{phone}}",
+    "instructions_both": "We have sent a verification code to your registered email {{email}} & mobile {{phone}}",
+    "submit": "Submit",
+    "login_success": "Login successful!",
+    "back": "Back",
+    "register":"Register"
   }
 }
-
-

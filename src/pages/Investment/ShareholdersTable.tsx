@@ -25,7 +25,7 @@ interface ShareholdersTableProps {
 }
 
 // Styled Components
-const TableContainer = styled.div`
+const TableContainer = styled.div<{ dir?: "rtl" | "ltr" }>`
   width: 100%;
   margin: 0;
   background-color: white;
@@ -33,21 +33,27 @@ const TableContainer = styled.div`
   overflow: hidden;
   border-left: none;
   border-right: none;
+  direction: ${(props) => props.dir || "ltr"};
+
 `;
 
 const SearchContainer = styled.div`
   padding: 20px 0;
+  display: flex;
+  justify-content: flex-start;
 `;
 
-const SearchInputWrapper = styled.div`
+const SearchInputWrapper = styled.div<{ dir?: "rtl" | "ltr" }>`
   position: relative;
   width: 100%;
   max-width: 400px;
+  direction: ${(props) => props.dir || "ltr"};
 `;
 
-const SearchInput = styled.input`
+const SearchInput = styled.input<{ dir?: "rtl" | "ltr" }>`
   width: 100%;
-  padding: 12px 16px 12px 44px;
+  padding: ${(props) =>
+    props.dir === "rtl" ? "12px 44px 12px 16px" : "12px 16px 12px 44px"};
   border: 1px solid #d1d5db;
   border-radius: 6px;
   font-size: 14px;
@@ -65,8 +71,9 @@ const SearchInput = styled.input`
   }
 `;
 
-const SearchIcon = styled(Search)`
+const SearchIcon = styled(Search)<{ dir?: "rtl" | "ltr" }>`
   position: absolute;
+  ${(props) => (props.dir === "rtl" ? "right: 14px;" : "left: 14px;")}
   left: 14px;
   top: 50%;
   transform: translateY(-50%);
@@ -75,11 +82,12 @@ const SearchIcon = styled(Search)`
   color: #6b7280;
 `;
 
-const Table = styled.table`
+const Table = styled.table<{ dir?: "rtl" | "ltr" }>`
   width: 100%;
   border-collapse: collapse;
   border-left: none;
   border-right: none;
+  direction: ${(props) => props.dir || "ltr"};
 `;
 
 const TableHeader = styled.thead`
@@ -88,9 +96,9 @@ const TableHeader = styled.thead`
 
 const TableHeaderRow = styled.tr``;
 
-const TableHeaderCell = styled.th`
+const TableHeaderCell = styled.th<{ dir?: "rtl" | "ltr" }>`
   padding: 16px 20px;
-  text-align: left;
+  text-align: ${(props) => (props.dir === "rtl" ? "right" : "left")};
   font-size: 14px;
   font-weight: 600;
   color: #475569;
@@ -121,12 +129,13 @@ const TableRow = styled.tr`
   }
 `;
 
-const TableCell = styled.td`
+const TableCell = styled.td<{ dir?: "rtl" | "ltr" }>`
   padding: 16px 20px;
   font-size: 14px;
   color: #334155;
   font-family: "29LT_Bukra-Regular", Helvetica, sans-serif;
   border-bottom: 1px solid rgba(121, 116, 126, 0.16);
+  text-align: ${(props) => (props.dir === "rtl" ? "right" : "left")};
 
   /* Add vertical lines between columns */
   border-right: 1px solid #f1f5f9;
@@ -150,8 +159,8 @@ const ActionsCell = styled(TableCell)`
 `;
 
 const ActionImage = styled.img`
-  width: 24px;
-  height: 24px;
+  width: 32px;
+  height: 32px;
   cursor: pointer;
   transition: transform 0.2s ease;
 
@@ -219,10 +228,11 @@ export const ShareholdersTable: React.FC<ShareholdersTableProps> = ({
   shareholders = defaultShareholders,
   onEdit,
   onDelete,
-  dir = "ltr",
 }) => {
   const [searchTerm, setSearchTerm] = useState("");
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const isArabic = i18n.language === "ar";
+  const dir: "rtl" | "ltr" = isArabic ? "rtl" : "ltr";
 
   const filteredShareholders = shareholders.filter(
     (shareholder) =>
@@ -323,3 +333,5 @@ export const ShareholdersTable: React.FC<ShareholdersTableProps> = ({
     </>
   );
 };
+
+

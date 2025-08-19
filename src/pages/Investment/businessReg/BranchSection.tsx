@@ -11,6 +11,7 @@ import {
   setBranches,
 } from "../../../store/reducers/businessActivitySlice";
 import { selectAppLang } from "../../../store/slices/languageSlice";
+import { useTranslation } from "react-i18next";
 
 const Wrapper = styled.div`
   background-color: white;
@@ -120,6 +121,7 @@ const CheckboxIcon = styled.img`
   width: 24px;
   height: 24px;
   margin-right: 15px;
+  margin-left: 15px;
 `;
 
 const Label = styled.span<{ checked: boolean }>`
@@ -140,14 +142,30 @@ interface BranchSectionProps {
 const BranchSection: React.FC<BranchSectionProps> = ({ structureData }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const selectedLanguage = useSelector(selectAppLang);
-
   const dispatch = useDispatch();
+  const { t } = useTranslation();
+
   const selectedClasses = useSelector(
     (state: RootState) => state.businessActivity.classes
   );
   const selectedBranches = useSelector(
     (state: RootState) => state.businessActivity.branches
   );
+
+  // ✅ Shared filtering logic
+  const filterBranches = (branch: Branch) => {
+    const matchesClass = selectedClasses.some(
+      (cls) => cls.id === branch.class_id
+    );
+    const matchesSearch =
+      selectedLanguage === "ar"
+        ? branch.description_ar.toLowerCase().includes(searchTerm.toLowerCase())
+        : branch.description_en
+            .toLowerCase()
+            .includes(searchTerm.toLowerCase());
+
+    return matchesClass && matchesSearch;
+  };
 
   const handleToggle = (branch: Branch) => {
     const exists = selectedBranches.some((b) => b.id === branch.id);
@@ -159,24 +177,17 @@ const BranchSection: React.FC<BranchSectionProps> = ({ structureData }) => {
     dispatch(resetAfterBranches());
   };
 
+  const totalFilteredCount = structureData.branch.filter(filterBranches).length;
+
   return (
     <Wrapper>
       <Header>
         <Title>
-          Choose your Branch ({selectedBranches.length}/
-          {
-            structureData.branch.filter(
-              (b) =>
-                selectedClasses.some((cls) => cls.id === b.class_id) &&
-                b.description_en
-                  .toLowerCase()
-                  .includes(searchTerm.toLowerCase())
-            ).length
-          }
-          )
+          {t("businessActivity.chooseBranch")} ({selectedBranches.length}/
+          {totalFilteredCount})
         </Title>
         <SearchInput
-          placeholder="Search"
+          placeholder={t("businessActivity.search")}
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
         />
@@ -184,23 +195,20 @@ const BranchSection: React.FC<BranchSectionProps> = ({ structureData }) => {
 
       <Content>
         {selectedClasses.map((cls, index) => {
-          const branches = structureData.branch.filter((b) =>
-            b.class_id === cls.id && selectedLanguage == "ar"
-              ? b.description_ar
-                  .toLowerCase()
-                  .includes(searchTerm.toLowerCase())
-              : b.description_en
-                  .toLowerCase()
-                  .includes(searchTerm.toLowerCase())
+          const branches = structureData.branch.filter(
+            (b) => b.class_id === cls.id && filterBranches(b)
           );
 
           if (branches.length === 0) return null;
-
           const isLast = index === selectedClasses.length - 1;
 
           return (
             <div key={cls.id}>
-              <GroupTitle>{cls.description}</GroupTitle>
+              <GroupTitle>
+                {selectedLanguage === "ar"
+                  ? cls.description_ar
+                  : cls.description_en}
+              </GroupTitle>
               <CardGrid>
                 {branches.map((branch) => {
                   const isSelected = selectedBranches.some(
@@ -217,9 +225,11 @@ const BranchSection: React.FC<BranchSectionProps> = ({ structureData }) => {
                         alt={isSelected ? "Selected" : "Not selected"}
                       />
                       <Label checked={isSelected}>
-                        {branch.branchid + " - " + selectedLanguage == "ar"
-                          ? branch.description_ar
-                          : branch.description_en}
+                        {`${branch.branchid} - ${
+                          selectedLanguage === "ar"
+                            ? branch.description_ar
+                            : branch.description_en
+                        }`}
                       </Label>
                     </Card>
                   );

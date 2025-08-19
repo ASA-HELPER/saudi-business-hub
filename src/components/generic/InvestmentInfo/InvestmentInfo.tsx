@@ -11,7 +11,7 @@ const InvestmentInfo = () => {
       <ul>
         <li>
           {t("apply_investment_registration")} <br />
-          <a href="#">{t("user_guide_link")}</a>
+          {/* <a href="#">{t("user_guide_link")}</a> */}
         </li>
         <li>{t("obtain_temp_certificate")}</li>
         <li>{t("benefit_from_services")}</li>
@@ -25,7 +25,7 @@ const InvestmentInfo = () => {
 export default InvestmentInfo;
 
 // Styled Components
-const Title = styled.h1`
+const  Title = styled.h1`
   padding-top: clamp(20px, 2.7vh, 30px);
   padding-bottom: clamp(16px, 2vh, 24px);
   font-family: "IBM Plex Sans Arabic", sans-serif;

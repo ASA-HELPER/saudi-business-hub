@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 import nafathLogo from '../../../assets/images/nafath-logo.png';
+import { useTranslation } from 'react-i18next';
 
 
 
@@ -31,13 +32,14 @@ const EnglishHeading = styled.h4`
 
 const LoginExtras = () => {
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   return (
     <>
       <NafathContainer>
         <NafathLogo src={nafathLogo} alt="Nafath Logo" />
         <EnglishHeading>
-          For Citizens/ Resident Individuals, Login through Nafath
+          {t("nafath_login.heading_citizens")}
         </EnglishHeading>
       </NafathContainer>
     </>

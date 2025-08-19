@@ -3,11 +3,10 @@ import styled from 'styled-components';
 export const RegisterContainer = styled.div`
   width: 100%;
   max-width: 800px;
-  margin: 40px auto;
+  margin:  auto;
   display: flex;
   flex-direction: column;
   align-items: center;
-  max-height: 100vh;
 `;
 
 export const StepperWrapper = styled.div`
@@ -18,6 +17,7 @@ export const StepperWrapper = styled.div`
   width: 100%;
   max-width: 700px;
   padding: 0 20px;
+  margin-bottom: 12px;
 `;
 
 export const StepBlock = styled.div`
@@ -38,8 +38,8 @@ export const StepCircle = styled.div<{ isActive: boolean }>`
   transition: 0.3s ease-in-out;
 
   img {
-    width: 50px;
-    height: 50px;
+    width: 48px;
+    height: 48px;
   }
 `;
 

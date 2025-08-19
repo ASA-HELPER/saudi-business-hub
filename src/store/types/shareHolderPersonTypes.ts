@@ -30,7 +30,8 @@ export interface ShareholderPersonPayload {
     passport_expiry_date: string;
     professional_license: number;
 
-    passport_id_copy: File;
-    professional_license_certificate: File;
+    passport_id_copy: File | null;
+    professional_license_certificate?: File | null;
+
   };
 }

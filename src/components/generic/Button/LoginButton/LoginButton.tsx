@@ -5,7 +5,7 @@ import defaultNafathLogo from '../../../../assets/images/nafath-logo.png';
 const StyledButton = styled.button`
   width: 100%;
   // width: clamp(280px, 30vw, 538px);
-  height: 40px;
+  height: 45px;
   padding: 0 16px;
   border-radius: 4px;
   border: 1px solid #00778E;

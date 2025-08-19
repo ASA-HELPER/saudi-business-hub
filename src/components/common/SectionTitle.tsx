@@ -3,6 +3,7 @@ import styled from "styled-components";
 
 import deleteIcon from "../../assets/images/investment/delete_icon.svg";
 import editIcon from "../../assets/images/investment/edit_icon.svg";
+import { useTranslation } from "react-i18next";
 
 interface SectionTitleProps {
   children: React.ReactNode;
@@ -55,6 +56,7 @@ const Divider = styled.div`
 const Actions = styled.div`
   display: flex;
   gap: 12px;
+  flex-direction: ${(props) => (props.dir === "rtl" ? "row-reverse" : "row")};
 `;
 
 const IconButton = styled.button`
@@ -64,17 +66,18 @@ const IconButton = styled.button`
   padding: 0;
   display: flex;
   align-items: center;
+  flex-direction: ${(props) => (props.dir === "rtl" ? "row-reverse" : "row")};
 
   img {
-    width: 28px;
-    height: 28px;
+    width: 32px;
+    height: 32px;
   }
 `;
 
 const EditText = styled.span`
   color: #00778e;
-  font-weight: 600;
-  font-size: 14px;
+  font-weight: 700;
+  font-size: 18px;
   margin-left: 4px;
 `;
 
@@ -102,26 +105,37 @@ const SectionTitle: React.FC<SectionTitleProps> = ({
   onAdd,
   showEditText = false,
 }) => {
+  const { t, i18n } = useTranslation();
+  const isArabic = i18n.language === "ar";
+  const dir = isArabic ? "rtl" : "ltr";
   return (
-    <TitleWrapper>
-      <TitleRow $isRTL={$isRTL}>
-        <Title borderColor={borderColor} $isRTL={$isRTL}>
+    <TitleWrapper dir={dir}>
+      <TitleRow dir={dir}>
+        <Title borderColor={borderColor} dir={dir}>
           {children}
         </Title>
         {showActions && (
-          <Actions>
+          <Actions dir={dir}>
             {onEdit && (
-              <IconButton onClick={onEdit}>
+              <IconButton onClick={onEdit} dir={dir}>
                 <img src={editIcon} alt="Edit" />
-                {showEditText && <EditText>Edit</EditText>}
+                {showEditText && (
+                  <EditText dir={dir}>
+                    {t("preview.registration.edit")}
+                  </EditText>
+                )}
               </IconButton>
             )}
             {onDelete && (
-              <IconButton onClick={onDelete}>
+              <IconButton onClick={onDelete} dir={dir}>
                 <img src={deleteIcon} alt="Delete" />
               </IconButton>
             )}
-            {onAdd && <AddButton onClick={onAdd}>+ Add</AddButton>}
+            {onAdd && (
+              <AddButton onClick={onAdd}>
+                {t("preview.registration.add")}
+              </AddButton>
+            )}
           </Actions>
         )}
       </TitleRow>

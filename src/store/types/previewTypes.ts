@@ -4,6 +4,7 @@ export const GET_PREVIEW_REQUEST = "GET_PREVIEW_REQUEST";
 export const GET_PREVIEW_SUCCESS = "GET_PREVIEW_SUCCESS";
 export const GET_PREVIEW_FAILURE = "GET_PREVIEW_FAILURE";
 
+
 export interface Customer {
   id: number;
   first_name: string;
@@ -11,37 +12,45 @@ export interface Customer {
 
 export interface Country {
   id: number;
-  name: string;
+  name_en: string;
+  name_ar: string | null;
 }
 
 export interface Region {
   id: number;
-  name: string;
+  name_en: string;
+  name_ar: string;
 }
 
 export interface City {
   id: number;
-  name: string;
+  name_en: string;
+  name_ar: string;
 }
 
 export interface InvestmentRegistrationType {
-  id: number;
   name: string;
+  id: number;
+  name_en: string;
+  name_ar: string;
 }
 
 export interface LegalStatus {
   id: number;
-  name: string;
+  name_en: string;
+  name_ar: string;
 }
 
 export interface Investment {
   id: number;
-  name: string;
+  name_en: string;
+  name_ar: string;
 }
 
 export interface Activity {
   id: number;
-  description: string;
+  description_en: string;
+  description_ar: string;
   activityid: string;
   pivot: {
     entity_information_id: number;
@@ -126,6 +135,8 @@ export interface Shareholder {
   share_holder_type_id: number;
   shares_percentage: string;
   customer: Customer;
+  nationality_en: string;
+  nationality_ar: string;
   share_holder_type: ShareHolderType;
   existing_shareholders: any[];
   person_shareholders: PersonShareholder[];
@@ -135,12 +146,14 @@ export interface Shareholder {
 export interface MobileCountryCode {
   id: number;
   code: string;
+  phone_prefix: number;
 }
 
 export interface Nationality {
   id: number;
-  name: string;
-}
+  name_en: string;
+  name_ar: string;
+} 
 
 export interface ContactPerson {
   national_id: any;

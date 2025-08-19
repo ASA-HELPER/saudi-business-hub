@@ -43,7 +43,7 @@ const ModalHeader = styled.div`
   border-radius: 12px;
   margin-left: 20px;
   margin-right: 20px;
-  margin-top: 35px;
+  margin-top: 14px;
   margin-bottom: 10px;
 `;
 
@@ -77,9 +77,10 @@ const TopActions = styled.div`
 // Footer with Actions
 const BottomActions = styled.div`
   display: flex;
+  padding-top: 30px;
   justify-content: flex-end;
   gap: 1rem;
-  padding: 1.5rem 1rem;
+  padding: 0.8rem 2rem 1.4rem 1rem;
   //border-top: 1px solid #ddd;
 
   button {
@@ -98,14 +99,14 @@ const CloseButton = styled.button`
   &:hover {
     background: #eef9fa;
   }
-  width: 10rem;
+  width: 8rem;
 `;
 
 const AgreeButton = styled.button`
   background: #00778e;
   border: none;
   color: white;
-  width: 10rem;
+  width: 8rem;
   &:hover {
     background: #006676;
   }

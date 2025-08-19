@@ -22,13 +22,13 @@ import ContactPersonStep from "./ContactPersonStep";
 import PreviewScreenStep from "./PreviewScreenStep";
 
 import stackHolderIconSelected from "../../assets/images/investment/shareholder_selected.svg";
-import stackHolderIconUnSelected from "../../assets/images/investment/shareholder_unselected.png";
+import stackHolderIconUnSelected from "../../assets/images/investment/Step Number-2.svg";
 
 import contactIconSelected from "../../assets/images/investment/contact_person_selected.svg";
-import contactIconUnSelected from "../../assets/images/investment/contact_person_unselected.png";
+import contactIconUnSelected from "../../assets/images/investment/Step Number-1.svg";
 
 import previewIconSelected from "../../assets/images/investment/preview_selected.svg";
-import previewIconUnSelected from "../../assets/images/investment/preview_unselected.png";
+import previewIconUnSelected from "../../assets/images/investment/Step Number.svg";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 
@@ -131,6 +131,7 @@ const InvestmentRegistration: React.FC = () => {
   const handleNext = async () => {
     if (currentStep === 0 && entityFormRef.current) {
       entityFormRef.current.submit();
+      sessionStorage.setItem("hasFetchedEntityList", "false");
     } else if (currentStep === 2 && contactFormRef.current) {
       await localStorage.setItem("isContactEdit", "false");
       contactFormRef.current.submit();

@@ -35,6 +35,7 @@ import deleteContactPersonSaga from "./sagas/deleteContactPersonSaga";
 import shareholderDeleteSaga from "./sagas/shareholderDeleteSaga";
 import deleteAttachmentSaga from "./sagas/attachmentDeleteSaga";
 import { watchGetShareholderById } from "./sagas/shareholderGetByIdSaga";
+import shareholderCountrySaga from "./sagas/shareholderCountrySaga";  
 
 // Create the saga middleware
 const sagaMiddleware = createSagaMiddleware();
@@ -79,6 +80,7 @@ sagaMiddleware.run(deleteContactPersonSaga);
 sagaMiddleware.run(shareholderDeleteSaga);
 sagaMiddleware.run(deleteAttachmentSaga);
 sagaMiddleware.run(watchGetShareholderById);
+sagaMiddleware.run(shareholderCountrySaga);
 
 // Export RootState and AppDispatch types
 export type RootState = ReturnType<typeof store.getState>;

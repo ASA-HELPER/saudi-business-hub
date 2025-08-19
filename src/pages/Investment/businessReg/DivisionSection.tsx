@@ -11,6 +11,7 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../../store";
 import { selectAppLang } from "../../../store/slices/languageSlice";
+import { useTranslation } from "react-i18next";
 
 // Types
 interface Section {
@@ -85,6 +86,7 @@ const CheckboxIcon = styled.img`
   width: 24px;
   height: 24px;
   margin-right: 15px;
+  margin-left: 15px;
 `;
 
 const Label = styled.span<{ checked: boolean }>`
@@ -104,6 +106,7 @@ const DivisionSection: React.FC<DivisionSectionProps> = ({
 }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const selectedLanguage = useSelector(selectAppLang);
+  const { t } = useTranslation();
 
   const dispatch = useDispatch();
   const selectedDivisions = useSelector(
@@ -138,12 +141,12 @@ const DivisionSection: React.FC<DivisionSectionProps> = ({
     <Wrapper>
       <Header>
         <Title>
-          Choose your Division ({selectedDivisions.length}/
+          {t("businessActivity.chooseDivision")} ({selectedDivisions.length}/
           {filteredDivisions?.length})
         </Title>
         <SearchInput
           type="text"
-          placeholder="Search"
+          placeholder={t("businessActivity.search")}
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
         />

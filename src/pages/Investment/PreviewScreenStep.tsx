@@ -76,26 +76,45 @@ const PreviewScreenStep: React.FC<PreviewStepProps> = ({
   const selectedLanguage = useSelector(selectAppLang);
 
   // Convert entity_information to RegistrationData
-  const mapEntityInfoToRegistrationData = (
-    entity: EntityInformation
-  ): RegistrationData => ({
-    registrationType: entity.investment_registration_type?.name ?? "",
-    entityName: entity.entity_name,
-    entityNameArabic: entity.entity_name_arabic,
-    email: entity.email ?? "",
-    region: entity.region?.name ?? "",
-    yearsRequired: entity.license_duration,
-    legalStatus: entity.legal_status?.name ?? "",
-    mobileNumber:
-      (entity.mobile_country_code?.code ?? "") +
-      " " +
-      (entity.mobile_phone ?? ""),
-    city: entity.city?.name ?? "",
-    capital: entity.capital,
-    country: entity.country?.name ?? "",
-    expectedInvestment: entity.investment?.name ?? "",
-    businessActivities: entity.activities?.map((act) => act.description) ?? [],
-  });
+const mapEntityInfoToRegistrationData = (
+  entity: EntityInformation,
+  selectedLanguage: "en" | "ar"
+): RegistrationData => ({
+  registrationType:
+    selectedLanguage === "ar"
+      ? entity.investment_registration_type?.name_ar ?? ""
+      : entity.investment_registration_type?.name_en ?? "",
+  entityName: entity.entity_name,
+  entityNameArabic: entity.entity_name_arabic,
+  email: entity.email ?? "" ,
+  region:
+    selectedLanguage === "ar"
+      ? entity.region?.name_ar ?? ""
+      : entity.region?.name_en ?? "",
+  yearsRequired: entity.license_duration,
+  legalStatus:
+    selectedLanguage === "ar"
+      ? entity.legal_status?.name_ar ?? ""
+      : entity.legal_status?.name_en ?? "",
+  mobileNumber: entity.mobile_phone ?? "",
+  city:
+    selectedLanguage === "ar"
+      ? entity.city?.name_ar ?? ""
+      : entity.city?.name_en ?? "",
+  capital: entity.capital,
+  country:
+    selectedLanguage === "ar"
+      ? entity.country?.name_ar ?? ""
+      : entity.country?.name_en ?? "",
+  expectedInvestment:
+    selectedLanguage === "ar"
+      ? entity.investment?.name_ar ?? ""
+      : entity.investment?.name_en ?? "",
+  businessActivities:
+    entity.activities?.map((act) =>
+      selectedLanguage === "ar" ? act.description_ar : act.description_en
+    ) ?? [],
+});
 
   const mapShareholderToTableData = (
     shareholder: any
@@ -113,7 +132,10 @@ const PreviewScreenStep: React.FC<PreviewStepProps> = ({
       name: shareholder?.full_name || shareholder?.customer?.first_name || "—",
       type: shareholder?.type === "Person" ? "Person" : "Organization",
       percentage: `${shareholder?.shares_percentage ?? 0}%`,
-      nationality: shareholder?.nationality || "—",
+      nationality:
+        selectedLanguage === "ar"
+          ? shareholder?.nationality_ar || "—"
+          : shareholder?.nationality_en || "—",
       legalStatus: shareholder?.legal_status || "—",
       identityNumber: shareholder?.identity_number || "—",
     };
@@ -121,7 +143,7 @@ const PreviewScreenStep: React.FC<PreviewStepProps> = ({
 
   const registrationData: RegistrationData | undefined =
     previewData?.entity_information
-      ? mapEntityInfoToRegistrationData(previewData.entity_information)
+      ? mapEntityInfoToRegistrationData(previewData.entity_information,selectedLanguage)
       : undefined;
 
   const mappedShareholders = shareholders.map(mapShareholderToTableData);
@@ -137,9 +159,14 @@ const PreviewScreenStep: React.FC<PreviewStepProps> = ({
           passportNumber: previewData.contact_person.passport_number,
           issueDate: previewData.contact_person.passport_issue_date,
           expiryDate: previewData.contact_person.passport_expiry_date,
-          nationality: previewData.contact_person.nationality?.name ?? "",
+          nationality: selectedLanguage === "ar"
+            ? previewData.contact_person.nationality?.name_ar
+            : previewData.contact_person.nationality?.name_en,
           city: previewData.contact_person.contact_person_city,
-          country: previewData.contact_person.country?.name ?? "",
+          country:
+            selectedLanguage === "ar"
+              ? previewData.contact_person.country?.name_ar ?? ""
+              : previewData.contact_person.country?.name_en ?? "",
           mobile_number: previewData.contact_person.mobile_number,
           email: previewData.contact_person.email,
         }

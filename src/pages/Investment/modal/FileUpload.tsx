@@ -2,124 +2,49 @@ import React from "react";
 import styled from "styled-components";
 import { useDropzone } from "react-dropzone";
 import { useTranslation } from "react-i18next";
+import { useDispatch } from "react-redux";
+
 import fileUpload from "../../../assets/images/investment/file-upload.svg";
 import deleteIcon from "../../../assets/images/investment/delete_icon.svg";
-import SectionTitle from "../../../components/common/SectionTitle";
+import { deleteAttachmentRequest } from "../../../store/actions/attachmentDeleteActions";
 
-const Section = styled.div<{ $isArabic?: boolean }>`
-  margin-top: 2.5rem;
-  direction: ${(props) => (props.$isArabic ? "rtl" : "ltr")};
-`;
-
-const Row = styled.div`
-  display: flex;
-  flex-wrap: wrap;
-  gap: 2rem;
-  padding: 2rem;
-  border-radius: 0 0 8px 8px;
-`;
-
-const AttachmentLabel = styled.div<{ $isArabic?: boolean }>`
-  font-size: 14px;
-  font-weight: 400;
-  margin-bottom: 16px;
-  color: #121212;
-  text-align: ${(props) => (props.$isArabic ? "right" : "left")};
-
-  span {
-    color: red;
-    margin: ${(props) => (props.$isArabic ? "0 0 0 4px" : "0 4px 0 0")};
-  }
-`;
-
-const DropZoneCard = styled.div<{ $isArabic?: boolean }>`
+const DropZoneCard = styled.div<{ $isArabic?: boolean; $hasFile: boolean }>`
   border: 2px dashed #d1d5db;
   border-radius: 12px;
   background-color: #f9fafb;
-  padding: 2rem;
-  text-align: center;
+  padding: ${({ $hasFile }) => ($hasFile ? "1rem" : "2rem")};
+  text-align: ${({ $isArabic, $hasFile }) =>
+    $hasFile ? "left" : $isArabic ? "right" : "center"};
   display: flex;
-  flex-direction: column;
+  flex-direction: ${({ $hasFile }) => ($hasFile ? "row" : "column")};
   align-items: center;
-  justify-content: center;
-  min-height: 200px;
+  justify-content: ${({ $hasFile }) => ($hasFile ? "space-between" : "center")};
+  min-height: ${({ $hasFile }) => ($hasFile ? "auto" : "200px")};
   cursor: pointer;
   transition: all 0.3s ease;
-  width: 100%;
-  direction: ${(props) => (props.$isArabic ? "rtl" : "ltr")};
-
-  &.has-file {
-    min-height: auto;
-    padding: 1rem;
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
-    text-align: left;
-  }
 `;
 
 const UploadIcon = styled.img`
-  width: 32px;
-  height: 32px;
+  width: 28px;
+  height: 28px;
   margin-bottom: 1rem;
-
-  .has-file & {
-    margin-bottom: 0;
-    margin-right: 1rem;
-  }
-`;
-
-const PrimaryText = styled.div`
-  font-size: 16px;
-  font-weight: 500;
-  color: #1f2a37;
-  margin-bottom: 0.5rem;
-
-  .has-file & {
-    display: none;
-  }
-`;
-
-const SecondaryText = styled.div`
-  font-size: 12px;
-  color: #384250;
-  margin-bottom: 0.75rem;
-  text-align: center;
-
-  .has-file & {
-    display: none;
-  }
-`;
-
-const BrowseText = styled.div`
-  font-size: 14px;
-  font-weight: 500;
-  color: #161616;
-  cursor: pointer;
-
-  .has-file & {
-    display: none;
-  }
 `;
 
 const FileInfo = styled.div`
   display: flex;
   align-items: center;
-  max-width: 80%;
 `;
 
-const FileName = styled.div<{ $isArabic?: boolean }>`
-  font-size: 16px;
+const FileName = styled.div`
+  font-size: 17px;
   color: #00778e;
   font-weight: 500;
   margin-left: 0.5rem;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  display: inline-block;
   max-width: 200px;
-  direction: ${(props) => (props.$isArabic ? "rtl" : "ltr")};
-  unicode-bidi: plaintext;
+  user-select: none;
 `;
 
 const DeleteButton = styled.button`
@@ -130,116 +55,192 @@ const DeleteButton = styled.button`
   margin-left: 1rem;
 `;
 
+const PrimaryText = styled.div`
+  font-size: 16px;
+  font-weight: 500;
+  color: #1f2a37;
+  margin-bottom: 0.5rem;
+`;
+
+const SecondaryText = styled.div`
+  font-size: 12px;
+  color: #384250;
+  margin-bottom: 0.75rem;
+  text-align: center;
+`;
+
+const BrowseText = styled.div`
+  font-size: 14px;
+  font-weight: 500;
+  color: #161616;
+  cursor: pointer;
+`;
+
+const Label = styled.label<{ $isArabic?: boolean }>`
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 600;
+  text-align: ${({ $isArabic }) => ($isArabic ? "right" : "left")};
+`;
+
+const RequiredMark = styled.span`
+  color: red;
+  margin: 0 4px 0 0;
+`;
+
 const MAX_FILE_SIZE_MB = 5;
-const ALLOWED_TYPES = {
-  "application/pdf": [],
-  "application/msword": [],
-  "application/vnd.openxmlformats-officedocument.wordprocessingml.document": [],
-  "image/jpeg": [],
-  "image/jpg": [],
-  "image/png": [],
+const ALLOWED_TYPES: Record<string, string[]> = {
+  "application/pdf": [".pdf"],
+  "application/msword": [".doc"],
+  "application/vnd.openxmlformats-officedocument.wordprocessingml.document": [
+    ".docx",
+  ],
+  "image/jpeg": [".jpeg", ".jpg"],
+  "image/png": [".png"],
 };
 
-interface FileUploadProps {
-  file: File | null;
+export interface FileUploadProps {
+  file: File | string | null;
   setFile: (file: File | null) => void;
+  fileName?: string;
   label: string;
   required?: boolean;
+  mediaId?: number;
+  onDeleteSuccess?: () => void;
+  onRefresh?: () => void;
 }
 
 const FileUpload: React.FC<FileUploadProps> = ({
   file,
   setFile,
   label,
-  required = true,
+  fileName,
+  required,
+  mediaId,
+  onDeleteSuccess,
 }) => {
   const { t, i18n } = useTranslation();
   const isArabic = i18n.language === "ar";
+  const dispatch = useDispatch();
 
-  const getCleanFileName = (file: File | null): string => {
-    if (!file) return "";
-    let fileName = file.name;
-    fileName = fileName.split(/[?#]/)[0];
+  const getFileName = (fileOrUrl: File | string) => {
+    if (fileOrUrl instanceof File) return fileOrUrl.name;
     try {
-      fileName = decodeURIComponent(fileName);
-    } catch {}
-
-    return fileName;
+      const url = new URL(fileOrUrl);
+      const last = url.pathname.split("/").pop() || "";
+      return decodeURIComponent(last.split("?")[0]);
+    } catch {
+      const last = fileOrUrl.split("/").pop() || "";
+      return decodeURIComponent(last.split("?")[0]);
+    }
   };
 
-  const handleDrop = (acceptedFiles: File[]) => {
-    const file = acceptedFiles[0];
-    if (file && file.size <= MAX_FILE_SIZE_MB * 1024 * 1024) {
-      setFile(file);
-    } else {
+  const displayName = (name: string) => {
+    const [base, ...rest] = name.split(".");
+    const ext = rest.length ? `.${rest.pop()}` : "";
+    return base.length > 30 ? `${base.slice(0, 30)}…${ext}` : name;
+  };
+
+  const onDrop = (accepted: File[]) => {
+    const f = accepted[0];
+    if (!f) return;
+
+    if (f.size > MAX_FILE_SIZE_MB * 1024 * 1024) {
       alert(t("attachment.validation.fileSizeExceeded"));
+      return;
     }
+
+    const ext = f.name.split(".").pop()?.toLowerCase();
+    const okExts = Object.values(ALLOWED_TYPES).flat();
+    if (!ext || !okExts.includes(`.${ext}`)) {
+      alert(t("attachment.validation.fileTypeNotAllowed"));
+      return;
+    }
+
+    setFile(f);
   };
 
   const handleDelete = (e: React.MouseEvent) => {
     e.stopPropagation();
+    if (mediaId) {
+      dispatch(deleteAttachmentRequest(mediaId));
+    }
+    onDeleteSuccess?.();
     setFile(null);
   };
 
+  const getDisplayName = () => {
+    if (fileName) return fileName;  
+    if (!file) return "";
+    
+    if (file instanceof File) {
+      return file.name;
+    }
+    
+    try {
+      const url = new URL(file);
+      const pathname = decodeURIComponent(url.pathname);
+      return pathname.split('/').pop() || "Document";
+    } catch {
+      const decoded = decodeURIComponent(file);
+      return decoded.split('/').pop() || "Document";
+    }
+  };
+
   const dropzone = useDropzone({
-    onDrop: handleDrop,
+    onDrop,
     multiple: false,
-    accept: ALLOWED_TYPES,
     maxSize: MAX_FILE_SIZE_MB * 1024 * 1024,
+    noClick: false,
     noKeyboard: true,
+    accept: ALLOWED_TYPES,
   });
 
+  const hasFile = !!file || !!fileName;
+
   return (
-    <Section $isArabic={isArabic}>
-      <Row>
-        <div style={{ flex: 1, minWidth: "280px" }}>
-          <AttachmentLabel $isArabic={isArabic}>
-            {required && <span>*</span>}
-            {label}
-          </AttachmentLabel>
-          <DropZoneCard
-            {...dropzone.getRootProps()}
-            className={file ? "has-file" : ""}
-            $isArabic={isArabic}
-          >
-            <input {...dropzone.getInputProps()} />
-            {file ? (
-              <>
-                <FileInfo>
-                  <UploadIcon src={fileUpload} alt="upload" />
-                  <FileName $isArabic={isArabic} title={file.name}>
-                    📎 {getCleanFileName(file)}
-                  </FileName>
-                </FileInfo>
-                <DeleteButton onClick={handleDelete}>
-                  <img src={deleteIcon} alt="delete" width={20} height={20} />
-                </DeleteButton>
-              </>
-            ) : (
-              <>
-                <UploadIcon src={fileUpload} alt="upload" />
-                <PrimaryText>
-                  {t("attachment.dropzone.primaryText")}
-                </PrimaryText>
-                <SecondaryText>
-                  {t("attachment.dropzone.secondaryText", {
-                    formats: "PDF, DOC, JPG, PNG",
-                  })}
-                </SecondaryText>
-                <BrowseText
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    dropzone.open();
-                  }}
-                >
-                  {t("attachment.dropzone.browseButton")}
-                </BrowseText>
-              </>
-            )}
-          </DropZoneCard>
-        </div>
-      </Row>
-    </Section>
+    <section>
+      <Label $isArabic={isArabic}>
+        {required && <RequiredMark>*</RequiredMark>}
+        {label}
+      </Label>
+
+      <DropZoneCard
+        {...dropzone.getRootProps()}
+        $isArabic={isArabic}
+        $hasFile={hasFile}
+        className={hasFile ? "has-file" : ""}
+        aria-label={label}
+      >
+        <input {...dropzone.getInputProps()} />
+
+        {hasFile ? (
+          <>
+            <FileInfo>
+              <UploadIcon src={fileUpload} alt="upload-icon" />
+                <FileName title={getDisplayName()}>
+                  📎 {getDisplayName()}
+                </FileName>
+            </FileInfo>
+
+            <DeleteButton onClick={handleDelete} aria-label="Delete file">
+              <img src={deleteIcon} alt="delete icon" />
+            </DeleteButton>
+          </>
+        ) : (
+          <>
+            <UploadIcon src={fileUpload} alt="upload-icon" />
+            <PrimaryText>{t("attachment.dropzone.primaryText")}</PrimaryText>
+            <SecondaryText>
+              {t("attachment.dropzone.secondaryText", {
+                formats: t("attachment.dropzone.formats"),
+              })}
+            </SecondaryText>
+            <BrowseText>{t("attachment.dropzone.browseButton")}</BrowseText>
+          </>
+        )}
+      </DropZoneCard>
+    </section>
   );
 };
 

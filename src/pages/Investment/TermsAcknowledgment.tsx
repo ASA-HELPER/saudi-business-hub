@@ -25,6 +25,8 @@ const CheckboxContainer = styled.div<{ dir?: "rtl" | "ltr" }>`
   cursor: pointer;
   transition: all 0.2s ease;
   flex-direction: ${props => props.dir === "rtl" ? "row-reverse" : "row"};
+  justify-content: ${props => props.dir === "rtl" ? "flex-end" : "flex-start"};
+  direction: ltr;
 
   &:hover {
     background-color: #f9fafb;
@@ -45,9 +47,13 @@ const CheckboxWrapper = styled.div<{ $checked: boolean }>`
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: all 0.2s ease;
+  transition: all 0.3s ease;
   cursor: pointer;
   margin-top: 2px;
+
+  /* add "movement" */
+  transform: ${(props) =>
+    props.$checked ? "translateX(4px) scale(1.05)" : "translateX(0) scale(1)"};
 
   &:hover {
     border-color: #00778e;
@@ -90,6 +96,7 @@ const TextContent = styled.div<{ dir?: "rtl" | "ltr" }>`
   font-family: "29LT_Bukra-Regular", Helvetica, sans-serif;
   text-align: ${props => props.dir === "rtl" ? "right" : "left"};
   direction: ${props => props.dir || "ltr"};
+  unicode-bidi: bidi-override;
 `;
 
 const LinkText = styled.a<{ dir?: "rtl" | "ltr" }>`
@@ -98,8 +105,9 @@ const LinkText = styled.a<{ dir?: "rtl" | "ltr" }>`
   font-weight: 500;
   font-family: "29LT_Bukra-Medium", Helvetica, sans-serif;
   transition: color 0.2s ease;
-  margin: ${props => props.dir === "rtl" ? "0 0 0 4px" : "0 4px 0 0"};
 
+  margin-inline: 4px; /* modern way */
+  
   &:hover {
     color: #00667a;
     text-decoration: none;
@@ -165,7 +173,7 @@ export const TermsAcknowledgment: React.FC<TermsAcknowledgmentProps> = ({
           >
             {t("preview.terms.termsConditions")}
           </LinkText>{" "}
-          {t("common.and")}{" "}
+          {t("preview.terms.and")}{" "}
           <LinkText
             href="#privacy"
             dir={dir}

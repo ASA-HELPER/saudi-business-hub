@@ -46,6 +46,7 @@ const Paragraph = styled.p`
   text-align: center;
   color: #3e4448;
   animation: ${fadeIn} 0.4s ease-in-out;
+  white-space: pre-line;
 `;
 
 const Title = styled.h1`

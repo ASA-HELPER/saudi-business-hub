@@ -176,6 +176,7 @@ export const ContactsDetails = forwardRef<{ submit: () => void }, Props>(
         <SectionTitle
           showActions={true}
           onEdit={handleEdit}
+          showEditText
           // onDelete={() => setShowDeleteModal(true)}
         >
           {t("preview.contactdetail.title")}

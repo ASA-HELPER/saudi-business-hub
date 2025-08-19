@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import {
   UseFormRegister,
@@ -13,6 +13,7 @@ import tickIcon from "../../../assets/images/register/elements.png";
 import Modal from "../Modal/Modal";
 import ResuableOTPBox from "./ResuableOTPBox";
 import arrowIcon from "../../../assets/images/arrow-down-01.png";
+import i18n from "../../../i18n";
 
 interface Props {
   label: string;
@@ -28,6 +29,8 @@ interface Props {
   prefixOptions?: string[];
   onVerifyChange?: (isVerified: boolean) => void;
   isVerified?: boolean;
+  isRTL?: boolean;
+
 }
 
 const ReusableMobileValidationInput: React.FC<Props> = ({
@@ -44,6 +47,7 @@ const ReusableMobileValidationInput: React.FC<Props> = ({
   prefixOptions = ["+91"],
   onVerifyChange,
   isVerified,
+  isRTL,
 }) => {
   const [showModal, setShowModal] = useState(false);
   //const [isVerified, setIsVerified] = useState(false);
@@ -86,6 +90,13 @@ const ReusableMobileValidationInput: React.FC<Props> = ({
     registered.onChange(e);
   };
 
+  const [inputKey, setInputKey] = useState(0);
+
+  useEffect(() => {
+    setInputKey(prev => prev + 1);
+    setMobileValue('');
+  }, [isRTL]);
+
   return (
     <InputContainer>
       <Label htmlFor={name} $required={required}>
@@ -94,7 +105,7 @@ const ReusableMobileValidationInput: React.FC<Props> = ({
       <InputWrapperWithVerifyText $width={width}>
         <InputWrapper hasError={!!error}>
           {prefixOptions.length > 0 && (
-            <PrefixSelect value={prefix} onChange={handlePrefixChange}>
+            <PrefixSelect value={prefix} onChange={handlePrefixChange} isRTL={isRTL}>
               {prefixOptions.map((opt) => (
                 <option key={opt} value={opt}>
                   {opt}
@@ -102,8 +113,8 @@ const ReusableMobileValidationInput: React.FC<Props> = ({
               ))}
             </PrefixSelect>
           )}
-
           <Input
+            dir={i18n.dir()}
             id={name}
             type="tel"
             placeholder={placeholder}
@@ -113,7 +124,6 @@ const ReusableMobileValidationInput: React.FC<Props> = ({
             disabled={disabled}
             maxLength={15}
           />
-
           {isVerified && <StatusIcon src={tickIcon} alt="Verified" />}
         </InputWrapper>
 
@@ -197,21 +207,24 @@ const InputWrapper = styled.div<{ hasError: boolean }>`
   }
 `;
 
-const PrefixSelect = styled.select`
-  height: 100%; // Match parent height
+const PrefixSelect = styled.select<{ isRTL?: boolean }>`
+  height: 100%; 
   padding: 0 clamp(10px, 1vw, 14px);
   font-size: clamp(13px, 1.2vw, 15px);
   border: none;
   border-radius: 4px;
-  background: #f1f4f6 url(${arrowIcon}) no-repeat right clamp(10px, 0.8vw, 14px)
-    center;
+  background: #f1f4f6 url(${arrowIcon}) no-repeat
+    ${({ isRTL }) => (isRTL ? 'left' : 'right')} clamp(10px, 0.8vw, 14px) center;
   background-size: clamp(12px, 1vw, 18px);
   appearance: none;
   outline: none;
-  margin-right: 8px;
+  margin-right: ${({ isRTL }) => (isRTL ? '0' : '8px')};
+  margin-left: ${({ isRTL }) => (isRTL ? '8px' : '0')};
   color: #6c737f;
   min-width: 80px;
   max-width: 140px;
+  text-align: start;
+  direction: ${({ isRTL }) => (isRTL ? 'rtl' : 'ltr')};
 `;
 
 const Input = styled.input`
@@ -223,10 +236,15 @@ const Input = styled.input`
   background-color: #f9f9f9;
   color: #000;
 
-  &::-webkit-inner-spin-button,
-  &::-webkit-outer-spin-button {
-    -webkit-appearance: none;
-    margin: 0;
+  /* This makes placeholder/text auto-flip */
+  text-align: start;
+
+  /* caret & flow follow dir */
+  direction: inherit;
+
+  &::placeholder {
+    color: #999;
+    opacity: 1;
   }
 `;
 

@@ -30,19 +30,17 @@
     "captcha_error": "فشل التحقق من reCAPTCHA. الرجاء المحاولة مرة أخرى."
   },
 
-
   "footer": {
     "trouble_login": "هل تواجه صعوبة في تسجيل الدخول؟",
     "facing_issue": "هل تواجه أي مشكلة؟",
     "contact_us": "اتصل بنا"
   },
 
-
   "register": {
     "step1_title": "البيانات الأساسية",
     "step2_title": "اسم المستخدم وكلمة المرور",
-  "Register": "تسجيل",
-  "title": "اللقب", 
+    "Register": "تسجيل",
+    "title": "اللقب",
     "success_message": "تم إنشاء الحساب بنجاح",
     "first_name": "الاسم الأول",
     "first_name_placeholder": "أدخل الاسم الأول",
@@ -71,6 +69,7 @@
     "next": "التالي",
     "back": "رجوع",
     "register_button": "تسجيل",
+    "otp_sent": "تم إرسال رمز التحقق إلى بريدك الإلكتروني.",
     "validation": {
       "first_name_required": "الاسم الأول مطلوب",
       "last_name_required": "اسم العائلة مطلوب",
@@ -84,22 +83,20 @@
       "password_min": "يجب أن تكون كلمة المرور 8 أحرف على الأقل",
       "confirm_password_required": "تأكيد كلمة المرور مطلوب",
       "passwords_match": "كلمات المرور غير متطابقة",
-      "title_required":"اللقب مطلوب"
-      
+      "title_required": "اللقب مطلوب"
     },
     "acknowledge_text": "أقر بأنني قد قرأت ووافقت على <1>الشروط والأحكام</1> و<3>سياسة الخصوصية</3>، وصحة ودقة البيانات المدخلة، وحق الوزارة في معالجتها بطريقة تخدم المصلحة العامة وتسهل تقديم خدمات الاستثمار.",
     "success": {
-    "title": "تم إنشاء الحساب بنجاح!",
-    "message": "لقد تم تسجيل حسابك بنجاح.<br />يمكنك تسجيل الدخول والبدء في استخدام خدماتنا الإلكترونية.",
-    "invest_button": "موقع استثمر في السعودية",
-    "login_button": "تسجيل الدخول"
+      "title": "تم إنشاء الحساب بنجاح!",
+      "message": "لقد تم تسجيل حسابك بنجاح.<br />يمكنك تسجيل الدخول والبدء في استخدام خدماتنا الإلكترونية.",
+      "invest_button": "موقع استثمر في السعودية",
+      "login_button": "تسجيل الدخول"
     }
   },
 
-
-    "forgot_password": {
+  "forgot_password": {
     "title": "نسيت كلمة المرور",
-    "instructions": "الرجاء إدخال عنوان البريد الإلكتروني المستخدم أثناء تسجيل حسابك في الخدمات الإلكترونية لإكمال إعادة تعيين كلمة المرور.",
+    "instructions": "الرجاء إدخال عنوان البريد الإلكتروني المستخدم أثناء تسجيل حسابك في الخدمات الإلكترونية\nلإكمال إعادة تعيين كلمة المرور.",
     "success_message": "تم إرسال تعليمات إعادة تعيين كلمة المرور إلى عنوان بريدك الإلكتروني. يرجى الاتصال بدعم العملاء إذا كنت بحاجة إلى مساعدة إضافية.",
     "email_label": "عنوان البريد الإلكتروني",
     "email_placeholder": "أدخل عنوان البريد الإلكتروني",
@@ -113,14 +110,12 @@
     }
   },
 
-
   "hero": {
     "title": "ابدأ رحلتك الاستثمارية",
     "subtitle": "ابدأ في بناء مستقبلك - سجل استثمارك في بضع خطوات فقط.",
     "register_button": "تسجيل",
     "explore_button": "استكشف"
   },
-
 
   "navbar": {
     "logo_alt": "شعار الشركة",
@@ -140,8 +135,8 @@
     "icon_alt": "أيقونة الحالة",
     "message": "لم تقدم طلب تسجيل استثمار بعد. أكمل تسجيلك لبدء رحلة الاستثمار الخاصة بك."
   },
-  
-    "apply_for": {
+
+  "apply_for": {
     "title": "قدم على",
     "subtitle": "اكتشف الرؤى والاتجاهات والفرص الرئيسية في القطاع.",
     "apply_button": "قدم الآن",
@@ -175,7 +170,7 @@
     }
   },
 
-    "sector_overview": {
+  "sector_overview": {
     "title": "حول القطاع",
     "subtitle": "اكتشف الرؤى والاتجاهات والفرص الرئيسية في القطاع.",
     "explore_button": "استكشف الكل",
@@ -206,8 +201,9 @@
     ]
   },
 
-    "termsModal": {
+  "termsModal": {
     "download": "تحميل",
+    "downloadterm": "تحميل الشروط والأحكام",
     "downloadPrivacyPolicy": "تحميل سياسة الخصوصية",
     "previousPage": "الصفحة السابقة",
     "nextPage": "الصفحة التالية",
@@ -217,7 +213,7 @@
     "privacyFileName": "سياسة-الخصوصية.pdf"
   },
 
-    "gccModal": {
+  "gccModal": {
     "title": "هل جميع المساهمين لديك من جنسية\nدول مجلس التعاون الخليجي؟",
     "iconAlt": "أيقونة مساهم من دول مجلس التعاون"
   },
@@ -240,49 +236,49 @@
     "preview": "معاينة"
   },
 
-"entityInformation": {
-  "basicInfo": "المعلومات الأساسية",
-  "feeDuration": "مدة الرسوم",
-  "noRecords": "لا توجد سجلات لعرضها.",
-  "addActivitiesPrompt": "أضف أنشطتك التجارية للبدء.",
-  "addActivitiesButton": "+ إضافة أنشطة تجارية",
-  "entityNameEn": "اسم الكيان بالإنجليزية",
-  "entityNameAr": "اسم الكيان بالعربية",
-  "legalStatus": "الوضع القانوني",
-  "capital": "رأس المال",
-  "country": "البلد",
-  "email": "البريد الإلكتروني",
-  "mobileNumber": "رقم الجوال",
-  "invalidEmail": "الرجاء إدخال عنوان بريد إلكتروني صحيح",
-  "invalidMobile": "الرجاء إدخال رقم جوال صحيح",
-  "region": "المنطقة",
-  "city": "المدينة",
-  "investmentSpending": "الإنفاق الاستثماري (في السنوات الخمس القادمة)",
-  "licenseDuration": "مدة الرخصة (بالسنوات)",
-  "selectPlaceholder": "اختر {field}",
-  "selectCountry": "اختر البلد",
-  "selectRegion": "اختر المنطقة",
-  "selectCity": "اختر المدينة",
-  "selectLegalStatus": "اختر الوضع القانوني",
-  "selectLicenseDuration": "اختر مدة الرخصة",
-  "selectInvestmentSpending": "الإنفاق الاستثماري المتوقع",
-  "enterEntityNameEn": "أدخل اسم الكيان بالإنجليزية",
-  "enterEntityNameAr": "أدخل اسم الكيان بالعربية",
-  "enterCapital": "أدخل رأس المال",
-  "enterEmail": "أدخل البريد الإلكتروني",
-  "enterMobileNumber": "أدخل رقم الجوال",
-  "requireToPay": "اختر عدد السنوات",
-  "enterPlaceholder": "أدخل {field}",
-  "requiredField": "هذا الحقل مطلوب.",
-  "validation": {
-    "minActivities": "الرجاء إضافة نشاط تجاري واحد على الأقل."
-  }
-},
+  "entityInformation": {
+    "basicInfo": "المعلومات الأساسية",
+    "feeDuration": "مدة الرسوم",
+    "noRecords": "لا توجد سجلات لعرضها.",
+    "addActivitiesPrompt": "أضف أنشطتك التجارية للبدء.",
+    "addActivitiesButton": "+ إضافة أنشطة تجارية",
+    "entityNameEn": "اسم الكيان بالإنجليزية",
+    "entityNameAr": "اسم الكيان بالعربية",
+    "legalStatus": "الوضع القانوني",
+    "capital": "رأس المال",
+    "country": "البلد",
+    "email": "البريد الإلكتروني",
+    "mobileNumber": "رقم الجوال",
+    "invalidEmail": "الرجاء إدخال عنوان بريد إلكتروني صحيح",
+    "invalidMobile": "الرجاء إدخال رقم جوال صحيح",
+    "region": "المنطقة",
+    "city": "المدينة",
+    "investmentSpending": "الإنفاق الاستثماري (في السنوات الخمس القادمة)",
+    "licenseDuration": "مدة الرخصة (بالسنوات)",
+    "selectPlaceholder": "اختر {field}",
+    "selectCountry": "اختر البلد",
+    "selectRegion": "اختر المنطقة",
+    "selectCity": "اختر المدينة",
+    "selectLegalStatus": "اختر الوضع القانوني",
+    "selectLicenseDuration": "اختر مدة الرخصة",
+    "selectInvestmentSpending": "الإنفاق الاستثماري المتوقع",
+    "enterEntityNameEn": "أدخل اسم الكيان بالإنجليزية",
+    "enterEntityNameAr": "أدخل اسم الكيان بالعربية",
+    "enterCapital": "أدخل رأس المال",
+    "enterEmail": "أدخل البريد الإلكتروني",
+    "enterMobileNumber": "أدخل رقم الجوال",
+    "requireToPay": "اختر عدد السنوات",
+    "enterPlaceholder": "أدخل {field}",
+    "requiredField": "هذا الحقل مطلوب.",
+    "validation": {
+      "minActivities": "الرجاء إضافة نشاط تجاري واحد على الأقل."
+    }
+  },
   "registrationTypes": {
     "title": "نوع التسجيل"
   },
 
-    "attachment": {
+  "attachment": {
     "title": "المرفقات",
     "label": "رخصة الجواز",
     "boardResolution": {
@@ -295,17 +291,17 @@
     },
     "dropzone": {
       "primaryText": "اسحب وأسقط الملفات هنا للتحميل",
-      "secondaryText": "الحد الأقصى لحجم الملف المسموح به هو 5 ميجابايت، وتشمل تنسيقات الملفات المدعومة {formats}.",
+      "secondaryText": "الحد الأقصى لحجم الملف المسموح به هو 5 ميجابايت، وتشمل تنسيقات الملفات المدعومة {{formats}}.",
       "formats": ".jpg و .png و .pdf",
       "browseButton": "تصفح الملفات"
     },
     "validation": {
       "fileSizeExceeded": "حجم الملف يتجاوز 5 ميجابايت.",
-      "invalidFileType": "نوع الملف غير مدعوم. التنسيقات المدعومة: {formats}",
+      "invalidFileType": "نوع الملف غير مدعوم. التنسيقات المدعومة: {{formats}}",
       "required": "هذا الملف مطلوب."
     }
   },
-    "contactForm": {
+  "contactForm": {
     "contactPerson": "الشخص المسؤول",
     "selectOption": "اختر",
     "otherPerson": "آخرون",
@@ -365,7 +361,7 @@
   "altText": {
     "businessActivityLogo": "شعار النشاط التجاري"
   },
-    "businessActivity": {
+  "businessActivity": {
     "tableHeaders": {
       "number": "#",
       "isicCode": "رمز ISIC",
@@ -373,7 +369,25 @@
       "classification": "التصنيف",
       "actions": "إجراءات"
     },
-    "addButton": "+ إضافة أنشطة تجارية"
+    "addButton": "+ إضافة أنشطة تجارية",
+    "search": "بحث",
+    "section": "القسم",
+    "chooseSection": "اختر القسم الخاص بك",
+    "chooseDivision": "اختر التقسيم الخاص بك",
+    "chooseGroup": "اختر المجموعة الخاصة بك",
+    "chooseBranch": "اختر الفرع الخاص بك",
+    "chooseClass": "اختر الفئة الخاصة بك",
+    "chooseActivity": "اختر النشاط الخاص بك",
+    "noActivityTitle": "لا توجد سجلات للعرض",
+    "getStartSection": "اختر قسمك للبدء",
+    "activity": "النشاط",
+    "branch": "الفرع",
+    "class": "الفئة",
+    "group": "المجموعة",
+    "division": "التقسيم",
+    "next": "التالي",
+    "back": "رجوع",
+    "cancel": "إلغاء"
   },
   "action": {
     "delete": "حذف"
@@ -388,6 +402,7 @@
     "organizations": "منظمة",
     "identityInformation": "معلومات الهوية",
     "identityType": "نوع الهوية",
+    "personalDetails": "البيانات الشخصية",
     "firstNameArabic": "الاسم الأول بالعربية",
     "lastNameArabic": "اسم العائلة بالعربية",
     "fullName": "الاسم الكامل بالإنجليزية",
@@ -445,47 +460,48 @@
       "requirements": "الحد الأقصى لحجم الملف 2MB، الصيغ المدعومة: .pdf, .doc, .docx, .jpg, .jpeg, .png",
       "browse": "تصفح الملفات"
     },
-      "organization": {
-    "sectionTitle": "تفاصيل المساهم",
-    "country": "الدولة",
-    "selectCountry": "اختر الدولة",
-    "unifiedNumber": "الرقم الموحد",
-    "validate": "تحقق",
+    "organization": {
+      "sectionTitle": "تفاصيل المساهم",
+      "country": "الدولة",
+      "selectCountry": "اختر الدولة",
+      "unifiedNumber": "الرقم الموحد",
+      "validate": "تحقق",
 
-    "orgNameEn": "اسم المنظمة باللغة الإنجليزية",
-    "orgNameAr": "اسم المنظمة باللغة العربية",
-    "legalStatus": "الوضع القانوني",
-    "selectLegalStatus": "اختر الوضع القانوني",
-    "llc": "ذ.م.م",
-    "jointStock": "شركة مساهمة",
+      "orgNameEn": "اسم المنظمة باللغة الإنجليزية",
+      "orgNameAr": "اسم المنظمة باللغة العربية",
+      "legalStatus": "الوضع القانوني",
+      "selectLegalStatus": "اختر الوضع القانوني",
+      "llc": "ذ.م.م",
+      "jointStock": "شركة مساهمة",
 
-    "yearsEstablished": "عدد سنوات التأسيس في بلد المنشأ",
-    "selectYears": "اختر عدد السنوات",
-    "1_5": "1-5",
-    "5_10": "5-10",
-    "10_plus": "10+",
+      "yearsEstablished": "عدد سنوات التأسيس في بلد المنشأ",
+      "selectYears": "اختر عدد السنوات",
+      "1_5": "1-5",
+      "5_10": "5-10",
+      "10_plus": "10+",
 
-    "mobile": "رقم الجوال",
-    "sharePercentage": "نسبة الأسهم",
-    "email": "البريد الإلكتروني",
-    "website": "الموقع الإلكتروني",
+      "mobile": "رقم الجوال",
+      "sharePercentage": "نسبة الأسهم",
+      "email": "البريد الإلكتروني",
+      "website": "الموقع الإلكتروني",
 
-    "attachmentsTitle": "المرفقات",
-    "commercialReg": "نسخة السجل التجاري (بلد المنشأ)",
-    "financialStatement": "البيان المالي للسنة الأخيرة",
-    "otherAttachment1": "مرفق آخر 1",
-    "otherAttachment2": "مرفق آخر 2"
-  }
+      "attachmentsTitle": "المرفقات",
+      "commercialReg": "نسخة السجل التجاري (بلد المنشأ)",
+      "financialStatement": "البيان المالي للسنة الأخيرة",
+      "otherAttachment1": "مرفق آخر 1",
+      "otherAttachment2": "مرفق آخر 2"
+    }
   },
   "errors": {
     "required": "هذا الحقل مطلوب",
     "invalidFileType": "نوع الملف غير مدعوم",
     "fileSizeExceeded": "حجم الملف يتجاوز 2MB"
   },
-    "preview": {
+  "preview": {
     "registration": {
       "entityInformation": "معلومات الكيان",
       "edit": "تعديل",
+      "add": "+ إضافة",
       "registrationType": "نوع التسجيل",
       "yearsRequired": "السنوات المطلوبة",
       "entityName": "اسم الكيان (إنجليزي)",
@@ -500,7 +516,7 @@
       "expectedInvestment": "الإستثمار المتوقع",
       "businessActivities": "الأنشطة التجارية"
     },
-        "shareholder": {
+    "shareholder": {
       "title": "قائمة المساهمين",
       "searchPlaceholder": "اسم المساهم، الجنسية",
       "columns": {
@@ -521,7 +537,7 @@
       "edit": "تعديل",
       "delete": "حذف"
     },
-        "contactdetail": {
+    "contactdetail": {
       "title": "معلومات الاتصال",
       "fields": {
         "name": "الاسم",
@@ -543,24 +559,53 @@
       "edit": "تعديل",
       "delete": "حذف"
     },
-      "terms": {
+    "terms": {
       "acknowledgment": "أقر بأني قد قرأت ووافقت على",
+      "and": "و",
       "termsConditions": "الشروط والأحكام",
       "privacyPolicy": "سياسة الخصوصية",
-      "validationText": "، وصحة ودقة البيانات المدخلة، وحق الوزارة في معالجتها بما يخدم المصلحة العامة ويسهل تقديم خدمات الاستثمار.",
+      "validationText": "صحة ودقة البيانات المدخلة، وحق الوزارة في معالجتها بما يخدم المصلحة العامة ويسهّل تقديم خدمات الاستثمار.",
       "checkboxLabel": "الإقرار بالشروط والأحكام"
     }
   },
-    "investments": {
+  "investments": {
     "buttons": {
       "cancel": "إلغاء",
       "back": "رجوع",
       "next": "التالي"
     }
+  },
+  "nafath_login": {
+    "nafath_id_label": "الهوية الوطنية / رقم الإقامة",
+    "nafath_id_placeholder": "أدخل الهوية الوطنية / رقم الإقامة",
+    "nafath_id_required": "يرجى إدخال رقم نفاذ",
+    "nafath_id_invalid": "رقم نفاذ يجب أن يكون مكوناً من 10 أرقام",
+    "login_button": "تسجيل الدخول",
+    "or": "أو",
+    "investor_login": "تسجيل الدخول برقم المستثمر",
+    "back": "رجوع",
+    "register": "تسجيل",
+    "modal_user_select_title": "اختر حسابك",
+    "modal_user_select_instruction": "يرجى اختيار الحساب للمتابعة:",
+    "modal_verify_title": "التحقق عبر نفاذ",
+    "modal_verify_instruction": "يرجى فتح تطبيق نفاذ والموافقة على الطلب باختيار رقم التحقق.",
+    "download_app": "لتحميل تطبيق نفاذ",
+    "toast_login_failed": "فشل تسجيل الدخول عبر نفاذ: {{error}}",
+    "toast_fetch_users_failed": "فشل في استرجاع المستخدمين.",
+    "toast_fetch_users_error": "حدث خطأ أثناء جلب المستخدمين.",
+    "toast_login_rejected": "تم رفض تسجيل الدخول",
+    "toast_login_expired": "⏳ انتهت صلاحية الطلب",
+    "toast_logged_in_as": "تم تسجيل الدخول باسم {{name}}",
+    "heading_citizens": "للمواطنين والمقيمين الأفراد، سجل الدخول عبر نفاذ"
+  },
+  "twofactor": {
+    "title": "المصادقة الثنائية",
+    "instructions_email": "لقد أرسلنا رمز التحقق إلى بريدك الإلكتروني المسجل {{email}}",
+    "instructions_phone": "لقد أرسلنا رمز التحقق إلى جوالك المسجل {{phone}}",
+    "instructions_both": "لقد أرسلنا رمز التحقق إلى بريدك الإلكتروني {{email}} ورقم جوالك {{phone}}",
+    "submit": "إرسال",
+    "login_success": "تم تسجيل الدخول بنجاح!",
+    "back": "رجوع",
+    "register": "تسجيل"
   }
 }
-
-
-
-
-

@@ -27,6 +27,7 @@ interface Props {
   width?: string;
   prefixOptions?: Array<string | { label: string; value: string | number }>;
   prefixValidationRules?: RegisterOptions;
+  $isRTL?: boolean;
 }
 
 const ReusableInput: React.FC<Props> = ({
@@ -43,6 +44,7 @@ const ReusableInput: React.FC<Props> = ({
   width,
   prefixOptions,
   prefixError,
+  $isRTL,
   prefixValidationRules,
 }) => {
   const [showPassword, setShowPassword] = useState(false);
@@ -58,7 +60,7 @@ const ReusableInput: React.FC<Props> = ({
         hasPrefix={!!prefixOptions}
       >
         {prefixOptions && (
-          <PrefixSelect {...register(`${name}_prefix`, prefixValidationRules)}>
+          <PrefixSelect {...register(`${name}_prefix`, prefixValidationRules)} $isRTL={$isRTL}>
             {prefixOptions.map((option) => {
               if (typeof option === "string") {
                 return (
@@ -156,27 +158,43 @@ const InputWrapper = styled.div<{
   }
 `;
 
-const PrefixSelect = styled.select`
+const PrefixSelect = styled.select<{ $isRTL?: boolean }>`
   border: none;
   color: #6c737f;
   background: #f1f4f6;
-  height: 70%; /* ensures it doesn't exceed wrapper */
-  padding: 0 clamp(10px, 1vw, 14px);
+  height: 100%;
   border-radius: 4px;
   font-size: clamp(13px, 1.2vw, 15px);
   appearance: none;
   outline: none;
-  margin-right: 8px;
-  background-image: url(${arrowIcon});
-  background-repeat: no-repeat;
-  background-position: right clamp(10px, 0.8vw, 14px) center;
-  background-size: clamp(12px, 1vw, 18px);
   display: flex;
   align-items: center;
   width: auto;
   min-width: 80px;
   max-width: 140px;
+  position: relative;
+
+  padding-inline-start: 10px;
+
+  ${({ $isRTL }) =>
+    $isRTL
+      ? `
+        padding-left: clamp(24px, 1vw, 36px);
+      `
+      : `
+        padding-right: clamp(24px, 1vw, 36px);
+      `}
+
+  background-image: url(${arrowIcon});
+  background-repeat: no-repeat;
+  background-position: ${({ $isRTL }) =>
+    $isRTL
+      ? "left clamp(6px, 0.6vw, 14px) center"
+      : "right clamp(6px, 0.6vw, 14px) center"};
+  background-size: clamp(12px, 1vw, 18px);
+  direction: ${({ $isRTL }) => ($isRTL ? "rtl" : "ltr")};
 `;
+
 
 const Icon = styled.img`
   width: clamp(16px, 1.5vw, 18px);

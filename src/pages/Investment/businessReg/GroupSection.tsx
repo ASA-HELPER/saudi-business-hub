@@ -11,6 +11,7 @@ import {
   setGroups,
 } from "../../../store/reducers/businessActivitySlice";
 import { selectAppLang } from "../../../store/slices/languageSlice";
+import { useTranslation } from "react-i18next";
 
 const Wrapper = styled.div`
   background-color: white;
@@ -97,6 +98,7 @@ const CheckboxIcon = styled.img`
   width: 24px;
   height: 24px;
   margin-right: 15px;
+  margin-left: 15px;
 `;
 
 interface GroupSectionProps {
@@ -112,6 +114,7 @@ const GroupSection: React.FC<GroupSectionProps> = ({
 }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const selectedLanguage = useSelector(selectAppLang);
+  const { t } = useTranslation();
 
   const dispatch = useDispatch();
   const selectedGroups = useSelector(
@@ -135,7 +138,7 @@ const GroupSection: React.FC<GroupSectionProps> = ({
     <Wrapper>
       <Header>
         <Title>
-          Choose your Group ({selectedGroups.length}/
+          {t("businessActivity.chooseGroup")} ({selectedGroups.length}/
           {structureData?.groups?.filter((group) =>
             selectedDivisions.some(
               (division) => division.id === group.division_id
@@ -144,7 +147,7 @@ const GroupSection: React.FC<GroupSectionProps> = ({
           )
         </Title>
         <SearchInput
-          placeholder="Search"
+          placeholder={t("businessActivity.search")}
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
         />

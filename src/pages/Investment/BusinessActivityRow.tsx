@@ -88,6 +88,7 @@ export default function BusinessActivityRow() {
   const activityRows: BusinessActivityRowItem[] = useSelector(
     (state: RootState) => state.businessActivity.activityRows
   );
+
   const selectedType = useSelector(selectSelectedRegistrationType);
 
   if (!activityRows || activityRows.length === 0) return null;

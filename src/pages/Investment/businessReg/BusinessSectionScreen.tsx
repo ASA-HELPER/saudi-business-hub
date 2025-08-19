@@ -38,6 +38,7 @@ import {
 } from "../../../store/selectors/structureSelectors";
 import { selectSelectedRegistrationType } from "../../../store/selectors/registrationTypeSelectors";
 import { selectAppLang } from "../../../store/slices/languageSlice";
+import { useTranslation } from "react-i18next";
 
 const Container = styled.div`
   display: flex;
@@ -272,15 +273,19 @@ const BusinessSectionScreen: React.FC = () => {
     }
   }, [dispatch, registrationTypeId]);
 
-  console.log("busineesRegData", JSON.stringify(busineesRegData));
-
   const handleBack = () => {
     if (currentStep > 0) {
       setCurrentStep((prev) => prev - 1);
     } else {
-      navigate("/investmentReg");
+      navigate(-1);
+      //navigate(-1, { state: { skipRefresh: true } });
+
+      //navigate("/investmentReg");
     }
   };
+
+  const isRtl = selectedLanguage === "ar";
+  const { t, i18n } = useTranslation();
 
   return (
     <Container>
@@ -294,7 +299,11 @@ const BusinessSectionScreen: React.FC = () => {
 
       <Content>
         <LeftPanelThread
-          selectedSection={selectedSection?.description ?? ""}
+          selectedSection={
+            selectedLanguage == "ar"
+              ? selectedSection?.description_ar ?? ""
+              : selectedSection?.description_en ?? ""
+          }
           selectedDivisions={selectedDivisions}
           selectedGroups={selectedGroups}
           selectedClasses={selectedClasses}
@@ -313,12 +322,13 @@ const BusinessSectionScreen: React.FC = () => {
             <>
               <PanelHeader>
                 <h3>
-                  Choose your Section ({busineesRegData?.sections.length})
+                  {t("businessActivity.chooseSection")} (
+                  {busineesRegData?.sections.length})
                 </h3>
                 <SearchBarWrapper>
                   <SearchInput
                     type="text"
-                    placeholder="Search"
+                    placeholder={t("businessActivity.search")}
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                   />
@@ -421,7 +431,9 @@ const BusinessSectionScreen: React.FC = () => {
             }
           }}
         >
-          {currentStep == 0 ? "Cancel" : "Back"}
+          {currentStep == 0
+            ? t("businessActivity.cancel")
+            : t("businessActivity.back")}
         </Button>
         <Button
           primary
@@ -443,7 +455,7 @@ const BusinessSectionScreen: React.FC = () => {
             }
           }}
         >
-          Next ➔
+          {t("businessActivity.next")}
         </Button>
       </Footer>
     </Container>

@@ -5,6 +5,7 @@ import EditImg from "../../../assets/images/investment/business/edit-icon.svg";
 import { Activity, Branch, Class, Division, Group } from "./types";
 import { useSelector } from "react-redux";
 import { selectAppLang } from "../../../store/slices/languageSlice";
+import { useTranslation } from "react-i18next";
 
 interface Props {
   selectedSection: string | null;
@@ -44,10 +45,13 @@ const LeftPanelThread: React.FC<Props> = ({
     selectedBranches.length > 0 ||
     selectedActivities.length > 0;
 
+  console.log("selectedDivisions", selectedDivisions);
+  const { t } = useTranslation();
+
   return (
     <PanelContainer>
       <PanelHeader>
-        <SectionTitle>Sections</SectionTitle>
+        <SectionTitle>{t("businessActivity.section")}</SectionTitle>
         <EditIcon>
           <img src={EditImg} alt="edit" onClick={editSection} />
         </EditIcon>
@@ -62,7 +66,7 @@ const LeftPanelThread: React.FC<Props> = ({
               <ThreadBlock>
                 <Level>
                   <ThreadHeader>
-                    <LevelLabel>Divisions</LevelLabel>
+                    <LevelLabel>{t("businessActivity.division")}</LevelLabel>
                     <EditIcon>
                       <img
                         src={EditImg}
@@ -73,11 +77,13 @@ const LeftPanelThread: React.FC<Props> = ({
                       />
                     </EditIcon>
                   </ThreadHeader>
-                  {selectedDivisions.map((div, idx) => (
+                  {selectedDivisions.map((div) => (
                     <Node key={`division-${div.divisionid}`}>
-                      {div.divisionid + "  " + selectedLanguage == "ar"
-                        ? div.description_ar
-                        : div.description_en}
+                      {div.divisionid +
+                        "  " +
+                        (selectedLanguage === "ar"
+                          ? div.description_ar
+                          : div.description_en)}
                     </Node>
                   ))}
                 </Level>
@@ -85,7 +91,7 @@ const LeftPanelThread: React.FC<Props> = ({
                 {selectedGroups.length > 0 && (
                   <Level indent={1}>
                     <ThreadHeader>
-                      <LevelLabel>Groups</LevelLabel>
+                      <LevelLabel>{t("businessActivity.group")}</LevelLabel>
                       <EditIcon>
                         <img
                           src={EditImg}
@@ -98,9 +104,11 @@ const LeftPanelThread: React.FC<Props> = ({
                     </ThreadHeader>
                     {selectedGroups.map((group, idx) => (
                       <Node key={`group-${group.groupid}`}>
-                        {group.groupid + "  " + selectedLanguage == "ar"
-                          ? group.description_ar
-                          : group.description_en}
+                        {group.groupid +
+                          "  " +
+                          (selectedLanguage == "ar"
+                            ? group.description_ar
+                            : group.description_en)}
                       </Node>
                     ))}
                   </Level>
@@ -109,7 +117,7 @@ const LeftPanelThread: React.FC<Props> = ({
                 {selectedClasses.length > 0 && (
                   <Level indent={2}>
                     <ThreadHeader>
-                      <LevelLabel>Classes</LevelLabel>
+                      <LevelLabel>{t("businessActivity.class")}</LevelLabel>
                       <EditIcon>
                         <img
                           src={EditImg}
@@ -122,9 +130,11 @@ const LeftPanelThread: React.FC<Props> = ({
                     </ThreadHeader>
                     {selectedClasses.map((cls, idx) => (
                       <Node key={`class-${cls.classid}`}>
-                        {cls.classid + "  " + selectedLanguage == "ar"
-                          ? cls.description_ar
-                          : cls.description_en}
+                        {cls.classid +
+                          "  " +
+                          (selectedLanguage == "ar"
+                            ? cls.description_ar
+                            : cls.description_en)}
                       </Node>
                     ))}
                   </Level>
@@ -133,7 +143,7 @@ const LeftPanelThread: React.FC<Props> = ({
                 {selectedBranches.length > 0 && (
                   <Level indent={3}>
                     <ThreadHeader>
-                      <LevelLabel>Branches</LevelLabel>
+                      <LevelLabel>{t("businessActivity.branch")}</LevelLabel>
                       <EditIcon>
                         <img
                           src={EditImg}
@@ -146,9 +156,11 @@ const LeftPanelThread: React.FC<Props> = ({
                     </ThreadHeader>
                     {selectedBranches.map((branch, idx) => (
                       <Node key={`branch-${branch.branchid}`}>
-                        {branch.branchid + "  " + selectedLanguage == "ar"
-                          ? branch.description_ar
-                          : branch.description_en}
+                        {branch.branchid +
+                          "  " +
+                          (selectedLanguage == "ar"
+                            ? branch.description_ar
+                            : branch.description_en)}
                       </Node>
                     ))}
                   </Level>
@@ -157,7 +169,7 @@ const LeftPanelThread: React.FC<Props> = ({
                 {selectedActivities.length > 0 && (
                   <Level indent={4}>
                     <ThreadHeader>
-                      <LevelLabel>Activities</LevelLabel>
+                      <LevelLabel>{t("businessActivity.activity")}</LevelLabel>
                       <EditIcon>
                         <img
                           src={EditImg}
@@ -170,9 +182,11 @@ const LeftPanelThread: React.FC<Props> = ({
                     </ThreadHeader>
                     {selectedActivities.map((act, idx) => (
                       <Node key={`activity-${act.activityid}`}>
-                        {act.activityid + "  " + selectedLanguage == "ar"
-                          ? act.description_ar
-                          : act.description_en}
+                        {act.activityid +
+                          "  " +
+                          (selectedLanguage == "ar"
+                            ? act.description_ar
+                            : act.description_en)}
                       </Node>
                     ))}
                   </Level>
@@ -183,8 +197,8 @@ const LeftPanelThread: React.FC<Props> = ({
         ) : (
           <EmptyState>
             <EmptyIcon src={EmptyIllustration} />
-            <EmptyText>There is no records to display.</EmptyText>
-            <EmptySubtext>Select your section to get started.</EmptySubtext>
+            <EmptyText>{t("businessActivity.noActivityTitle")}</EmptyText>
+            <EmptySubtext>{t("businessActivity.getStartSection")}</EmptySubtext>
           </EmptyState>
         )}
       </LeftPanelScrollArea>

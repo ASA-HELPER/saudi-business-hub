@@ -2,19 +2,30 @@ import React from "react";
 import styled from "styled-components";
 import BackIcon from "../../../assets/images/investment/back_icon.svg";
 import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { selectAppLang } from "../../../store/slices/languageSlice";
 
 interface StepperProps {
   activeStep: number;
   onBack?: () => void; // Optional callback for back navigation
 }
 
-const stepLabels = [
+const stepLabelsEn = [
   "Section",
   "Division",
   "Group",
   "Class",
   "Branch",
   "Activity",
+];
+
+const stepLabelsAr = [
+  "القسم", // Section
+  "التقسيم", // Division
+  "المجموعة", // Group
+  "الفئة", // Class
+  "الفرع", // Branch
+  "النشاط", // Activity
 ];
 
 const StepperContainer = styled.div`
@@ -29,13 +40,22 @@ const TopRow = styled.div`
   margin-bottom: 32px;
 `;
 
-const BackArrow = styled.div`
+const BackArrow = styled.div<{ $rtl?: boolean }>`
   display: flex;
   align-items: center;
   margin-right: 20px;
+  margin-left: 20px;
   cursor: pointer;
   font-size: 24px;
   color: white;
+
+  img {
+    ${({ $rtl }) =>
+      $rtl &&
+      `
+        transform: scaleX(-1);
+      `}
+  }
 `;
 
 const Title = styled.h2`
@@ -85,16 +105,38 @@ const StepCircle = styled.div<{ $active: boolean; $completed: boolean }>`
   `}
 `;
 
-const Connector = styled.div<{ $completed: boolean }>`
+// const Connector = styled.div<{ $completed: boolean }>`
+//   position: absolute;
+//   top: 17px;
+//   left: 50%;
+//   transform: translateX(18px); /* half of circle + offset */
+//   width: calc(100% - 36px);
+//   height: 2px;
+//   background-color: ${({ $completed }) =>
+//     $completed ? "#ffffff" : "#ffffff80"};
+//   z-index: 0;
+// `;
+
+const Connector = styled.div<{ $completed: boolean; $rtl?: boolean }>`
   position: absolute;
   top: 17px;
-  left: 50%;
-  transform: translateX(18px); /* half of circle + offset */
-  width: calc(100% - 36px);
   height: 2px;
   background-color: ${({ $completed }) =>
     $completed ? "#ffffff" : "#ffffff80"};
   z-index: 0;
+
+  ${({ $rtl }) =>
+    $rtl
+      ? `
+        right: 50%;
+        transform: translateX(-18px);
+        width: calc(100% - 36px);
+      `
+      : `
+        left: 50%;
+        transform: translateX(18px);
+        width: calc(100% - 36px);
+      `}
 `;
 
 const StepLabel = styled.div`
@@ -109,15 +151,23 @@ type TopStepperProps = {
   onBack: () => void;
 };
 
-
 const TopStepper: React.FC<TopStepperProps> = ({ activeStep, onBack }) => {
+  const selectedLanguage = useSelector(selectAppLang);
+  const isRtl = selectedLanguage === "ar";
+  const stepLabels = isRtl ? stepLabelsAr : stepLabelsEn;
+
   return (
     <StepperContainer>
       <TopRow>
-        <BackArrow onClick={onBack}>
+        <BackArrow onClick={onBack} $rtl={isRtl}>
           <img src={BackIcon} alt="Back" />
         </BackArrow>
-        <Title>Registration Business Activities</Title>
+        <Title>
+          {" "}
+          {isRtl
+            ? "تسجيل الأنشطة التجارية"
+            : "Registration Business Activities"}
+        </Title>
       </TopRow>
 
       <StepsRow>
@@ -132,7 +182,7 @@ const TopStepper: React.FC<TopStepperProps> = ({ activeStep, onBack }) => {
               </StepCircle>
 
               {index < stepLabels.length - 1 && (
-                <Connector $completed={index < activeStep} />
+                <Connector $completed={index < activeStep} $rtl={isRtl} />
               )}
 
               <StepLabel>{label}</StepLabel>

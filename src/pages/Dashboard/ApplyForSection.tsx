@@ -82,7 +82,7 @@ const SectionSubtitle = styled.p<{ $isRTL?: boolean }>`
   font-family: ${({ $isRTL }) =>
     $isRTL ? '"IBM Plex Sans Arabic", sans-serif' : "inherit"};
   font-size: 18px;
-  color: #555555;
+  color: #00778E;
   font-weight: 600;
   text-align: ${({ $isRTL }) => ($isRTL ? "right" : "left")};
 `;
@@ -205,7 +205,8 @@ const TimelineConnector = styled.div<{ $activeIndex: number }>`
 
 const DetailPanel = styled.div`
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
+  height: 100%;
   gap: 16px;
   position: relative;
   background: linear-gradient(
@@ -223,10 +224,24 @@ const DetailPanel = styled.div`
   overflow: hidden;
 `;
 
+const DetailTopContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+  gap: 16px;
+`;
+
+const DetailBottomContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
+  margin-bottom: 15px;
+`;
+
 const DetailHeader = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 16px;
   position: relative;
   z-index: 2;
 `;
@@ -285,7 +300,7 @@ const Connector = styled.div`
   right: -50%;
   height: 2px;
   background-color: #00778e;
-  z-index: -1;
+  z-index: 0;
 `;
 
 const StepsContainer = styled.div`
@@ -300,6 +315,7 @@ const StepWrapper = styled.div`
   align-items: center;
   position: relative;
   flex: 1;
+  padding: 0 15px;
 `;
 
 const StepperLabelsWrapper = styled.div`
@@ -318,6 +334,7 @@ const StepIconWrapper = styled.div`
   align-items: center;
   justify-content: center;
   position: relative;
+  z-index: 1;
 `;
 
 const StepCircle = styled.div`
@@ -326,7 +343,6 @@ const StepCircle = styled.div`
   border-radius: 50%;
   width: 50px;
   height: 50px;
-  margin: 0 auto 10px auto;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -336,12 +352,14 @@ const StepCircle = styled.div`
 
 const StepLabel = styled.p`
   font-size: 14px;
+  font-family: '"IBM Plex Sans Arabic", sans-serif';
   color: #555555;
   text-align: center;
 `;
 
 const StepIndex = styled.p`
   font-size: 16px;
+  font-family: '"IBM Plex Sans Arabic", sans-serif';
   color: #00778e;
 `;
 
@@ -361,6 +379,7 @@ const ApplyButton = styled.button`
   position: relative;
   z-index: 2;
   overflow: hidden;
+  margin-left: 80px;
 
   &::before {
     content: "";
@@ -549,17 +568,20 @@ const ApplyForSection: React.FC = () => {
         </CardContainer>
 
         <DetailPanel>
-          <DetailIconWrapper>{activeOptionData.icon}</DetailIconWrapper>
-          <DetailHeader>
-            <DetailTitle>{activeOptionData.detailTitle}</DetailTitle>
-            <DetailDescription>
-              {activeOptionData.detailDescription}
-            </DetailDescription>
+          <DetailTopContainer>
+            <DetailIconWrapper>{activeOptionData.icon}</DetailIconWrapper>
+            <DetailHeader>
+              <DetailTitle>{activeOptionData.detailTitle}</DetailTitle>
+              <DetailDescription>
+                {activeOptionData.detailDescription}
+              </DetailDescription>
 
-            {activeOptionData.question && (
-              <QuestionLabel>{activeOptionData.question}</QuestionLabel>
-            )}
-
+              {activeOptionData.question && (
+                <QuestionLabel>{activeOptionData.question}</QuestionLabel>
+              )}
+            </DetailHeader>
+          </DetailTopContainer>
+          <DetailBottomContainer>
             <div>
               {activeOptionData.steps && (
                 <StepsContainer>
@@ -588,7 +610,6 @@ const ApplyForSection: React.FC = () => {
                   ))}
               </StepperLabelsWrapper>
             </div>
-
             <ApplyButton
               onClick={() => {
                 if (activeOption === "bidding") {
@@ -605,7 +626,7 @@ const ApplyForSection: React.FC = () => {
                 <ArrowRight size={20} />
               </ButtonIcon>
             </ApplyButton>
-          </DetailHeader>
+          </DetailBottomContainer>
         </DetailPanel>
       </ContentLayout>
 
@@ -624,6 +645,7 @@ const ApplyForSection: React.FC = () => {
         isOpen={isGccModalOpen}
         onClose={() => setGccModalOpen(false)}
         onSelect={(value: "yes" | "no") => {
+          sessionStorage.setItem("hasFetchedEntityList", "false");
           if (activeOption === "RHQ") {
             navigate("/RHQinvestmentReg");
           } else if (activeOption === "strategic") {
@@ -631,6 +653,7 @@ const ApplyForSection: React.FC = () => {
           } else if (activeOption === "bidding") {
             navigate("/bidcertificateReg");
           } else {
+            sessionStorage.setItem("hasFetchedEntityList", "false");
             navigate("/investmentReg");
           }
         }}

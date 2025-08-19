@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import headerLogo from "../../../assets/images/header-logo.svg";
 import headerLogoWhite from "../../../assets/images/header-logo-white.svg";
@@ -153,6 +153,16 @@ const Navbar: React.FC<Props> = ({
     i18n.changeLanguage(lang); // change translation
     document.documentElement.dir = lang === "ar" ? "rtl" : "ltr"; // set text direction
   };
+
+  useEffect(() => {
+    const savedLang = localStorage.getItem("appLang") as "en" | "ar" | null;
+    const lang = savedLang || "en"; // fallback to English if nothing saved
+
+    setLanguage(lang);
+    dispatch(setAppLanguage(lang));
+    i18n.changeLanguage(lang);
+    document.documentElement.dir = lang === "ar" ? "rtl" : "ltr";
+  }, []);
 
   return (
     <NavbarWrapper backgroundColor={backgroundColor}>
