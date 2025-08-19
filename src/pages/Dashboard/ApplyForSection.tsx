@@ -82,7 +82,7 @@ const SectionSubtitle = styled.p<{ $isRTL?: boolean }>`
   font-family: ${({ $isRTL }) =>
     $isRTL ? '"IBM Plex Sans Arabic", sans-serif' : "inherit"};
   font-size: 18px;
-  color: #00778E;
+  color: #00778e;
   font-weight: 600;
   text-align: ${({ $isRTL }) => ($isRTL ? "right" : "left")};
 `;
@@ -163,7 +163,8 @@ const OptionContent = styled.div`
 `;
 
 const OptionTitle = styled.h3`
-  font-size: 20px;
+  font-size: 18px;
+  font-family: '"IBM Plex Sans Arabic", sans-serif';
   font-weight: 600;
   margin-bottom: 8px;
   line-height: 1.3;
@@ -171,6 +172,7 @@ const OptionTitle = styled.h3`
 
 const OptionDescription = styled.p`
   font-size: 14px;
+  font-family: '"IBM Plex Sans Arabic", sans-serif';
   opacity: 0.8;
   line-height: 1.5;
 `;
@@ -274,6 +276,7 @@ const DetailTitle = styled.h2`
   align-items: center;
   font-size: 22px;
   font-weight: 600;
+  font-family: '"IBM Plex Sans Arabic", sans-serif';
   color: #121212;
   line-height: 1.2;
 
@@ -283,12 +286,19 @@ const DetailTitle = styled.h2`
 `;
 
 const DetailDescription = styled.p`
-  font-size: 20px;
+  font-size: 18px;
+  font-weight: 400;
+  line-height: 28px;
+  font-family: '"IBM Plex Sans Arabic", sans-serif';
   color: #555555;
+  @media (min-width: 1024px) and (max-width: 1455px) {
+    line-height: 21px;
+  }
 `;
 
 const QuestionLabel = styled.p`
-  font-size: 20px;
+  font-size: 18px;
+  font-family: '"IBM Plex Sans Arabic", sans-serif';
   color: #121212;
   font-weight: 600;
 `;
@@ -298,7 +308,7 @@ const Connector = styled.div`
   top: 50px;
   left: 50%;
   right: -50%;
-  height: 2px;
+  height: 1px;
   background-color: #00778e;
   z-index: 0;
 `;
@@ -338,15 +348,14 @@ const StepIconWrapper = styled.div`
 `;
 
 const StepCircle = styled.div`
-  background: #eaf3fb;
-  border: 2px solid #00778e;
+  background-color: #fff;
+  border: 1px solid #00778e;
   border-radius: 50%;
-  width: 50px;
-  height: 50px;
+  height: 60px;
+  width: 60px;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #00778e;
   font-weight: bold;
 `;
 
@@ -372,8 +381,9 @@ const ApplyButton = styled.button`
   border: none;
   padding: 12px 34px;
   border-radius: 4px;
-  font-size: 16px;
-  font-weight: 600;
+  font-size: 18px;
+  font-weight: 700;
+  font-family: '"IBM Plex Sans Arabic", sans-serif';
   cursor: pointer;
   transition: all 0.3s ease;
   position: relative;
@@ -431,7 +441,7 @@ interface Option {
   icon: React.ReactNode;
   iconActive: React.ReactNode;
   detailTitle: string;
-  detailDescription: string;
+  detailDescription: string | string[];
   question?: string;
   steps?: Array<stepType>;
 }
@@ -464,7 +474,9 @@ const ApplyForSection: React.FC = () => {
       icon: <img src={RhqIconUnSelected} alt={t("apply_for.rhq.alt")} />,
       iconActive: <img src={RhqIconSelected} alt={t("apply_for.rhq.alt")} />,
       detailTitle: t("apply_for.rhq.detail_title"),
-      detailDescription: t("apply_for.rhq.detail_description"),
+      detailDescription: t("apply_for.rhq.detail_description", {
+        returnObjects: true,
+      }) as string[],
     },
     {
       id: "strategic",
@@ -573,7 +585,11 @@ const ApplyForSection: React.FC = () => {
             <DetailHeader>
               <DetailTitle>{activeOptionData.detailTitle}</DetailTitle>
               <DetailDescription>
-                {activeOptionData.detailDescription}
+                {Array.isArray(activeOptionData.detailDescription)
+                  ? activeOptionData.detailDescription.map((desc, index) => (
+                      <div key={index}>{desc}</div>
+                    ))
+                  : activeOptionData.detailDescription}
               </DetailDescription>
 
               {activeOptionData.question && (

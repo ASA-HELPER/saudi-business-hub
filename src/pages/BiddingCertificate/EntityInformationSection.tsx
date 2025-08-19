@@ -57,10 +57,11 @@ const InputWrapper = styled.div`
 `;
 
 const Label = styled.label`
-  font-weight: 400;
+  font-weight: 600;
   margin-bottom: 8px;
-  font-size: 10px;
-  color: #384250;
+  font-size: 14px;
+  font-family: '"IBM Plex Sans Arabic", sans-serif';
+  color: #3e4448;
 
   span {
     color: red;
@@ -72,7 +73,8 @@ const Input = styled.input<{ $isRTL?: boolean }>`
   padding: 6px 0;
   border: none;
   border-bottom: 1px solid #cfd4dc;
-  font-size: 11px;
+  font-size: 13px;
+  font-family: '"IBM Plex Sans Arabic", sans-serif';
   background-color: transparent;
   width: 100%;
   transition: border-color 0.3s ease;
@@ -88,6 +90,7 @@ const Input = styled.input<{ $isRTL?: boolean }>`
   &::placeholder {
     color: #94a3b8;
     text-align: ${(props) => (props.$isRTL ? "right" : "left")};
+    font-size: 13px;
   }
 `;
 
@@ -96,6 +99,7 @@ const Select = styled.select<{ $isRTL?: boolean }>`
   border-bottom: 1px solid #cfd4dc;
   background: transparent;
   font-size: 11px;
+  font-family: '"IBM Plex Sans Arabic", sans-serif';
   color: #94a3b8;
   width: 100%;
   height: 25px;

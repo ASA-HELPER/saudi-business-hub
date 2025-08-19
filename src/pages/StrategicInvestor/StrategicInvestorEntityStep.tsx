@@ -106,10 +106,11 @@ const Select = styled.select<{ $isRTL?: boolean }>`
 `;
 
 const Label = styled.label`
-  font-weight: 400;
+  font-weight: 600;
   margin-bottom: 8px;
-  font-size: 13px;
-  color: #384250;
+  font-size: 14px;
+  color: #3e4448;
+  font-family: '"IBM Plex Sans Arabic", sans-serif';
 
   span {
     color: red;
@@ -122,6 +123,7 @@ const Input = styled.input<{ $isRTL?: boolean }>`
   border: none;
   border-bottom: 1px solid #cfd4dc;
   font-size: 13px;
+  font-family: '"IBM Plex Sans Arabic", sans-serif';
   background-color: transparent;
   width: 100%;
   transition: border-color 0.3s ease;
@@ -137,7 +139,7 @@ const Input = styled.input<{ $isRTL?: boolean }>`
   &::placeholder {
     color: #94a3b8;
     text-align: ${(props) => (props.$isRTL ? "right" : "left")};
-    font-size: 12px
+    font-size: 13px;
   }
 `;
 
@@ -1427,12 +1429,13 @@ const StrategicInvestorEntityStep: React.FC<
                   display: "inline-flex",
                   justifyContent: "center",
                   alignItems: "center",
-                  height: "10px",
-                  width: "10px",
+                  height: "13px",
+                  width: "13px",
                   border: "1px solid #384250",
                   borderRadius: "50%",
                   color: "#384250",
                   marginRight: "5px",
+                  fontSize: "10px",
                 }}
               >
                 &#x003F;

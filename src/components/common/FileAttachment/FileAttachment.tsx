@@ -6,6 +6,7 @@ import { useTranslation } from "react-i18next";
 
 const AttachmentLabel = styled.div`
   font-size: 10px;
+  font-family: '"IBM Plex Sans Arabic", sans-serif';
   font-weight: 400;
   margin-bottom: 10px;
   color: #121212;
@@ -40,6 +41,7 @@ const UploadIcon = styled.img`
 
 const PrimaryText = styled.div`
   font-size: 10px;
+  font-family: '"IBM Plex Sans Arabic", sans-serif';
   font-weight: 600;
   color: #1f2a37;
   margin-bottom: 0.5rem;
@@ -47,6 +49,7 @@ const PrimaryText = styled.div`
 
 const SecondaryText = styled.div`
   font-size: 8px;
+  font-family: '"IBM Plex Sans Arabic", sans-serif';
   color: #384250;
   margin-bottom: 0.75rem;
   text-align: center;
@@ -58,6 +61,7 @@ const SecondaryText = styled.div`
 
 const BrowseText = styled.div`
   font-size: 9px;
+  font-family: '"IBM Plex Sans Arabic", sans-serif';
   font-weight: 600;
   color: #161616;
   cursor: pointer;
@@ -71,6 +75,7 @@ const BrowseText = styled.div`
 const FileName = styled.div`
   margin-top: 1rem;
   font-size: 14px;
+  font-family: '"IBM Plex Sans Arabic", sans-serif';
   color: #00778e;
   font-weight: 500;
 `;

@@ -6,7 +6,7 @@ import { styled } from "styled-components";
 import entityIconSelected from "../../assets/images/investment/enity_icon_selected.svg";
 import entityIcon from "../../assets/images/entity-icon.svg";
 import previewIconSelected from "../../assets/images/investment/preview_selected.svg";
-import previewIconUnSelected from "../../assets/images/investment/preview_unselected.png";
+import previewIconUnSelected from "../../assets/images/investment/Step Number.svg";
 import { BiddingCertificateStepper } from "./BiddingCertificateStepper";
 import EntityInformationSection from "./EntityInformationSection";
 import BiddingPreviewScreen from "./BiddingPreviewScreen";

@@ -13,7 +13,8 @@ const Label = styled.label`
   gap: 1px;
   color: #47515b;
   padding: 7px 2px;
-  font-size: 10px;
+  font-size: 14px;
+  font-family: '"IBM Plex Sans Arabic", sans-serif';
 `;
 
 interface Props {

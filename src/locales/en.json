@@ -251,7 +251,10 @@
       "description": "This license offers streamlined government support.",
       "alt": "RHQ Licenses icon",
       "detail_title": "RHQ Licenses",
-      "detail_description": "The RHQ (Regional Headquarters) license enables mulitinational companies to establish a strategic base in Saudi Arabia for managing and supporting their operations across"
+      "detail_description": [
+        "The RHQ (Regional Headquarters) license allows multinational companies to set up a strategic base in Saudi Arabia for managing and supporting their regional operations across the Middle East and North Africa (MENA). This license streamlines executive decision-making, improves access to regional markets, and leverages Saudi Arabia’s business-friendly environment for sustained growth.",
+        "By establishing an RHQ, companies can centralize resources, enhance operational efficiency, and foster closer relationships with regional partners. It also enables them to take advantage of Saudi Arabia’s growing economy, skilled workforce, and strategic trade position."
+      ]
     },
     "strategic": {
       "title": "Strategic Investor Program",

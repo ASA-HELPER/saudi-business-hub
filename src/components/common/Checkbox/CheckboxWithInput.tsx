@@ -11,7 +11,8 @@ const Container = styled.div`
 const Label = styled.label`
   display: flex;
   align-items: center;
-  font-size: 10px;
+  font-size: 14px;
+  font-family: '"IBM Plex Sans Arabic", sans-serif';
   gap: 0.5rem;
   flex: 1;
   color: #47515b;
@@ -22,7 +23,8 @@ const Input = styled.input<{ $isRTL?: boolean }>`
   flex: 1;
   border: none;
   border-bottom: 1px solid #cfd4dc;
-  font-size: 10px;
+  font-size: 13px;
+  font-family: '"IBM Plex Sans Arabic", sans-serif';
   background-color: transparent;
   width: 100%;
   transition: border-color 0.3s ease;
@@ -38,6 +40,7 @@ const Input = styled.input<{ $isRTL?: boolean }>`
   &::placeholder {
     color: #94a3b8;
     text-align: ${(props) => (props.$isRTL ? "right" : "left")};
+    font-size: 13px;
   }
 `;
 
