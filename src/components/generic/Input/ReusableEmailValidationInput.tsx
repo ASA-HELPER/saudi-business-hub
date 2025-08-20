@@ -7,6 +7,7 @@ import Modal from "../Modal/Modal";
 import ResuableOTPBox from "./ResuableOTPBox";
 import { RESET_VERIFY_MAIL_OTP_STATE } from "../../../store/types/emailOtpTypes";
 import { useDispatch } from "react-redux";
+import { useTranslation } from "react-i18next";
 
 interface Props {
   label: string;
@@ -104,6 +105,8 @@ const ReusableEmailValidationInput: React.FC<Props> = ({
       onVerifyChange?.(false);
     }
   };
+  
+  const { t } = useTranslation();
 
   return (
     <InputContainer>
@@ -137,7 +140,7 @@ const ReusableEmailValidationInput: React.FC<Props> = ({
               value &&
               /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value) && (
                 <VerifyText onClick={handleVerifyClick}>
-                  Verify Email
+                  {t("register.verify_email")}
                 </VerifyText>
               )}
           </RightSlot>
@@ -150,7 +153,7 @@ const ReusableEmailValidationInput: React.FC<Props> = ({
           clearState();
           setShowModal(false);
         }}
-        title="Verify Your Email"
+        title={t("register.verify_your_email")}
         confirmText=""
         cancelText=""
       >
@@ -178,6 +181,7 @@ const Label = styled.label<{ $required?: boolean }>`
   font-size: clamp(10px, 1vw, 14px);
   display: block;
   margin-bottom: 8px;
+    font-weight: 500;
 
   ${({ $required }) =>
     $required &&
@@ -204,12 +208,12 @@ const InputWrapper = styled.div<{ hasError: boolean }>`
   padding: 0 clamp(10px, 1vw, 14px);
   background: transparent;
   border-bottom: 1px solid
-    ${({ hasError }) => (hasError ? "#CC3434" : "#A0AAB4")};
+    ${({ hasError }) => (hasError ? "#127B7E" : "#ccc")};
   transition: border-color 0.3s ease;
 
   &:focus-within {
     border-bottom-color: ${({ hasError }) =>
-      hasError ? "#CC3434" : "#127B7E"};
+      hasError ? "#127B7E" : "#127B7E"};
   }
 `;
 

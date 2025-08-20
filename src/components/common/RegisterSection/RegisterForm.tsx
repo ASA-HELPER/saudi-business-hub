@@ -54,6 +54,7 @@ import privacyPdf from "../../../assets/pdf/privacy_policy.pdf";
 import { RESET_VERIFY_MAIL_OTP_STATE } from "../../../store/types/emailOtpTypes";
 import { useTranslation, Trans } from "react-i18next";
 import { selectAppLang } from "../../../store/slices/languageSlice";
+import { validatePasswordConditions, checkPasswordStrength } from "./passwordUtils";
 
 const FormWrapper = styled.div`
   margin: 0;
@@ -70,7 +71,12 @@ const StyledForm = styled.form`
   align-items: stretch;
   justify-content: center;
   width: 100%;
+  max-width: 800px; 
+  margin: 0 auto; 
+  box-sizing: border-box;\
+  padding: 0 16px;
 `;
+
 
 const ButtonRow = styled.div`
   display: flex;
@@ -91,12 +97,27 @@ const SetpTwoButtonRow = styled.div`
 
 const Row = styled.div`
   display: flex;
-  gap: 20px;
+  gap: clamp(12px, 2vw, 24px);; // Reduced from 20px for better spacing
+  width: 100%;
+  flex-wrap: wrap; // Allow wrapping on small screens
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    gap: 12px;
+  }
 `;
 
 const Box = styled.div`
-  flex: 1;
-`;
+  flex: 1 1 0;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+
+  @media (max-width: 768px) {
+    min-width: 100%;
+  }
+`;  
 
 const CenteredStepContainer = styled.div`
   margin-top: 50px;
@@ -111,11 +132,27 @@ const StepTwoContainer = styled.div`
   align-items: center;
 `;
 
+const strengthColors = {
+  weak: "#e74c3c",   
+  avg: "#f39c12",    
+  good: "#27ae60",   
+  "": "#999",
+};
+
+const StrengthText = styled.span<{ color: string }>`
+  font-family: "IBM Plex Sans Arabic", sans-serif;
+  font-weight: 600;
+  font-size: 14px;
+  color: ${({ color }) => color};
+  margin-bottom: 12px;  
+  display: inline-block; 
+`;
+
 const slideVariants = {
   initial: (direction: number) => ({
     x: direction > 0 ? 300 : -300,
     opacity: 0,
-    position: "absolute",
+    position: "relative",
     width: "100%",
   }),
   animate: {
@@ -127,7 +164,7 @@ const slideVariants = {
   exit: (direction: number) => ({
     x: direction < 0 ? 300 : -300,
     opacity: 0,
-    position: "absolute",
+    position: "relative",
     transition: { duration: 0.5 },
   }),
 };
@@ -172,16 +209,22 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onSubmitSuccess }) => {
   const [otpRequestCount, setOtpRequestCount] = useState(0);
   const selectedLanguage = useSelector(selectAppLang);
 
-  const countryOptions = React.useMemo(
-    () => countries.map((country: Country) => (lang === "ar" ? country.name_ar :country.name_en)),
+  const countryOptions = React.useMemo(() => 
+    countries.map((country: Country) => ({
+      label: lang === "ar" ? country.name_ar : country.name_en,
+      value: String(country.id),
+    })),
     [countries, lang]
   );
 
-  const sectorOptions = React.useMemo(
-    () => sectors.map((sector: Sector) => (lang === "ar" ? sector.name_ar :sector.name_en)),
+  const sectorOptions = React.useMemo(() => 
+    sectors.map((sector: Sector) => ({
+      label: lang === "ar" ? sector.name_ar : sector.name_en,
+      value: String(sector.id),
+    })),
     [sectors, lang]
   );
-  
+
   // const titleOptions = titles.map((title) => ({
   //   label: title.identifier,
   //   value: title.id,
@@ -248,8 +291,9 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onSubmitSuccess }) => {
       setIsLoading(false);
       onSubmitSuccess();
       reset();
+      navigate("/dashboard");
     }
-  }, [registerSuccess]);
+  }, [registerSuccess, setIsLoading, onSubmitSuccess, navigate]);
 
   useEffect(() => {
     if (registerError) {
@@ -344,6 +388,14 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onSubmitSuccess }) => {
 
   const email = watch("email");
 
+  const [passwordStrength, setPasswordStrength] = useState<"weak" | "avg" | "good" | "">("");
+
+  const password = watch("password");
+
+  useEffect(() => {
+    setPasswordStrength(checkPasswordStrength(password));
+  }, [password]);
+
   const onSubmit = (data: any) => {
     if (step === 1) {
       if (!isEmailVerified) {
@@ -353,18 +405,16 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onSubmitSuccess }) => {
       setDirection(1);
       setStep(2);
     } else if (step === 2) {
-      const selectedCountry = countries.find(
-        (c: Country) => c.name === data.country
-      );
-      const selectedSector = sectors.find(
-        (s: Sector) => s.name === data.sector
-      );
+      const selectedCountry = countries.find((country: Country) => country.id === Number(data.country));
+      const selectedSector = sectors.find((sector: Sector) => sector.id === Number(data.sector));
 
+      console.log("Selected Country:", selectedCountry);
+      console.log("Selected Sector:", selectedSector);
       const requestBody = {
-        sector_id: selectedSector?.id || 0,
-        title: data.firstName_prefix,
-        country_id: selectedCountry?.id || 0,
+        sector_id: selectedSector ? selectedSector.id : null,        
         mobilecountrycode_id: 91,
+        title: data.firstName_prefix,
+        country_id: selectedCountry ? selectedCountry.id : null,
         first_name: data.firstName,
         last_name: data.lastName,
         national_id: data.nationalId,
@@ -376,7 +426,6 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onSubmitSuccess }) => {
       };
 
       console.log("reque", JSON.stringify(requestBody));
-
       setIsLoading(true);
       dispatch(registerRequest(requestBody));
     }
@@ -583,7 +632,6 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onSubmitSuccess }) => {
                   }}
                   error={errors.username}
                 />
-
                 <ReusableInput
                   label={t("register.password")}
                   name="password"
@@ -594,14 +642,19 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onSubmitSuccess }) => {
                   register={register}
                   validationRules={{
                     required: t("register.validation.password_required"),
-                    minLength: {
-                      value: 8,
-                      message: t("register.validation.password_min"),
-                    },
-                  }}
+                    validate: (pw: string) =>
+                      validatePasswordConditions(pw),
+                    }}
                   error={errors.password}
-                />
-
+                  helperText={
+                    password && (
+                    <StrengthText color={strengthColors[passwordStrength]}>
+                      {passwordStrength === "weak" && t("register.password_strength_weak")}
+                      {passwordStrength === "avg" && t("register.password_strength_avg")}
+                      {passwordStrength === "good" && t("register.password_strength_good")}
+                    </StrengthText>
+                    )}
+                  />
                 <ReusableInput
                   label={t("register.confirm_password")}
                   name="confirmPassword"
@@ -616,7 +669,7 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onSubmitSuccess }) => {
                     ),
                     validate: (value: string) =>
                       value === watch("password") ||
-                      t("register.validation.passwords_match"),
+                      t("register.validation.passwords_match"), 
                   }}
                   error={errors.confirmPassword}
                 />

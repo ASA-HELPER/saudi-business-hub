@@ -196,14 +196,14 @@ const InputWrapper = styled.div<{ hasError: boolean }>`
   display: flex;
   align-items: center;
   border-bottom: 1px solid
-    ${({ hasError }) => (hasError ? "#CC3434" : "#A0AAB4")};
+    ${({ hasError }) => (hasError ? "#127B7E" : "#ccc")};
   background: transparent;
   box-sizing: border-box;
   transition: border-color 0.3s ease;
 
   &:focus-within {
     border-bottom-color: ${({ hasError }) =>
-      hasError ? "#CC3434" : "#127B7E"};
+      hasError ? "#127B7E" : "#127B7E"};
   }
 `;
 

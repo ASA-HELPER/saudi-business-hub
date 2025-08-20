@@ -7,6 +7,7 @@ import deleteIcon from "../../../assets/images/investment/delete_icon.svg";
 import SectionTitle from "../../../components/common/SectionTitle";
 import { deleteAttachmentRequest } from "../../../store/actions/attachmentDeleteActions";
 import { useDispatch } from "react-redux";
+import { toast } from "react-toastify";
 
 const Section = styled.div<{ $isArabic?: boolean }>`
   margin-top: 2.5rem;
@@ -172,12 +173,23 @@ const Attachment: React.FC<AttachmentProps> = ({
   const handleDrop =
     (setter: (file: File | null) => void) => (acceptedFiles: File[]) => {
       const file = acceptedFiles[0];
-      if (file && file.size <= MAX_FILE_SIZE_MB * 1024 * 1024) {
+      if (file) {
         setter(file);
-      } else {
-        alert(t("attachment.validation.fileSizeExceeded"));
       }
     };
+
+const handleRejected = (fileRejections: any[]) => {
+  fileRejections.forEach((rejection) => {
+    rejection.errors.forEach((e: any) => {
+      if (e.code === "file-too-large") {
+        toast.error(t("attachment.validation.fileSizeExceeded")); // 🚨 toast instead of alert
+      }
+      if (e.code === "file-invalid-type") {
+        toast.error(t("attachment.validation.invalidType"));
+      }
+    });
+  });
+};
 
   const dispatch = useDispatch();
 
@@ -202,6 +214,7 @@ const Attachment: React.FC<AttachmentProps> = ({
 
   const dropzone1 = useDropzone({
     onDrop: handleDrop(setBoardResolutionFile),
+    onDropRejected: handleRejected,
     multiple: false,
     accept: ALLOWED_TYPES,
     maxSize: MAX_FILE_SIZE_MB * 1024 * 1024,
@@ -211,6 +224,7 @@ const Attachment: React.FC<AttachmentProps> = ({
 
   const dropzone2 = useDropzone({
     onDrop: handleDrop(setLetterOfSupportFile),
+    onDropRejected: handleRejected,
     multiple: false,
     accept: ALLOWED_TYPES,
     maxSize: MAX_FILE_SIZE_MB * 1024 * 1024,

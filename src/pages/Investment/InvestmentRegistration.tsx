@@ -59,15 +59,18 @@ const Footer = styled.div`
 `;
 
 const Button = styled.button<{ variant: string }>`
-  padding: 10px 24px;
-  border-radius: 6px;
+  padding: 12px 24px;
+  border-radius: 8px;
   border: ${({ variant }) =>
-    variant === "cancel" ? "1px solid #007c92" : "none"};
+    variant === "cancel" ? "2px solid #007c92" : "none"};
   color: ${({ variant }) => (variant === "cancel" ? "#007c92" : "#fff")};
   background-color: ${({ variant }) =>
     variant === "cancel" ? "#fff" : "#00778E"};
   cursor: pointer;
-
+  font-weight: 600;
+  min-width: 100px;
+  box-sizing: border-box;
+  text-align: center;
   &:hover {
     opacity: 0.9;
   }

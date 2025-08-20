@@ -104,6 +104,9 @@ const Button = styled.button<{ primary?: boolean }>`
   border-radius: 8px;
   cursor: pointer;
   font-weight: 600;
+  box-sizing: border-box; 
+  min-width: 100px; 
+  text-align: center; 
 `;
 
 const PanelHeader = styled.div`
@@ -116,7 +119,7 @@ const PanelHeader = styled.div`
   color: #000;
 
   h3 {
-    font-size: 16px;
+    font-size: 20px;
     font-weight: 600;
     margin: 0;
     color: #000;
@@ -199,7 +202,7 @@ const SearchBarWrapper = styled.div`
 `;
 
 const SearchInput = styled.input`
-  width: 240px;
+  width: 300px;
   padding: 10px 12px;
   border: 1px solid #cfd4dc;
   border-radius: 6px;

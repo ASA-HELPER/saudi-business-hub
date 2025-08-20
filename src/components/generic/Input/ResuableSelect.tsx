@@ -9,10 +9,15 @@ import {
 } from "react-hook-form";
 import arrowIcon from "../../../assets/images/arrow-down-01.png";
 
+interface Option {
+  label: string;
+  value: string;
+}
+
 interface Props {
   label: string;
   name: string;
-  options: string[];
+  options: Option[];
   register: UseFormRegister<any>;
   validationRules?: RegisterOptions;
   error?: FieldError | Merge<FieldError, FieldErrorsImpl<any>>;
@@ -48,11 +53,11 @@ const ReusableSelect: React.FC<Props> = ({
           disabled={disabled}
         >
           <option value="">{placeholder}</option>
-          {options.map((option) => (
-            <option key={option} value={option}>
-              {option}
-            </option>
-          ))}
+            {options.map(option => (
+              <option key={option.value} value={option.value}>
+                {option.label}
+              </option>
+            ))}
         </Select>
       </SelectWrapper>
       <ErrorWrapper>
@@ -68,14 +73,15 @@ export default ReusableSelect;
 
 // Styled Components
 const SelectContainer = styled.div`
-  margin-bottom: 25px;
+  margin-bottom: clamp(16px, 2vh, 24px); 
 `;
 
 const Label = styled.label`
   color: #3e4448;
   font-size: clamp(10px, 1vw, 14px);
   display: block;
-  margin-bottom: 8px;
+  margin-bottom: 8px; /* Match all labels */
+  font-weight: 500;
   display: flex;
   align-items: center;
 `;
@@ -91,16 +97,18 @@ const RequiredMark = styled.span`
 
 const SelectWrapper = styled.div<{ hasError: boolean; $width?: string; $isRTL?: boolean }>`
   width: 100%;
+  height: clamp(40px, 5vh, 48px);   
+  display: flex;
+  align-items: center;
   position: relative;
-  padding: 10px 0px;
+  padding: 0 clamp(10px, 1vw, 14px); 
   background: transparent;
   border-bottom: 1px solid
-    ${({ hasError }) => (hasError ? "#CC3434" : "#A0AAB4")};
+    ${({ hasError }) => (hasError ? "#127B7E" : "#ccc")};
   transition: border-color 0.3s ease;
-
   &:focus-within {
     border-bottom-color: ${({ hasError }) =>
-      hasError ? "#CC3434" : "#127B7E"};
+      hasError ? "#127B7E" : "#127B7E"};
   }
 
   &::after {
@@ -137,6 +145,11 @@ const Select = styled.select`
   -webkit-appearance: none;
   -moz-appearance: none;
   padding-right: clamp(20px, 2vw, 30px);
+  padding-left: 8px;
+  height: 100%; 
+  option[value=""] {
+    color: #9e9e9e;
+  }
 `;
 
 const ErrorWrapper = styled.div`

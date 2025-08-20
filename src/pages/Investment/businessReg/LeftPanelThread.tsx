@@ -221,11 +221,11 @@ const PanelContainer = styled.div`
 
 const PanelHeader = styled.div`
   background-color: #f2f5f6;
-  padding: 16px;
+  padding: 24px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin: 10px;
+  margin: 12px;
 `;
 
 const ThreadHeader = styled.div`
@@ -236,7 +236,7 @@ const ThreadHeader = styled.div`
 `;
 
 const SectionTitle = styled.h3`
-  font-size: 16px;
+  font-size: 20px;
   font-weight: 600;
   margin: 0;
   color: #000;
@@ -329,6 +329,6 @@ const EmptyText = styled.div`
 
 const EmptySubtext = styled.div`
   font-size: 13px;
-  color: #6b7280;
+  color: #6b7280ff;
   margin-top: 4px;
 `;

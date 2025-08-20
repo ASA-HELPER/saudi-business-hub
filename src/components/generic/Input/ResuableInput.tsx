@@ -28,6 +28,7 @@ interface Props {
   prefixOptions?: Array<string | { label: string; value: string | number }>;
   prefixValidationRules?: RegisterOptions;
   $isRTL?: boolean;
+  helperText?: React.ReactNode;
 }
 
 const ReusableInput: React.FC<Props> = ({
@@ -46,6 +47,7 @@ const ReusableInput: React.FC<Props> = ({
   prefixError,
   $isRTL,
   prefixValidationRules,
+  helperText,
 }) => {
   const [showPassword, setShowPassword] = useState(false);
 
@@ -99,14 +101,12 @@ const ReusableInput: React.FC<Props> = ({
           </Toggle>
         )}
       </InputWrapper>
-      <InputErrorWrapper>
-        {typeof prefixError?.message === "string" && (
-          <ErrorMessage>{prefixError.message}</ErrorMessage>
-        )}
-        {typeof error?.message === "string" && (
-          <ErrorMessage>{error.message}</ErrorMessage>
-        )}
-      </InputErrorWrapper>
+        <InputErrorWrapper>
+          {typeof error?.message === "string" && (
+            <ErrorMessage>{error.message}</ErrorMessage>
+          )}
+          {!error?.message && helperText}
+        </InputErrorWrapper>
     </InputContainer>
   );
 };
@@ -146,7 +146,7 @@ const InputWrapper = styled.div<{
   height: clamp(40px, 5vh, 48px); /* Ensures consistent height */
   display: flex;
   align-items: center;
-  border-bottom: 1px solid ${({ hasError }) => (hasError ? "#CC3434" : "#ccc")};
+  border-bottom: 1px solid ${({ hasError }) => (hasError ? "#127B7E" : "#ccc")};
   padding: 0;
   background: transparent;
   box-sizing: border-box;
@@ -154,7 +154,7 @@ const InputWrapper = styled.div<{
 
   &:focus-within {
     border-bottom-color: ${({ hasError }) =>
-      hasError ? "#CC3434" : "#127B7E"};
+      hasError ? "#127B7E" : "#127B7E"};
   }
 `;
 
